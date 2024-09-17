@@ -46,6 +46,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@tanstack/react-query": "^5.51.23",
     "artplayer": "^5.1.7",
+    "artplayer-plugin-danmuku": "^5.1.4",
     "class-variance-authority": "^0.7.0",
     "click-to-react-component": "^1.1.0",
     "clsx": "^2.1.1",

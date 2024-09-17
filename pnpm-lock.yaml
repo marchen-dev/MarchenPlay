@@ -44,6 +44,9 @@ importers:
       artplayer:
         specifier: ^5.1.7
         version: 5.1.7
+      artplayer-plugin-danmuku:
+        specifier: ^5.1.4
+        version: 5.1.4
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -1549,6 +1552,9 @@ packages:
   array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
+
+  artplayer-plugin-danmuku@5.1.4:
+    resolution: {integrity: sha512-f2gJ9HsvSmOwg6UdNcWCUkSI6WmfkTiQKVDWr+pRJF9jQ2wK8c4YjNJ11SY63H5OGlaJBSvWWyNVdFHOX7pUbg==}
 
   artplayer@5.1.7:
     resolution: {integrity: sha512-N/QdNlTwsIHUsWOHMPj0pq97v3qmgXZHfhy1q7I+8YN3/XakJiJJyVJgGaeBjU+y/fUIrzBhwpBaX+NFwK9/qw==}
@@ -5863,6 +5869,8 @@ snapshots:
   array-ify@1.0.0: {}
 
   array-union@2.1.0: {}
+
+  artplayer-plugin-danmuku@5.1.4: {}
 
   artplayer@5.1.7:
     dependencies:

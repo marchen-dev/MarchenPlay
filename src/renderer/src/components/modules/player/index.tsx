@@ -1,15 +1,10 @@
-import { currentMatchedVideoAtom } from '@renderer/atoms/player'
-import { useToast } from '@renderer/components/ui/toast'
+import { ArtPlayer } from '@renderer/components/ui/artplayer/ArtPlayer'
 import { DanmuPosition, intToHexColor } from '@renderer/libs/danmu'
 import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
 import { useQuery } from '@tanstack/react-query'
-import { useAtomValue } from 'jotai'
+import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
-import XgPlayer from 'xgplayer'
-
-import { playerBaseConfig } from './hooks'
 
 interface PlayerProps {
   url: string
@@ -17,52 +12,70 @@ interface PlayerProps {
 
 export const Player: FC<PlayerProps> = (props) => {
   const { url } = props
-  const playerRef = useRef<HTMLDivElement | null>(null)
-  const { toast } = useToast()
+  // const playerRef = useRef<HTMLDivElement | null>(null)
+  // const { toast } = useToast()
   const { data: danmuData } = useQuery<CommentsModel>({
     queryKey: [apiClient.comment.Commentkeys, url],
   })
 
-  const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
+  // const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
 
-  useEffect(() => {
-    let player: XgPlayer | null = null
-    if (playerRef.current && danmuData) {
-      player = new XgPlayer({
-        ...playerBaseConfig,
-        el: playerRef.current,
+  // useEffect(() => {
+  //   if (playerRef.current) {
+  //     new Artplayer({
+  //       container: playerRef.current,
+  //       url,
+  //     })
+  //   }
+  // }, [])
+  if (!danmuData) {
+    return
+  }
+  return (
+    <ArtPlayer
+      option={{
         url,
-
-        danmu: {
-          comments: danmuData.comments.map((comment) => {
-            const [start, postition, color] = comment.p.split(',').map(Number)
-            const startInMs = start * 1000
-
-            const mode = DanmuPosition[postition]
-            return {
-              duration: 15000, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
-              id: comment.cid, // 弹幕id，需唯一
-              start: startInMs, // 弹幕出现时间，毫秒BB
-              txt: comment.m, // 弹幕文字内容
-              mode,
-              style: {
+        theme: '#ffad00',
+        volume: 1,
+        autoplay: true,
+        flip: true,
+        playbackRate: true,
+        aspectRatio: true,
+        setting: true,
+        screenshot: true,
+        pip: true,
+        fullscreen: true,
+        fullscreenWeb: true,
+        subtitleOffset: true,
+        miniProgressBar: true,
+        lang: 'zh-cn',
+        lock: true,
+        fastForward: true,
+        airplay: true,
+        plugins: [
+          artplayerPluginDanmuku({
+            danmuku: danmuData.comments.map((comment) => {
+              const [start, postition, color] = comment.p.split(',').map(Number)
+              const startInMs = start
+              const mode = DanmuPosition[postition]
+              return {
+                text: comment.m,
+                time: startInMs,
+                mode,
                 color: intToHexColor(color),
-              },
-            }
+              }
+            }),
+            heatmap: true, // 是否开启热力图
+            speed: 10,
+            margin: [10, '25%'],
           }),
-          ...playerBaseConfig.danmu,
-        },
-      })
-      toast({
-        title: currentMatchedVideo.animeTitle,
-        description: `共加载 ${danmuData.count} 条弹幕`,
-        duration: 2000,
-      })
-
-      player.getCssFullscreen()
-    }
-    return () => player?.destroy()
-  }, [playerRef, danmuData, url])
-
-  return <div ref={playerRef} />
+        ],
+      }}
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+      getInstance={(art) => console.info(art)}
+    />
+  )
 }

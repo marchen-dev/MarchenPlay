@@ -20,8 +20,9 @@ export function intToHexColor(color: number): string {
   return `#${rHex}${gHex}${bHex}`
 }
 
-export enum DanmuPosition {
-  scroll = 1,
-  bottom = 4,
-  top = 5,
+type Mode = 0 | 1 | 2
+export const DanmuPosition: Record<number, Mode> = {
+  1: 0,
+  4: 1,
+  5: 2,
 }
