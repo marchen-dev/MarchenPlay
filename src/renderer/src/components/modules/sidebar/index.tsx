@@ -14,7 +14,11 @@ export const Sidebar = () => {
     <div className="relative flex h-full w-[250px] flex-col justify-between bg-base-200 px-3 pt-2.5">
       <div>
         <div className={cn('drag-region flex items-center', 'ml-2 justify-between')}>
-          <Link to={RouteName.PLAYER} draggable={false} className="cursor-default font-logo text-lg">
+          <Link
+            to={RouteName.PLAYER}
+            draggable={false}
+            className="cursor-default font-logo text-lg"
+          >
             {normalStyle && PROJECT_NAME}
           </Link>
           <button
@@ -31,7 +35,6 @@ export const Sidebar = () => {
           ))}
         </nav>
       </div>
-
       <DarkModeToggle />
     </div>
   )
