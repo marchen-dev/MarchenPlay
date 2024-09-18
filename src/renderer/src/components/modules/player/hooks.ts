@@ -10,8 +10,6 @@ import { tipcClient } from '@renderer/libs/client'
 import { isWeb } from '@renderer/libs/utils'
 import { useAtom, useSetAtom } from 'jotai'
 import type { ChangeEvent, DragEvent } from 'react'
-import type { IPlayerOptions } from 'xgplayer'
-import { Danmu } from 'xgplayer'
 
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
@@ -79,27 +77,21 @@ export const useVideo = () => {
 }
 
 export const playerBaseConfig = {
-  height: '100%',
-  width: '100%',
-  lang: 'zh',
-  autoplay: true,
+  theme: '#ffad00',
   volume: 1,
-  miniprogress: true,
-  screenShot: true,
+  autoplay: true,
+  flip: true,
+  playbackRate: true,
+  aspectRatio: true,
+  setting: true,
+  screenshot: true,
   pip: true,
-  rotate: true,
-  download: true,
-
-  plugins: [Danmu],
-  danmu: {
-    fontSize: 25,
-    area: {
-      start: 0,
-      end: 0.25,
-    },
-    ext: {
-      mouseControl: true,
-      mouseControlPause: true,
-    },
-  },
-} satisfies IPlayerOptions
+  fullscreen: true,
+  fullscreenWeb: true,
+  subtitleOffset: true,
+  miniProgressBar: true,
+  lang: 'zh-cn',
+  lock: true,
+  fastForward: true,
+  airplay: true,
+} satisfies Omit<Artplayer['Option'], 'container' | 'url'>

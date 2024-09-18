@@ -6,6 +6,8 @@ import { useQuery } from '@tanstack/react-query'
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import type { FC } from 'react'
 
+import { playerBaseConfig } from './hooks'
+
 interface PlayerProps {
   url: string
 }
@@ -34,24 +36,8 @@ export const Player: FC<PlayerProps> = (props) => {
   return (
     <ArtPlayer
       option={{
+        ...playerBaseConfig,
         url,
-        theme: '#ffad00',
-        volume: 1,
-        autoplay: true,
-        flip: true,
-        playbackRate: true,
-        aspectRatio: true,
-        setting: true,
-        screenshot: true,
-        pip: true,
-        fullscreen: true,
-        fullscreenWeb: true,
-        subtitleOffset: true,
-        miniProgressBar: true,
-        lang: 'zh-cn',
-        lock: true,
-        fastForward: true,
-        airplay: true,
         plugins: [
           artplayerPluginDanmuku({
             danmuku: danmuData.comments.map((comment) => {

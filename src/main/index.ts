@@ -46,7 +46,7 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-  mainWindow.webContents.userAgent = 'dandanplay-test/android 1.2.3'
+  // mainWindow.webContents.userAgent = 'dandanplay-test/android 1.2.3'
 }
 
 // This method will be called when Electron has finished
