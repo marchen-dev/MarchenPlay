@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# [0.1.0](https://github.com/suemor233/MarchenPlay/compare/v0.0.1...v0.1.0) (2024-10-10)
+
+
+
 ## [0.0.1](https://github.com/suemor233/MarchenPlay/compare/0c3019d8ef56374c1a9ebbe76beb0bd40f60135a...v0.0.1) (2024-10-10)
 
 
