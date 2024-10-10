@@ -31,7 +31,7 @@ export function Toaster() {
         </Toast>
       ))}
       {/* 防止弹窗遮住视频进度条 */}
-      <ToastViewport className={cn(videoPlaying && 'sm:bottom-16')} />
+      <ToastViewport className={cn(videoPlaying && 'sm:bottom-14')} />
     </ToastProvider>
   )
 }
