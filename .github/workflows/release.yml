@@ -65,7 +65,6 @@ jobs:
             dist/*.deb
             dist/*.rpm
             dist/*.tar.gz
-            dist/*.yml
-            dist/*.blockmap
+            dist/latest*.yml
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
