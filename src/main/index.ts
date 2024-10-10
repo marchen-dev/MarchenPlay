@@ -2,12 +2,13 @@ import { registerIpcMain } from '@egoist/tipc/main'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow } from 'electron'
 
+import { appUpdater } from './lib/update'
 import { router } from './tipc'
 import createWindow from './windows/main'
 
 function bootstrap() {
   registerIpcMain(router)
-
+  appUpdater.autoUpdate()
   app.whenReady().then(() => {
     electronApp.setAppUserModelId('com.electron')
 

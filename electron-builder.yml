@@ -1,5 +1,5 @@
 appId: com.suemor.marchen-play
-productName: marchen-play
+productName: Marchen Play
 directories:
   buildResources: build
 files:
@@ -12,8 +12,10 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: marchen-play
+  executableName: Marchen Play
 nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
@@ -26,17 +28,29 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+    - target: zip
+      arch:
+        - arm64
+        - x64
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-${version}.${ext}
 linux:
   target:
-    - AppImage
-    - deb
+    - target: AppImage
+      arch:
+        - arm64
+        - x64
   maintainer: github.com/suemor233
   category: Utility
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-${version}-${arch}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: marchen-dev
+  repo: MarchenPlay

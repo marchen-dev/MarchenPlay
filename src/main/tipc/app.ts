@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron'
 
+import { appUpdater } from '../lib/update'
 import { t } from './_instance'
 
 export const appRoute = {
@@ -30,4 +31,7 @@ export const appRoute = {
         }
       }
     }),
+  checkUpdate: t.procedure.action(async () => {
+    appUpdater.instance.checkForUpdates()
+  }),
 }
