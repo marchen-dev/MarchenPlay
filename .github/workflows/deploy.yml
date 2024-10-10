@@ -2,7 +2,8 @@ name: CI Build, Lint, Typecheck, and Deploy
 
 on:
   push:
-    branches: [main]
+    tags:
+      - v*.*.*
 
 jobs:
   build:
