@@ -1,4 +1,4 @@
-name: CI Build, Lint, Typecheck, and Deploy
+name: Deploy
 
 on:
   push:
