@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.0.2](https://github.com/suemor233/MarchenPlay/compare/v0.0.1...v0.0.2) (2024-10-12)
+
+
+### Features
+
+* app icon ([9c40e44](https://github.com/suemor233/MarchenPlay/commit/9c40e44296ef3d746684198d6d84d7a02fb44a05))
+
+
+
 ## [0.0.1](https://github.com/suemor233/MarchenPlay/compare/v0.1.0...v0.0.1) (2024-10-10)
 
 
