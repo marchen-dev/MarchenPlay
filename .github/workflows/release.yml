@@ -52,6 +52,12 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: pnpm run build:win
 
+      - name: Generate Changelog
+        if: github.event_name == 'push'
+        run: npx @suemor233/changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
