@@ -5,7 +5,7 @@ import { RootLayout } from './components/layout/RootLayout'
 import { Sidebar } from './components/modules/sidebar'
 import { Titlebar } from './components/modules/windows/Titlebar'
 import { appLog } from './libs/log'
-import { cn, getOS } from './libs/utils'
+import { cn, isWeb, isWindows } from './libs/utils'
 import { RootProviders } from './providers'
 
 function App(): JSX.Element {
@@ -27,19 +27,20 @@ const Prepare = () => {
 
     appLog('App is ready', `${doneTime}ms`)
   }, [])
-  const windowsElectron = window.electron && getOS() === 'Windows'
+
+  if (isWeb) {
+    return
+  }
   return (
-    window.electron && (
-      <div
-        className={cn(
-          'drag-region absolute inset-x-0 top-0 h-12 shrink-0',
-          windowsElectron && 'pointer-events-none z-[9999]',
-        )}
-        aria-hidden
-      >
-        {windowsElectron && <Titlebar />}
-      </div>
-    )
+    <div
+      className={cn(
+        'drag-region absolute inset-x-0 top-0 h-12 shrink-0',
+        isWindows && 'pointer-events-none z-[9999]',
+      )}
+      aria-hidden
+    >
+      {isWindows && <Titlebar />}
+    </div>
   )
 }
 

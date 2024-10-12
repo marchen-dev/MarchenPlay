@@ -6,7 +6,6 @@ import { twMerge } from 'tailwind-merge'
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-export const isWeb = !window.electron
 
 export type OS = 'macOS' | 'iOS' | 'Windows' | 'Android' | 'Linux' | ''
 export const getOS = memoize((): OS => {
@@ -45,3 +44,7 @@ export const getOS = memoize((): OS => {
 
   return os as OS
 })
+
+export const isMac = getOS() === 'macOS' && window.electron
+export const isWindows = getOS() === 'Windows' && window.electron
+export const isWeb = !window.electron

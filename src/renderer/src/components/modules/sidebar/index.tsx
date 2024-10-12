@@ -1,5 +1,7 @@
+import Show from '@renderer/components/common/Show'
+import { Logo } from '@renderer/components/icons/logo'
 import { PROJECT_NAME } from '@renderer/constants'
-import { cn } from '@renderer/libs/utils'
+import { cn, isMac } from '@renderer/libs/utils'
 import type { SidebarRouteObject } from '@renderer/router'
 import { RouteName, siderbarRoutes } from '@renderer/router'
 import type { FC } from 'react'
@@ -9,17 +11,17 @@ import { showSettingDialog } from '../setting/hooks'
 import { DarkModeToggle } from './DarkMode'
 
 export const Sidebar = () => {
-  const normalStyle = !window.electron || window.electron.process.platform !== 'darwin'
   return (
     <div className="relative flex h-full w-[250px] flex-col justify-between bg-base-200 px-3 pt-2.5">
       <div>
-        <div className={cn('drag-region flex items-center', 'ml-2 justify-between')}>
-          <Link
-            to={RouteName.PLAYER}
-            draggable={false}
-            className="cursor-default font-logo text-lg"
-          >
-            {normalStyle && PROJECT_NAME}
+        <div className={cn('drag-region flex items-center', 'justify-between')}>
+          <Link to={RouteName.PLAYER} draggable={false} className="cursor-default ">
+            <Show when={!isMac}>
+              <p className="flex items-center gap-1">
+                <Logo className="size-8" />
+                <span className="font-logo text-lg">{PROJECT_NAME}</span>
+              </p>
+            </Show>
           </Link>
           <button
             type="button"
