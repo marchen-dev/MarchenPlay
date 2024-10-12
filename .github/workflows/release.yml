@@ -56,7 +56,7 @@ jobs:
         if: github.event_name == 'push'
         run: npx @suemor/changelogithub
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
