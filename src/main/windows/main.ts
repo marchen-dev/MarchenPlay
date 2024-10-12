@@ -3,32 +3,50 @@ import { join } from 'node:path'
 import { is } from '@electron-toolkit/utils'
 import { BrowserWindow, shell } from 'electron'
 
-import icon from '../../../resources/icon.png?asset'
+import { getIconPath } from '../lib/icon'
 
 const { platform } = process
 
 const isDev = process.env.NODE_ENV === 'development'
-
 export default function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  const baseWindowsConfig: Electron.BrowserWindowConstructorOptions = {
     width: 1200,
     height: 900,
     show: false,
-    // alwaysOnTop:true,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
     },
-    backgroundMaterial: 'mica',
-    titleBarStyle: platform === 'win32' ? 'hidden' : 'hiddenInset',
-    trafficLightPosition: {
-      x: 18,
-      y: 18,
-    },
-  })
+  }
+  switch (platform) {
+    case 'darwin': {
+      Object.assign(baseWindowsConfig, {
+        trafficLightPosition: {
+          x: 18,
+          y: 18,
+        },
+        titleBarStyle: 'hiddenInset',
+      } as Electron.BrowserWindowConstructorOptions)
+      break
+    }
+    case 'win32': {
+      Object.assign(baseWindowsConfig, {
+        titleBarStyle: 'hidden',
+        backgroundMaterial: 'mica',
+        icon: getIconPath(),
+      } as Electron.BrowserWindowConstructorOptions)
+      break
+    }
+    default: {
+      Object.assign(baseWindowsConfig, {
+        icon: getIconPath(),
+      } as Electron.BrowserWindowConstructorOptions)
+    }
+  }
+
+  const mainWindow = new BrowserWindow(baseWindowsConfig)
 
   mainWindow.on('ready-to-show', () => {
     isDev ? mainWindow.showInactive() : mainWindow.show()

@@ -2,6 +2,7 @@ import { registerIpcMain } from '@egoist/tipc/main'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow } from 'electron'
 
+import { getIconPath } from './lib/icon'
 import { appUpdater } from './lib/update'
 import { router } from './tipc'
 import createWindow from './windows/main'
@@ -17,6 +18,10 @@ function bootstrap() {
     })
 
     createWindow()
+
+    if (app.dock) {
+      app.dock.setIcon(getIconPath())
+    }
 
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
