@@ -11,11 +11,7 @@ export const Logo = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((pr
     {...props}
     ref={ref}
   >
-    <g
-      transform="translate(0.000000,1108.000000) scale(0.100000,-0.100000)"
-      fill="#000000"
-      stroke="none"
-    >
+    <g transform="translate(0.000000,1108.000000) scale(0.100000,-0.100000)" stroke="none">
       <path
         d="M3410 5541 c0 -2842 2 -3371 14 -3371 7 0 24 8 37 18 13 10 128 83
 254 162 127 78 249 154 272 169 36 23 135 85 281 175 26 16 63 39 82 51 19 13

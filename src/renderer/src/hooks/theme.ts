@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 export type AppTheme = 'cmyk' | 'dark' | 'system'
 export const useAppTheme = () => {
   const { setTheme, theme } = useTheme()
-
+  const isDarkMode = theme === 'dark'
   const toggleMode = useCallback(
     (themes: AppTheme) => {
       setTheme(themes)
@@ -16,5 +16,5 @@ export const useAppTheme = () => {
     [setTheme],
   )
 
-  return { toggleMode, theme }
+  return { toggleMode, theme, isDarkMode }
 }
