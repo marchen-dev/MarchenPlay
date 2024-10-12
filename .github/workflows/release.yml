@@ -54,14 +54,15 @@ jobs:
 
       - name: Generate Changelog
         if: github.event_name == 'push'
-        run: npx @suemor/changelogithub > CHANGELOG.md
+        run: npx @suemor/changelogithub
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
+          draft: false
+          prerelease: true
           files: |
             dist/*.exe
             dist/*.zip
@@ -72,6 +73,5 @@ jobs:
             dist/*.rpm
             dist/*.tar.gz
             dist/latest*.yml
-          body_path: CHANGELOG.md  # Use the changelog as the release notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
