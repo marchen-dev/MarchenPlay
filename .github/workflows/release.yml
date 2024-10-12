@@ -54,7 +54,7 @@ jobs:
 
       - name: Generate Changelog
         if: github.event_name == 'push'
-        run: npx @suemor233/changelogithub
+        run: npx @suemor/changelogithub
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
