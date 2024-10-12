@@ -1,5 +1,5 @@
 appId: com.suemor.MarchenPlay
-productName: MarchenPlay
+productName: Marchen Play
 directories:
   buildResources: build
 files:
@@ -11,6 +11,8 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
+win:
+  executableName: Marchen Play
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
