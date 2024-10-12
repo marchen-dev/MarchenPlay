@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [0.0.3](https://github.com/suemor233/MarchenPlay/compare/v0.0.2...v0.0.3) (2024-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @tanstack/react-query to v5.59.8 ([#24](https://github.com/suemor233/MarchenPlay/issues/24)) ([da84b3a](https://github.com/suemor233/MarchenPlay/commit/da84b3aae9605657a7866efe543b7dc3552a8995))
+* esilint ([56768c0](https://github.com/suemor233/MarchenPlay/commit/56768c03950116e6d3e592a955fec8f5b5634c7c))
+* npm user name ([cbbe9ba](https://github.com/suemor233/MarchenPlay/commit/cbbe9baa1a8a31fce53bc077feffa8548083d32d))
+* pnpm lock ([b173938](https://github.com/suemor233/MarchenPlay/commit/b17393802e1ad70cc2f70feae6357a4064f700d3))
+* windows executableName ([70d6f73](https://github.com/suemor233/MarchenPlay/commit/70d6f732984b8ba20e6cf2fcdeaf5281ba4965ce))
+
+
+### Features
+
+* website icon ([fbb793a](https://github.com/suemor233/MarchenPlay/commit/fbb793a08fc50b398daabe68bda7a908109d0b14))
+
+
+
 ## [0.0.2](https://github.com/suemor233/MarchenPlay/compare/v0.0.1...v0.0.2) (2024-10-12)
 
 

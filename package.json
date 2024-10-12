@@ -1,7 +1,7 @@
 {
   "name": "marchen-play",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "packageManager": "pnpm@9.12.1",
   "description": "Local video danmaku player",
