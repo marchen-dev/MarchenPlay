@@ -1,10 +1,13 @@
 # CHANGELOG
 
-## [0.0.3](https://github.com/suemor233/MarchenPlay/compare/v0.0.2...v0.0.3) (2024-10-12)
+## [0.0.1-alpha.0](https://github.com/suemor233/MarchenPlay/compare/v0.1.0...v0.0.1-alpha.0) (2024-10-12)
 
 
 ### Bug Fixes
 
+* ci ([18c7ebe](https://github.com/suemor233/MarchenPlay/commit/18c7ebe03715dd732ba88ecaa70beb6c70418cf7))
+* ci ([3a35f7c](https://github.com/suemor233/MarchenPlay/commit/3a35f7c5473107c9b0d6cfcde3bccfd502ac22dc))
+* ci release ([77c0cfd](https://github.com/suemor233/MarchenPlay/commit/77c0cfdb992610067ea2dc56225ffa5f533e79fa))
 * **deps:** update dependency @tanstack/react-query to v5.59.8 ([#24](https://github.com/suemor233/MarchenPlay/issues/24)) ([da84b3a](https://github.com/suemor233/MarchenPlay/commit/da84b3aae9605657a7866efe543b7dc3552a8995))
 * esilint ([56768c0](https://github.com/suemor233/MarchenPlay/commit/56768c03950116e6d3e592a955fec8f5b5634c7c))
 * npm user name ([cbbe9ba](https://github.com/suemor233/MarchenPlay/commit/cbbe9baa1a8a31fce53bc077feffa8548083d32d))
@@ -14,25 +17,8 @@
 
 ### Features
 
-* website icon ([fbb793a](https://github.com/suemor233/MarchenPlay/commit/fbb793a08fc50b398daabe68bda7a908109d0b14))
-
-
-
-## [0.0.2](https://github.com/suemor233/MarchenPlay/compare/v0.0.1...v0.0.2) (2024-10-12)
-
-
-### Features
-
 * app icon ([9c40e44](https://github.com/suemor233/MarchenPlay/commit/9c40e44296ef3d746684198d6d84d7a02fb44a05))
-
-
-
-## [0.0.1](https://github.com/suemor233/MarchenPlay/compare/v0.1.0...v0.0.1) (2024-10-10)
-
-
-### Bug Fixes
-
-* ci release ([77c0cfd](https://github.com/suemor233/MarchenPlay/commit/77c0cfdb992610067ea2dc56225ffa5f533e79fa))
+* website icon ([fbb793a](https://github.com/suemor233/MarchenPlay/commit/fbb793a08fc50b398daabe68bda7a908109d0b14))
 
 
 
