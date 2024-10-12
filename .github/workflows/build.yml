@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
 
-name: CI Typecheck and Lint
+name: CI Typecheck, Lint, and Build
 
 jobs:
   build:
@@ -31,8 +31,11 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Lint and Typecheck
 
+      - name: Lint and Typecheck
         run: |
           pnpm run typecheck
           npm run lint
+
+      - name: Build project
+        run: pnpm run build:web
