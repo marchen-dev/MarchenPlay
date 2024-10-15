@@ -28,7 +28,18 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-
+        'cn-primary': {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        'cn-secondary': {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        'cn-accent': {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
@@ -36,10 +47,6 @@ module.exports = {
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
@@ -78,6 +85,18 @@ module.exports = {
     require('tailwindcss-animate'),
   ],
   daisyui: {
-    themes: ['cmyk', 'dark'],
+    // themes: ['cmyk', 'dark'],
+    themes: [
+      {
+        cmyk: {
+          ...require('daisyui/src/theming/themes')['cmyk'],
+          // primary: 'hsl(222.2 47.4% 11.2%)',
+          // secondary: 'hsl(210 40% 96.1%)',
+        },
+        dark: {
+          ...require('daisyui/src/theming/themes')['dark'],
+        },
+      },
+    ],
   },
 }

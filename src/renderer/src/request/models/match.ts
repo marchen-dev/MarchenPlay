@@ -1,4 +1,4 @@
-// models/match.ts
+import type { ReponseBaseModel } from './base'
 
 /**
  * 视频文件匹配请求模型
@@ -81,7 +81,7 @@ export interface MatchResultV2 {
 }
 
 // 定义 MatchResponseV2 接口
-export interface MatchResponseV2 {
+export interface MatchResponseV2 extends ReponseBaseModel {
   /**
    * 是否已精确关联到某个弹幕库
    */
@@ -91,19 +91,4 @@ export interface MatchResponseV2 {
    * 搜索匹配的结果
    */
   matches?: MatchResultV2[]
-
-  /**
-   * 错误代码，0表示没有发生错误，非0表示有错误，详细信息会包含在errorMessage属性中
-   */
-  errorCode: number
-
-  /**
-   * 接口是否调用成功
-   */
-  success: boolean
-
-  /**
-   * 当发生错误时，说明错误具体原因
-   */
-  errorMessage?: string
 }
