@@ -10,16 +10,15 @@ import { useToast } from '@renderer/components/ui/toast'
 import { calculateFileHash } from '@renderer/libs/calc-file-hash'
 import { tipcClient } from '@renderer/libs/client'
 import { DanmuPosition, intToHexColor } from '@renderer/libs/danmu'
+import queryClient from '@renderer/libs/query-client'
 import { isWeb } from '@renderer/libs/utils'
 import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
-import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useEffect, useRef } from 'react'
 import type { IPlayerOptions } from 'xgplayer'
 import XgPlayer, { Danmu } from 'xgplayer'
- 
 
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
@@ -91,10 +90,9 @@ export const useXgPlayer = (url: string) => {
   const { toast } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
-  const { data: danmuData } = useQuery<CommentsModel>({
-    queryKey: [apiClient.comment.Commentkeys, url],
-    enabled: isLoadDanmaku,
-  })
+  const danmuData = queryClient.getQueryData([apiClient.comment.Commentkeys, url]) as
+    | CommentsModel
+    | undefined
 
   useEffect(() => {
     let player: XgPlayer | null = null
