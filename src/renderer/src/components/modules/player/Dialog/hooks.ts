@@ -2,7 +2,7 @@ import { jotaiStore } from '@renderer/atoms/store'
 import { apiClient } from '@renderer/request'
 import { useQuery } from '@tanstack/react-query'
 import { atomWithReset } from 'jotai/utils'
-import { throttle } from 'lodash-es'
+import { debounce } from 'lodash-es'
 import type { ChangeEvent } from 'react'
 import { useCallback, useState } from 'react'
 
@@ -19,9 +19,9 @@ export const useSearchAnime = () => {
   })
   const handleSearchAnime = useCallback(
     // eslint-disable-next-line react-compiler/react-compiler
-    throttle((event: ChangeEvent<HTMLInputElement>) => {
+    debounce((event: ChangeEvent<HTMLInputElement>) => {
       setSearchText(event.target.value)
-    }, 1500),
+    }, 400),
     [],
   )
 

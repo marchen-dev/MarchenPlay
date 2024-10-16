@@ -1,4 +1,6 @@
 import {
+  currentMatchedVideoAtom,
+  isLoadDanmakuAtom,
   loadingDanmuProgressAtom,
   LoadingStatus,
   useClearPlayingVideo,
@@ -7,11 +9,17 @@ import {
 import { useToast } from '@renderer/components/ui/toast'
 import { calculateFileHash } from '@renderer/libs/calc-file-hash'
 import { tipcClient } from '@renderer/libs/client'
+import { DanmuPosition, intToHexColor } from '@renderer/libs/danmu'
 import { isWeb } from '@renderer/libs/utils'
-import { useAtom, useSetAtom } from 'jotai'
+import { apiClient } from '@renderer/request'
+import type { CommentsModel } from '@renderer/request/models/comment'
+import { useQuery } from '@tanstack/react-query'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ChangeEvent, DragEvent } from 'react'
+import { useEffect, useRef } from 'react'
 import type { IPlayerOptions } from 'xgplayer'
-import { Danmu } from 'xgplayer'
+import XgPlayer, { Danmu } from 'xgplayer'
+ 
 
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
@@ -76,6 +84,62 @@ export const useVideo = () => {
     url: video.url,
     showAddVideoTips: !video.url,
   }
+}
+
+export const useXgPlayer = (url: string) => {
+  const playerRef = useRef<HTMLDivElement | null>(null)
+  const { toast } = useToast()
+  const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
+  const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
+  const { data: danmuData } = useQuery<CommentsModel>({
+    queryKey: [apiClient.comment.Commentkeys, url],
+    enabled: isLoadDanmaku,
+  })
+
+  useEffect(() => {
+    let player: XgPlayer | null = null
+    if (playerRef.current) {
+      const xgplayerConfig = {
+        ...playerBaseConfig,
+        el: playerRef.current,
+        url,
+      } satisfies IPlayerOptions
+
+      if (isLoadDanmaku) {
+        xgplayerConfig.danmu = {
+          comments: danmuData?.comments?.map((comment) => {
+            const [start, postition, color] = comment.p.split(',').map(Number)
+            const startInMs = start * 1000
+
+            const mode = DanmuPosition[postition]
+            return {
+              duration: 15000, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
+              id: comment.cid, // 弹幕id，需唯一
+              start: startInMs, // 弹幕出现时间，毫秒BB
+              txt: comment.m, // 弹幕文字内容
+              mode,
+              style: {
+                color: intToHexColor(color),
+              },
+            }
+          }),
+          ...playerBaseConfig.danmu,
+        } as any
+      }
+      player = new XgPlayer(xgplayerConfig)
+      isLoadDanmaku &&
+        toast({
+          title: currentMatchedVideo.animeTitle,
+          description: `共加载 ${danmuData?.count} 条弹幕`,
+          duration: 2000,
+        })
+
+      player.getCssFullscreen()
+    }
+    return () => player?.destroy()
+  }, [playerRef, danmuData, url])
+
+  return { playerRef }
 }
 
 export const playerBaseConfig = {

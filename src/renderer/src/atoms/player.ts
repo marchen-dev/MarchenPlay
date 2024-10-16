@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { atom, useSetAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 
 export const videoAtom = atomWithReset({
@@ -24,6 +24,7 @@ export const currentMatchedVideoAtom = atomWithReset({
   animeTitle: '',
 })
 
+export const isLoadDanmakuAtom = atom((get) => get(currentMatchedVideoAtom).episodeId !== 0)
 export const useSetLoadingDanmuProgress = () => useSetAtom(loadingDanmuProgressAtom)
 
 export const useClearPlayingVideo = () => {

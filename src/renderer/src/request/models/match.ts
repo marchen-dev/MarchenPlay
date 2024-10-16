@@ -57,7 +57,7 @@ export interface MatchResultV2 {
    * 作品类别
    * 可选值: 'tvseries', 'tvspecial', 'ova', 'movie', 'musicvideo', 'web', 'other', 'jpmovie', 'jpdrama', 'unknown'
    */
-  type:
+  type?:
     | 'tvseries'
     | 'tvspecial'
     | 'ova'
@@ -77,7 +77,7 @@ export interface MatchResultV2 {
   /**
    * 弹幕偏移时间（弹幕应延迟多少秒出现）。此数字为负数时表示弹幕应提前多少秒出现。
    */
-  shift: number
+  shift?: number
 }
 
 // 定义 MatchResponseV2 接口

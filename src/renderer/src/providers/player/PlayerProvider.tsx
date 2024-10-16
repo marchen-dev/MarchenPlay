@@ -1,9 +1,9 @@
 import {
   currentMatchedVideoAtom,
+  isLoadDanmakuAtom,
   loadingDanmuProgressAtom,
   LoadingStatus,
   useClearPlayingVideo,
-  videoAtom,
 } from '@renderer/atoms/player'
 import { MatchAnimeDialog } from '@renderer/components/modules/player/Dialog/MatchAnimeDialog'
 import { LoadingDanmuTimeLine } from '@renderer/components/modules/player/Timeline'
@@ -15,19 +15,16 @@ import type { FC, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
+import { useMatchAnimeData } from './hook'
+
 export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { hash, size, name, url } = useAtomValue(videoAtom)
+  const { matchData, url } = useMatchAnimeData()
   const location = useLocation()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
+  const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const [loadingProgress, setLoadingProgress] = useAtom(loadingDanmuProgressAtom)
   const clearPlayingVideo = useClearPlayingVideo()
   const resetCurrentMatchedVideo = useResetAtom(currentMatchedVideoAtom)
-  const { data: matchData } = useQuery({
-    queryKey: [apiClient.match.Matchkeys, url],
-    queryFn: () =>
-      apiClient.match.postVideoEpisodeId({ fileSize: size, fileHash: hash, fileName: name }),
-    enabled: !!hash,
-  })
 
   const { data: danmuData } = useQuery({
     queryKey: [apiClient.comment.Commentkeys, url],
@@ -40,9 +37,8 @@ export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
       }
       return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId)
     },
-    enabled: !!currentMatchedVideo.episodeId,
+    enabled: isLoadDanmaku,
   })
-
   useEffect(() => {
     if (matchData) {
       setLoadingProgress(LoadingStatus.MARCH_ANIME)
@@ -84,12 +80,17 @@ export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
         <LoadingDanmuTimeLine />
         <MatchAnimeDialog
           matchData={currentMatchedVideo.episodeId ? undefined : matchData}
-          onSelected={(id, title) =>
+          onSelected={(params) => {
+            const id = params?.episodeId
+            const title = params?.title
+            if (!id || !title) {
+              return setLoadingProgress(LoadingStatus.START_PLAY)
+            }
             setCurrentMatchedVideo({
               episodeId: id,
               animeTitle: title,
             })
-          }
+          }}
           onClosed={clearPlayingVideo}
         />
       </>

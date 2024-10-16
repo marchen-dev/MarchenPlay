@@ -5,12 +5,7 @@ import {
   AccordionTrigger,
 } from '@renderer/components/ui/accordion'
 import { Button } from '@renderer/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@renderer/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@renderer/components/ui/dialog'
 import { Input } from '@renderer/components/ui/input'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
@@ -23,7 +18,7 @@ import { showMatchAnimeDialogAtom, useSearchAnime } from './hooks'
 
 interface MatchAnimeDialogProps {
   matchData?: MatchResponseV2
-  onSelected?: (episodeId: number, title: string) => void
+  onSelected?: (params?: { episodeId: number; title: string }) => void
   onClosed?: () => void
 }
 
@@ -39,9 +34,6 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
     }
     return () => setShowMatchAnimeDialog(false)
   }, [matchData, setShowMatchAnimeDialog])
-  // const aa = [[
-  //   {},
-  // ], [{}]]
 
   const accordionData = useMemo(() => {
     if (searchData) {
@@ -51,7 +43,7 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
           animeTitle: anime.animeTitle,
           episodeId: episode.episodeId,
           episodeTitle: episode.episodeTitle,
-        }))
+        })) as MatchResultV2[]
       })
     }
 
@@ -73,7 +65,7 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
   return (
     <Dialog open={showMatchAnimeDialog} onOpenChange={(open) => setShowMatchAnimeDialog(open)}>
       <DialogContent
-        className="sm:max-w-[725px]"
+        className="max-h-[80vh] min-h-[700px] sm:max-w-[725px]"
         onClosed={onClosed}
         onEscapeKeyDown={(event) => event.preventDefault()}
         onInteractOutside={(e) => {
@@ -84,9 +76,14 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
           <DialogTitle className="text-xl">请手动选择弹幕库</DialogTitle>
         </DialogHeader>
         <div>
-          <Input placeholder="匹配的不正确?点击这里搜索动漫" onChange={handleSearchAnime} />
-          <ScrollArea className="mt-3 max-h-[600px] rounded-md border px-4">
+          <Input placeholder="匹配的不正确? 手动输入动漫匹配弹幕库" onChange={handleSearchAnime} />
+          <ScrollArea className="relative mt-3 h-[450px] rounded-md border px-4">
             <Accordion type="single" collapsible className="w-full">
+              {accordionData?.length === 0 && (
+                <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                  暂无匹配的弹幕库
+                </p>
+              )}
               {accordionData?.map((match) => {
                 const { animeId, animeTitle } = match[0]
 
@@ -100,7 +97,10 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
                             key={item.episodeId}
                             onClick={() => {
                               onSelected &&
-                                onSelected(item.episodeId, `${animeTitle} - ${item.episodeTitle}`)
+                                onSelected({
+                                  episodeId: item.episodeId,
+                                  title: `${animeTitle} - ${item.episodeTitle}`,
+                                })
                               setShowMatchAnimeDialog(false)
                               toast({
                                 title: '已选择弹幕库',
@@ -119,12 +119,17 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
               })}
             </Accordion>
           </ScrollArea>
-          <p className="mt-3 hover:text-warning">不加载弹幕，直接播放</p>
-          <Button>1111</Button>
+          <div className="flex justify-end">
+            <Button
+              variant={'secondary'}
+              className="mt-5 flex items-center text-sm"
+              onClick={() => onSelected && onSelected()}
+            >
+              <i className="icon-[mingcute--xls-line] mr-1 text-lg" />
+              <span>不加载弹幕，直接播放</span>
+            </Button>
+          </div>
         </div>
-        {/* <DialogFooter>
-          <Button onClick={() => setShowMatchAnimeDialog(false)}></Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   )
