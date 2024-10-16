@@ -1,4 +1,4 @@
-import { API_URL } from '@renderer/libs/env'
+import { API_URL } from '@renderer/lib/env'
 import { ofetch } from 'ofetch'
 
 const apiFetch = ofetch.create({

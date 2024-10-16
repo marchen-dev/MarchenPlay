@@ -1,4 +1,4 @@
-import { cn } from '@renderer/libs/utils'
+import { cn } from '@renderer/lib/utils'
 import type { FC } from 'react'
 
 export const CompleteIcon: FC<{ isHighLight: boolean }> = ({ isHighLight }) => (

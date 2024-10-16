@@ -1,7 +1,7 @@
 'use client'
 
 import { loadingDanmuProgressAtom, LoadingStatus } from '@renderer/atoms/player'
-import { cn } from '@renderer/libs/utils'
+import { cn } from '@renderer/lib/utils'
 import { useAtomValue } from 'jotai'
 
 import {

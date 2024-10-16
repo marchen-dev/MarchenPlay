@@ -1,7 +1,7 @@
 import { jotaiStore } from '@renderer/atoms/store'
 import { SettingDialog } from '@renderer/components/modules/setting'
 import { Toaster } from '@renderer/components/ui/toast'
-import queryClient from '@renderer/libs/query-client'
+import queryClient from '@renderer/lib/query-client'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Provider as JotaiProvider } from 'jotai'
 import { ThemeProvider } from 'next-themes-suemor'

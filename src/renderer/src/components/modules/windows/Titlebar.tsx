@@ -1,5 +1,5 @@
 import { ElECTRON_CUSTOM_TITLEBAR_HEIGHT, ELECTRON_WINDOWS_RADIUS } from '@renderer/constants'
-import { tipcClient } from '@renderer/libs/client'
+import { tipcClient } from '@renderer/lib/client'
 import { useQuery } from '@tanstack/react-query'
 
 export const Titlebar = () => {

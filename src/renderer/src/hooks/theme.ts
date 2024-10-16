@@ -1,4 +1,4 @@
-import { tipcClient } from '@renderer/libs/client'
+import { tipcClient } from '@renderer/lib/client'
 import { useTheme } from 'next-themes-suemor'
 import { useCallback } from 'react'
 

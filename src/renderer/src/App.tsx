@@ -4,8 +4,8 @@ import { Outlet } from 'react-router-dom'
 import { RootLayout } from './components/layout/RootLayout'
 import { Sidebar } from './components/modules/sidebar'
 import { Titlebar } from './components/modules/windows/Titlebar'
-import { appLog } from './libs/log'
-import { cn, isWeb, isWindows } from './libs/utils'
+import { appLog } from './lib/log'
+import { cn, isWeb, isWindows } from './lib/utils'
 import { RootProviders } from './providers'
 
 function App(): JSX.Element {

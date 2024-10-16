@@ -1,6 +1,6 @@
 import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/hooks'
-import { cn } from '@renderer/libs/utils'
+import { cn } from '@renderer/lib/utils'
 import { VideoProvider } from '@renderer/providers/player/PlayerProvider'
 import type { FC } from 'react'
 import { useMemo, useRef } from 'react'
