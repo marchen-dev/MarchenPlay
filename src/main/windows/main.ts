@@ -13,6 +13,8 @@ export default function createWindow() {
   const baseWindowsConfig: Electron.BrowserWindowConstructorOptions = {
     width: 1200,
     height: 900,
+    minWidth: 800,  // 设置最小宽度
+    minHeight: 650, // 设置最小高度
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
