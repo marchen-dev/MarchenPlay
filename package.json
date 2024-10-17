@@ -51,6 +51,8 @@
     "click-to-react-component": "^1.1.0",
     "clsx": "^2.1.1",
     "danmu.js": "^1.1.13",
+    "dexie": "^4.0.8",
+    "dexie-react-hooks": "^1.1.7",
     "electron-log": "^5.2.0",
     "electron-updater": "^6.3.9",
     "jotai": "^2.9.3",
