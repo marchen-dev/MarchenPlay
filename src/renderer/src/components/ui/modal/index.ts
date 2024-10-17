@@ -1,5 +1,5 @@
 /**
- * @see https://github.com/Innei/Shiro/blob/main/src/components/ui/modal/index.ts
+ * @see https://github.com/Innei/rc-modal
  * @copyright Innei
  */
 export * from './stacked'
