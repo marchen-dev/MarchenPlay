@@ -1,28 +1,26 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@renderer/components/ui/dialog'
-import { useAtom } from 'jotai'
+import { ScrollArea  } from '@renderer/components/ui/scrollArea'
 
-import { settingDialogAtom } from './hooks'
-
-export const SettingDialog = () => {
-  const [open, setOpen] = useAtom(settingDialogAtom)
+export const SettingModal = () => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        onInteractOutside={(e) => {
-          e.preventDefault()
-        }}
-      >
-        <DialogHeader>
-          <DialogTitle>正在编写中</DialogTitle>
-          <DialogDescription>正在编写中</DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+    <div className="flex ">
+      <div className="w-[140px]">
+        <ul>
+          <li className="flex items-center gap-1">
+            <i className="icon-[mingcute--t-shirt-2-line]" />
+            <span>外观</span>
+          </li>
+          <li className="flex items-center gap-1">
+            <i className="icon-[mingcute--video-camera-line]" />
+            <span>播放</span>
+          </li>
+        </ul>
+      </div>
+      <div className="mx-5 w-px bg-base-300" />
+        <div className="min-h-[calc(700px-90px)] flex-1">
+          <ScrollArea>
+            <div>11111</div>
+          </ScrollArea>
+        </div>
+    </div>
   )
 }

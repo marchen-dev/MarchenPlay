@@ -13,7 +13,6 @@ export default function VideoPlayer() {
     () => (url ? <Player url={url} /> : <DragTips onClick={clickImportvideo} />),
     [url],
   )
-
   return (
     <VideoProvider>
       <div

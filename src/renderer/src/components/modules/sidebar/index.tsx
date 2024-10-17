@@ -8,11 +8,12 @@ import { RouteName, siderbarRoutes } from '@renderer/router'
 import type { FC } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
-import { showSettingDialog } from '../setting/hooks'
+import { useSettingModal } from '../setting/hooks'
 import { DarkModeToggle } from './DarkMode'
 
 export const Sidebar = () => {
   const { isDarkMode } = useAppTheme()
+  const showModal = useSettingModal()
   return (
     <div className="relative flex h-full w-[250px] flex-col justify-between bg-base-200 px-3 pt-2.5">
       <div>
@@ -27,7 +28,7 @@ export const Sidebar = () => {
           </Link>
           <button
             type="button"
-            onClick={showSettingDialog}
+            onClick={showModal}
             className="no-drag-region flex size-8 cursor-default items-center justify-center rounded-md transition-colors hover:bg-base-300"
           >
             <i className="icon-[mingcute--settings-3-line] text-xl" />

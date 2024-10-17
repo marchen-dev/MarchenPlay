@@ -6,7 +6,7 @@ import daisyui from 'daisyui'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  content: ['./src/**/*.{ts,tsx}'],
+  content: ['./src/**/*.{ts,tsx}', './node_modules/rc-modal-sheet/**/*.js'],
   prefix: '',
   theme: {
     container: {
