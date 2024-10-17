@@ -96,20 +96,24 @@ export const useXgPlayer = (url: string) => {
 
   useEffect(() => {
     let player: XgPlayer | null = null
+
     if (playerRef.current) {
       const xgplayerConfig = {
         ...playerBaseConfig,
         el: playerRef.current,
         url,
-      } satisfies IPlayerOptions
+      } as IPlayerOptions
 
       if (isLoadDanmaku) {
+        xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), Danmu]
         xgplayerConfig.danmu = {
           comments: danmuData?.comments?.map((comment) => {
             const [start, postition, color] = comment.p.split(',').map(Number)
             const startInMs = start * 1000
 
             const mode = DanmuPosition[postition]
+            const danmakuColor = intToHexColor(color)
+            const isWhiteDanmaku = danmakuColor === '#ffffff'
             return {
               duration: 15000, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
               id: comment.cid, // 弹幕id，需唯一
@@ -117,21 +121,28 @@ export const useXgPlayer = (url: string) => {
               txt: comment.m, // 弹幕文字内容
               mode,
               style: {
-                color: intToHexColor(color),
+                color: danmakuColor,
+                ...(isWhiteDanmaku && {
+                  textShadow: `
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000
+              `,
+                }),
               },
             }
           }),
-          ...playerBaseConfig.danmu,
-        } as any
-      }
-      player = new XgPlayer(xgplayerConfig)
-      isLoadDanmaku &&
+          ...danmakuConfig,
+        }
         toast({
           title: currentMatchedVideo.animeTitle,
           description: `共加载 ${danmuData?.count} 条弹幕`,
           duration: 2000,
         })
+      }
 
+      player = new XgPlayer(xgplayerConfig)
       player.getCssFullscreen()
     }
     return () => player?.destroy()
@@ -140,7 +151,7 @@ export const useXgPlayer = (url: string) => {
   return { playerRef }
 }
 
-export const playerBaseConfig = {
+const playerBaseConfig = {
   height: '100%',
   width: '100%',
   lang: 'zh',
@@ -151,17 +162,16 @@ export const playerBaseConfig = {
   pip: true,
   rotate: true,
   download: true,
-
-  plugins: [Danmu],
-  danmu: {
-    fontSize: 25,
-    area: {
-      start: 0,
-      end: 0.25,
-    },
-    ext: {
-      mouseControl: true,
-      mouseControlPause: true,
-    },
-  },
 } satisfies IPlayerOptions
+
+const danmakuConfig = {
+  fontSize: 25,
+  area: {
+    start: 0,
+    end: 0.25,
+  },
+  ext: {
+    mouseControl: true,
+    mouseControlPause: true,
+  },
+}
