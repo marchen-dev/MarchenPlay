@@ -8,7 +8,7 @@ import { RouteName, siderbarRoutes } from '@renderer/router'
 import type { FC } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
-import { useSettingModal } from '../setting/hooks'
+import { useSettingModal } from '../settings/hooks'
 import { DarkModeToggle } from './DarkMode'
 
 export const Sidebar = () => {

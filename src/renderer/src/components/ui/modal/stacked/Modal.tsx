@@ -7,7 +7,13 @@ import type { AnimationDefinition } from 'framer-motion'
 import { m, useAnimationControls, useDragControls } from 'framer-motion'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import type { FC, ForwardedRef, PointerEventHandler,PropsWithChildren, SyntheticEvent } from 'react'
+import type {
+  FC,
+  ForwardedRef,
+  PointerEventHandler,
+  PropsWithChildren,
+  SyntheticEvent,
+} from 'react'
 import {
   createElement,
   forwardRef,
@@ -71,8 +77,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
       wrapper: Wrapper = Fragment,
       CustomModalComponent,
       clickOutsideToDismiss,
-      modalContainerClassName,
-      modalClassName,
+      classNames: { modalContainerClassName, modalClassName },
       title,
       max,
       content,
@@ -202,6 +207,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
             <Dialog.Content asChild ref={modalContentRef}>
               <div
                 ref={edgeElementRef}
+                id="modal-container"
                 className={cn(
                   'fixed inset-0 z-20 flex items-center justify-center',
                   currentIsClosing ? '!pointer-events-none' : 'pointer-events-auto',
@@ -211,6 +217,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
                 onClick={clickOutsideToDismiss ? dismiss : noticeModal}
               >
                 <m.div
+                  id="modal"
                   ref={ref}
                   style={zIndexStyle}
                   {...modalMotionConfig}
@@ -239,19 +246,19 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
                   }}
                 >
                   <div className="relative flex items-center" onPointerDownCapture={handleDrag}>
-                    <Dialog.Title className="flex shrink-0 grow items-center gap-2 px-4 py-1 text-lg font-semibold">
+                    <Dialog.Title className="flex shrink-0 grow items-center gap-2 px-2.5 py-1 text-lg font-semibold">
                       <span>{title}</span>
                     </Dialog.Title>
                     <Dialog.DialogClose
                       onClick={close}
-                      className={`absolute right-0 top-0 z-[9] p-2`}
+                      className={`absolute right-0 top-0 z-[9] cursor-auto p-2`}
                     >
                       <CloseIcon />
                     </Dialog.DialogClose>
                   </div>
                   <Divider className="my-2 shrink-0 border-slate-200 opacity-80 dark:border-neutral-800" />
 
-                  <div className="min-h-0 shrink grow overflow-auto px-4 py-2">{finalChildren}</div>
+                  <div className="h-full shrink grow overflow-auto py-2">{finalChildren}</div>
                 </m.div>
               </div>
             </Dialog.Content>

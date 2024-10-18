@@ -7,9 +7,13 @@ export interface ModalProps {
   overlay?: boolean
   wrapper?: FC
   CustomModalComponent?: FC<PropsWithChildren>
-  modalContainerClassName?: string
-  modalClassName?: string
   clickOutsideToDismiss?: boolean
   max?: boolean
   content: FC<ModalContentPropsInternal>
+  classNames: classNamesProps
+}
+
+interface classNamesProps {
+  modalContainerClassName?: string
+  modalClassName?: string
 }

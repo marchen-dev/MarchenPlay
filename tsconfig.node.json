@@ -12,6 +12,9 @@
     "composite": true,
     "types": ["electron-vite/node"],
     "moduleResolution": "Bundler",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@pkg": ["./package.json"]
+    }
   }
 }

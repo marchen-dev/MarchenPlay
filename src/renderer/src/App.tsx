@@ -7,6 +7,7 @@ import { Titlebar } from './components/modules/windows/Titlebar'
 import { appLog } from './lib/log'
 import { cn, isWeb, isWindows } from './lib/utils'
 import { RootProviders } from './providers'
+import { TipcListener } from './providers/TipcListener'
 
 function App(): JSX.Element {
   return (
@@ -16,6 +17,7 @@ function App(): JSX.Element {
       <RootLayout>
         <Sidebar />
         <Content />
+        <TipcListener />
       </RootLayout>
     </RootProviders>
   )

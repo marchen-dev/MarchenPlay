@@ -11,6 +11,11 @@ const packageJson = JSON.parse(fs.readFileSync(join(__dirname, 'package.json'), 
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@pkg': resolve('./package.json'),
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
@@ -20,6 +25,7 @@ export default defineConfig({
       alias: {
         '@renderer': resolve('src/renderer/src'),
         '@main': resolve('src/main'),
+        '@pkg': resolve('./package.json'),
       },
     },
     plugins: [react()],

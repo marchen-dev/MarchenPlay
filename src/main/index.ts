@@ -4,12 +4,14 @@ import { app, BrowserWindow } from 'electron'
 
 import { getIconPath } from './lib/icon'
 import { appUpdater } from './lib/update'
+import { registerAppMenu } from './menu'
 import { router } from './tipc'
 import createWindow from './windows/main'
 
 function bootstrap() {
   registerIpcMain(router)
   appUpdater.autoUpdate()
+  registerAppMenu()
   app.whenReady().then(() => {
     electronApp.setAppUserModelId('com.electron')
 

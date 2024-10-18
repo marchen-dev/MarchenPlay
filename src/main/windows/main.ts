@@ -8,12 +8,16 @@ import { getIconPath } from '../lib/icon'
 const { platform } = process
 
 const isDev = process.env.NODE_ENV === 'development'
+
+const windows = {
+  mainWindow: null as BrowserWindow | null,
+}
 export default function createWindow() {
   // Create the browser window.
   const baseWindowsConfig: Electron.BrowserWindowConstructorOptions = {
     width: 1200,
     height: 900,
-    minWidth: 800,  // 设置最小宽度
+    minWidth: 800, // 设置最小宽度
     minHeight: 650, // 设置最小高度
     show: false,
     autoHideMenuBar: true,
@@ -48,7 +52,8 @@ export default function createWindow() {
     }
   }
 
-  const mainWindow = new BrowserWindow(baseWindowsConfig)
+  windows.mainWindow = new BrowserWindow(baseWindowsConfig)
+  const { mainWindow } = windows
 
   mainWindow.on('ready-to-show', () => {
     isDev ? mainWindow.showInactive() : mainWindow.show()
@@ -69,3 +74,5 @@ export default function createWindow() {
   // mainWindow.webContents.userAgent = 'dandanplay-test/android 1.2.3'
   return mainWindow
 }
+
+export const getMainWindow = () => windows.mainWindow
