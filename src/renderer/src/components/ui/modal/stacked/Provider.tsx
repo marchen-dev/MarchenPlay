@@ -65,6 +65,7 @@ export const useModalStack = (options?: ModalStackOptions) => {
       },
       [id],
     ),
+    id,
 
     ...actions,
   }

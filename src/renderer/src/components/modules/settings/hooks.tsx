@@ -6,9 +6,10 @@ import { SettingProvider } from './provider'
 import { settingTabs } from './tabs'
 
 export const useSettingModal = () => {
-  const { present } = useModalStack()
+  const { present, id } = useModalStack()
   return useCallback(() => {
     present({
+      id: 'SETTING',
       title: <ModalTitle />,
       overlay: true,
       classNames: {
@@ -20,5 +21,6 @@ export const useSettingModal = () => {
         </SettingProvider>
       ),
     })
+    return id
   }, [present])
 }

@@ -1,18 +1,24 @@
 import type { ReactNode } from 'react'
 
-import { Appearance } from './views/Appearance'
-import { Player } from './views/Player'
+import { AboutView } from './views/About'
+import { AppearanceView } from './views/Appearance'
+import { PlayerView } from './views/Player'
 
 export const settingTabs = [
   {
     title: '外观',
     icon: 'icon-[mingcute--t-shirt-2-line]',
-    component: <Appearance />,
+    component: <AppearanceView />,
   },
   {
     title: '播放器',
     icon: 'icon-[mingcute--play-circle-line]',
-    component: <Player />,
+    component: <PlayerView />,
+  },
+  {
+    title: '关于',
+    icon: 'icon-[mingcute--information-line]',
+    component: <AboutView />,
   },
 ]
 

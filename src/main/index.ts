@@ -1,19 +1,16 @@
-import { registerIpcMain } from '@egoist/tipc/main'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { name } from '@pkg'
 import { app, BrowserWindow } from 'electron'
 
+import { initializeApp } from './init'
 import { getIconPath } from './lib/icon'
-import { appUpdater } from './lib/update'
-import { registerAppMenu } from './menu'
-import { router } from './tipc'
 import createWindow from './windows/main'
 
 function bootstrap() {
-  registerIpcMain(router)
-  appUpdater.autoUpdate()
-  registerAppMenu()
+  initializeApp()
+
   app.whenReady().then(() => {
-    electronApp.setAppUserModelId('com.electron')
+    electronApp.setAppUserModelId(`re.${name}`)
 
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)

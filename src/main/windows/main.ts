@@ -12,6 +12,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const windows = {
   mainWindow: null as BrowserWindow | null,
 }
+globalThis["windows"] = windows
 export default function createWindow() {
   // Create the browser window.
   const baseWindowsConfig: Electron.BrowserWindowConstructorOptions = {

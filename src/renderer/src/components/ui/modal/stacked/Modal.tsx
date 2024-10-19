@@ -57,7 +57,6 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
         [item.id],
       ),
     )
-
     useEffect(() => {
       if (currentIsClosing) {
         document.body.style.pointerEvents = 'auto'

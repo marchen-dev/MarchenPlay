@@ -1,4 +1,4 @@
 
-export const Player = ()=>{
+export const PlayerView = ()=>{
   return <p>player</p>
 }

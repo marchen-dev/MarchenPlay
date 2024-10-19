@@ -1,3 +1,3 @@
-export const Appearance = () => {
+export const AppearanceView = () => {
   return <p>apperance</p>
 }
