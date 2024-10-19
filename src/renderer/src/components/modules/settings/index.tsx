@@ -1,3 +1,4 @@
+import { DividerVertical } from '@renderer/components/ui/divider'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { cn } from '@renderer/lib/utils'
 import type { FC } from 'react'
@@ -10,16 +11,16 @@ export const SettingModal = () => {
   const { component } = useCurrentSetting()
   return (
     <div className="flex h-full">
-      <div className="w-[140px]">
+      <div className="mt-3 w-[140px]">
         <ul className="space-y-2">
           {settingTabs.map((tab) => (
             <SettingTabItem key={tab.title} {...tab} />
           ))}
         </ul>
       </div>
-      <div className="mx-3 w-px bg-base-300" />
-      <div className="flex-1">
-        <ScrollArea>{component}</ScrollArea>
+      <DividerVertical className="mr-0 shrink-0 border-slate-200 opacity-80 dark:border-neutral-800" />
+      <div className="flex-1 bg-cn-primary-foreground">
+        <ScrollArea className="h-full">{component}</ScrollArea>
       </div>
     </div>
   )
@@ -31,13 +32,13 @@ export const SettingTabItem: FC<SettingTabsModel> = (props) => {
   return (
     <li
       className={cn(
-        'flex  cursor-default items-center gap-1 px-3 py-1',
+        'flex cursor-default items-center gap-1 px-3 py-1 ',
         title === currentTitle && 'rounded-lg bg-base-200',
       )}
       onClick={() => setCurrentSetting(props)}
     >
-      <i className={cn(icon, 'text-xl')} />
-      <span>{title}</span>
+      <i className={cn(icon, 'size-[1.2rem] align-middle ')} />
+      <span className="">{title}</span>
     </li>
   )
 }

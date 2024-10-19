@@ -1,6 +1,6 @@
 import type { LoadingStatus } from '@renderer/atoms/player'
 import { loadingDanmuProgressAtom } from '@renderer/atoms/player'
-import { CompleteIcon } from '@renderer/components/ui/icons/CompleteIcon'
+import { CompleteIcon } from '@renderer/components/icons/CompleteIcon'
 import { cn } from '@renderer/lib/utils'
 import { useAtomValue } from 'jotai'
 import type { FC } from 'react'

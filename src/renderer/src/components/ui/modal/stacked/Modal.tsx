@@ -25,8 +25,8 @@ import {
   useRef,
 } from 'react'
 
+import { CloseIcon } from '../../../icons/Close'
 import { Divider } from '../../divider'
-import { CloseIcon } from '../../icons/Close'
 import { MODAL_STACK_Z_INDEX, modalMotionConfig } from './constants'
 import type { currentModalContextProps, ModalContentPropsInternal } from './Context'
 import { CurrentModalContext, modalStackAtom } from './Context'
@@ -255,9 +255,9 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
                       <CloseIcon />
                     </Dialog.DialogClose>
                   </div>
-                  <Divider className="my-2 shrink-0 border-slate-200 opacity-80 dark:border-neutral-800" />
+                  <Divider className="mb-0 mt-2 shrink-0 border-slate-200 opacity-80 dark:border-neutral-800" />
 
-                  <div className="h-full shrink grow overflow-auto py-2">{finalChildren}</div>
+                  <div className="h-full shrink grow ">{finalChildren}</div>
                 </m.div>
               </div>
             </Dialog.Content>

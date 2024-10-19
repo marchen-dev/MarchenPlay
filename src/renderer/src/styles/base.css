@@ -5,5 +5,5 @@ html {
 
 body,
 #root {
-  @apply font-theme;
+  @apply font-theme box-border;
 }

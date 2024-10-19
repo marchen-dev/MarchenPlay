@@ -1,7 +1,6 @@
 import Show from '@renderer/components/common/Show'
 import { Logo } from '@renderer/components/icons/logo'
 import { PROJECT_NAME } from '@renderer/constants'
-import { useAppTheme } from '@renderer/hooks/theme'
 import { cn, isMac } from '@renderer/lib/utils'
 import type { SidebarRouteObject } from '@renderer/router'
 import { RouteName, siderbarRoutes } from '@renderer/router'
@@ -9,10 +8,8 @@ import type { FC } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
 import { useSettingModal } from '../settings/hooks'
-import { DarkModeToggle } from './DarkMode'
 
 export const Sidebar = () => {
-  const { isDarkMode } = useAppTheme()
   const showModal = useSettingModal()
   return (
     <div className="relative flex h-full w-[250px] flex-col justify-between bg-base-200 px-3 pt-2.5">
@@ -21,7 +18,7 @@ export const Sidebar = () => {
           <Link to={RouteName.PLAYER} draggable={false} className="cursor-default ">
             <Show when={!isMac}>
               <p className="flex items-center gap-1">
-                <Logo className="size-8" fill={isDarkMode ? '#A6ADBB' : '#000'} />
+                <Logo clasNames={{ icon: 'size-8' }} />
                 <span className="font-logo text-lg">{PROJECT_NAME}</span>
               </p>
             </Show>
@@ -40,7 +37,7 @@ export const Sidebar = () => {
           ))}
         </nav>
       </div>
-      <DarkModeToggle />
+      {/* <DarkModeToggle /> */}
     </div>
   )
 }

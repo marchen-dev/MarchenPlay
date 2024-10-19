@@ -1,6 +1,9 @@
+import { useAppTheme } from '@renderer/hooks/theme'
+import { cn } from '@renderer/lib/utils'
+import type { FC } from 'react'
 import { forwardRef } from 'react'
 
-export const Logo = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((props, ref) => (
+const LogoSvg = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((props, ref) => (
   <svg
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"
@@ -36,3 +39,19 @@ export const Logo = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((pr
     </g>
   </svg>
 ))
+
+export const Logo: FC<{ clasNames?: { wrapper?: string; icon?: string }; round?: boolean }> = (
+  props,
+) => {
+  const { isDarkMode } = useAppTheme()
+  const wrapper = props.clasNames?.wrapper
+  const icon = props.clasNames?.icon
+  if (!props.round) {
+    return <LogoSvg fill={isDarkMode ? '#A6ADBB' : '#000'} className={cn('size-full', icon)} />
+  }
+  return (
+    <div className={cn('rounded-xl  bg-base-100', wrapper)}>
+      <LogoSvg fill={isDarkMode ? '#A6ADBB' : '#000'} className={cn('size-full', icon)} />
+    </div>
+  )
+}
