@@ -26,6 +26,7 @@ const vite = () =>
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
+        '@pkg': resolve('./package.json'),
       },
     },
     base: '/',
