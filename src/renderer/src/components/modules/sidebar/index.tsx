@@ -1,5 +1,5 @@
 import Show from '@renderer/components/common/Show'
-import { Logo } from '@renderer/components/icons/logo'
+import { Logo } from '@renderer/components/icons/Logo'
 import { PROJECT_NAME } from '@renderer/constants'
 import { cn, isMac } from '@renderer/lib/utils'
 import type { SidebarRouteObject } from '@renderer/router'
