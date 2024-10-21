@@ -124,10 +124,10 @@ export const useXgPlayer = (url: string) => {
                 color: danmakuColor,
                 ...(isWhiteDanmaku && {
                   textShadow: `
-                -1px -1px 0 #000,  
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000
+                -0.3px -0.3px 0 #000,  
+                 0.3px -0.3px 0 #000,
+                -0.3px  0.3px 0 #000,
+                 0.3px  0.3px 0 #000
               `,
                 }),
               },
