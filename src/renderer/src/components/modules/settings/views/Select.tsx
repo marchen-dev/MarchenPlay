@@ -11,6 +11,7 @@ import type { FC } from 'react'
 export interface SelectGroup {
   label: string
   value: string
+  default?: boolean
 }
 
 interface SettingSelectProps {
@@ -24,7 +25,7 @@ export const SettingSelect: FC<SettingSelectProps> = (props) => {
   const { placeholder, groups, value, onValueChange } = props
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[150px]">
+      <SelectTrigger className="h-9 w-[150px]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

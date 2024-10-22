@@ -3,6 +3,7 @@ import { ofetch } from 'ofetch'
 
 const apiFetch = ofetch.create({
   baseURL: API_URL,
+  timeout: 10000,
 })
 
 export const Get = <T = object>(url: string, params?: object): Promise<T> =>

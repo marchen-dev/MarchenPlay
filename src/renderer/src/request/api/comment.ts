@@ -5,9 +5,10 @@ export enum Commentkeys {
   getDanmu = 'getDanmu',
 }
 
-function getDanmu(episodeId: number) {
+function getDanmu(episodeId: number, params?: { chConvert: number }) {
   return Get<CommentsModel>(`/comment/${episodeId}`, {
     withRelated: true,
+    ...params,
   })
 }
 

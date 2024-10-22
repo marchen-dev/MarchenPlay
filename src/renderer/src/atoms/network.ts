@@ -1,0 +1,24 @@
+import { atom, useAtomValue } from 'jotai'
+
+import { jotaiStore } from './store'
+
+export enum NetworkStatus {
+  OFFLINE,
+  ONLINE,
+}
+
+const netWorkAtom = atom(NetworkStatus.ONLINE)
+
+export const useNetworkStatus = () => useAtomValue(netWorkAtom)
+
+export const subscribeNetWorkStatus = () => {
+  const handleOnline = () => jotaiStore.set(netWorkAtom, NetworkStatus.ONLINE)
+  const handleOffline = () => jotaiStore.set(netWorkAtom, NetworkStatus.OFFLINE)
+  window.addEventListener('online', handleOnline)
+  window.addEventListener('offline', handleOffline)
+
+  return () => {
+    window.removeEventListener('online', handleOnline)
+    window.removeEventListener('offline', handleOffline)
+  }
+}

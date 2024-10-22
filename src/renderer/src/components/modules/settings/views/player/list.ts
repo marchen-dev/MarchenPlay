@@ -1,25 +1,26 @@
-import type { SelectGroup } from '../SettingSelect'
+import type { SelectGroup } from '../Select'
 
 export const danmakuFontSizeList = [
   {
     label: '极小',
-    value: '21',
+    value: '22',
   },
   {
     label: '较小',
-    value: '23',
+    value: '24',
   },
   {
     label: '适中',
-    value: '25',
+    value: '26',
+    default: true,
   },
   {
     label: '较大',
-    value: '27',
+    value: '28',
   },
   {
     label: '极大',
-    value: '29',
+    value: '30',
   },
 ] satisfies SelectGroup[]
 
@@ -35,6 +36,7 @@ export const danmakuDurationList = [
   {
     label: '适中',
     value: '15000',
+    default: true,
   },
   {
     label: '较快',

@@ -1,11 +1,21 @@
+import {
+  danmakuDurationList,
+  danmakuFontSizeList,
+} from '@renderer/components/modules/settings/views/player/list'
+import type { SelectGroup } from '@renderer/components/modules/settings/views/Select'
 import { useAtom, useAtomValue } from 'jotai'
 
 import { createSettingATom } from './helper'
 
+const getSelectedDefaultValue = (list: SelectGroup[]) => {
+  return list.find((item) => item.default)?.value
+}
+
 const createPlayerDefaultSettings = () => {
   return {
-    danmakuFontSize: '25',
-    danmakuDuration: '15000',
+    enableTraditionalToSimplified: false,
+    danmakuFontSize: getSelectedDefaultValue(danmakuFontSizeList) ?? '26',
+    danmakuDuration: getSelectedDefaultValue(danmakuDurationList) ?? '15000',
   }
 }
 

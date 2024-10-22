@@ -1,7 +1,7 @@
 import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/hooks'
+import { VideoProvider } from '@renderer/components/modules/player/Loading/PlayerProvider'
 import { cn } from '@renderer/lib/utils'
-import { VideoProvider } from '@renderer/providers/player/PlayerProvider'
 import type { FC } from 'react'
 import { useMemo, useRef } from 'react'
 

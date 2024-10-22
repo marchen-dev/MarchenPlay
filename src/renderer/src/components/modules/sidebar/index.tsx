@@ -1,9 +1,12 @@
+import { useNetworkStatus } from '@renderer/atoms/network'
 import Show from '@renderer/components/common/Show'
 import { Logo } from '@renderer/components/icons/Logo'
+import { Alert, AlertDescription, AlertTitle } from '@renderer/components/ui/Alert'
 import { PROJECT_NAME } from '@renderer/constants'
 import { cn, isMac } from '@renderer/lib/utils'
 import type { SidebarRouteObject } from '@renderer/router'
 import { RouteName, siderbarRoutes } from '@renderer/router'
+import { AlertCircle } from 'lucide-react'
 import type { FC } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
@@ -37,7 +40,9 @@ export const Sidebar = () => {
           ))}
         </nav>
       </div>
-      {/* <DarkModeToggle /> */}
+      <div className="mb-3">
+        <NetWorkCheck />
+      </div>
     </div>
   )
 }
@@ -59,5 +64,19 @@ const NavLinkItem: FC<SidebarRouteObject> = ({ path, meta }) => {
         <span>{title}</span>
       </p>
     </NavLink>
+  )
+}
+
+export const NetWorkCheck = () => {
+  const status = useNetworkStatus()
+  if (status) {
+    return null
+  }
+  return (
+    <Alert variant="destructive">
+      <AlertCircle className="size-4" />
+      <AlertTitle>网络异常</AlertTitle>
+      <AlertDescription>部分功能使用受限</AlertDescription>
+    </Alert>
   )
 }
