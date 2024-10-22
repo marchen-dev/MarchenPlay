@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## [0.0.1-alpha.1](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.0...v0.0.1-alpha.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* adjust modal shadow ([b67b72f](https://github.com/suemor233/MarchenPlay/commit/b67b72f0db95058c003257916c21ddd2a6a9135f))
+* ci ([39f91e0](https://github.com/suemor233/MarchenPlay/commit/39f91e00acf13a3afc59e957f29a259b60a7bbf0))
+* ci ([63aa818](https://github.com/suemor233/MarchenPlay/commit/63aa8184569b875cd85ba16fe4ce58e15bea587d))
+* **deps:** update dependency ofetch to v1.4.1 ([337abbc](https://github.com/suemor233/MarchenPlay/commit/337abbcf578f565c4125ecbb3696bc1437a32c47))
+* rename logo.tsx to Logo.tsx ([de9fe44](https://github.com/suemor233/MarchenPlay/commit/de9fe44eb76ec208cff77e4a7860328bd1d9bad2))
+
+
+### Features
+
+* about setting ([9804191](https://github.com/suemor233/MarchenPlay/commit/98041913c76e289725b143edbb98decd5caf5efc))
+* allow video playback without loading comments ([6267ff6](https://github.com/suemor233/MarchenPlay/commit/6267ff66f39c4ef4c34350333ca0ea981e45d7b6))
+* atom with storage ([ab46e45](https://github.com/suemor233/MarchenPlay/commit/ab46e453b94eeb75b03a0f37cc4c14ce5c98803e))
+* danmaku text shadow ([64bdb74](https://github.com/suemor233/MarchenPlay/commit/64bdb74b6e2b4e323bb01ef6901a175659a14176))
+* header show icon ([e8b30a9](https://github.com/suemor233/MarchenPlay/commit/e8b30a9feca4387b068b31b5e7a07dd9908b5482))
+* imperative modal ([22797a7](https://github.com/suemor233/MarchenPlay/commit/22797a7251000e3313629828e3e875f3324a9b74))
+* initial indexdb ([4e3c2cd](https://github.com/suemor233/MarchenPlay/commit/4e3c2cd4723c231b8f343f8e2216020e76f5502e))
+* manual search for danmaku comments ([96e787e](https://github.com/suemor233/MarchenPlay/commit/96e787e144ec46bfa5a10cf9b16a38e1c04af05c))
+* minimum width and height of the window ([f83cd54](https://github.com/suemor233/MarchenPlay/commit/f83cd54476c8d56f747f5deb8a3a60b879014bbb))
+* optimize display of the logo in dark mode ([7db3cd3](https://github.com/suemor233/MarchenPlay/commit/7db3cd3836ac385f9c770c4cc63c0b15b08a3501))
+* partial status bar menu configuration ([fea6598](https://github.com/suemor233/MarchenPlay/commit/fea6598770af0d8732255ee8b536068c40a50980))
+* reduce danmaku text shadow ([2abb6ab](https://github.com/suemor233/MarchenPlay/commit/2abb6ab92b1661eeb0b0a4545340c9a5d13dc391))
+* setting window ([f9eb03e](https://github.com/suemor233/MarchenPlay/commit/f9eb03e6bed7fdb834db792973997ca38fba9a58))
+
+
+### Performance Improvements
+
+* player prvoider ([8006a58](https://github.com/suemor233/MarchenPlay/commit/8006a58c0d5796aa6ab19dcdae5394f6c255e1c8))
+
+
+
 ## [0.0.1-alpha.0](https://github.com/suemor233/MarchenPlay/compare/v0.1.0...v0.0.1-alpha.0) (2024-10-12)
 
 
