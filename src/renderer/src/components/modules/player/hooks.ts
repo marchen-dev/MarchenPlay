@@ -6,6 +6,7 @@ import {
   useClearPlayingVideo,
   videoAtom,
 } from '@renderer/atoms/player'
+import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
@@ -84,19 +85,28 @@ export const useVideo = () => {
     showAddVideoTips: !video.url,
   }
 }
+let player: (XgPlayer & { danmu?: Danmu }) | null = null
 
 export const useXgPlayer = (url: string) => {
   const playerRef = useRef<HTMLDivElement | null>(null)
   const { toast } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
+  const playerSettings = usePlayerSettingsValue()
+  const { danmakuDuration, danmakuFontSize } = playerSettings
+
   const danmuData = queryClient.getQueryData([apiClient.comment.Commentkeys, url]) as
     | CommentsModel
     | undefined
 
   useEffect(() => {
-    let player: XgPlayer | null = null
+    if (player?.isPlaying && isLoadDanmaku) {
+      player.danmu?.setFontSize(+danmakuFontSize, 24)
+      player.danmu?.setAllDuration('all', +danmakuDuration)
+    }
+  }, [playerSettings])
 
+  useEffect(() => {
     if (playerRef.current) {
       const xgplayerConfig = {
         ...playerBaseConfig,
@@ -107,6 +117,7 @@ export const useXgPlayer = (url: string) => {
       if (isLoadDanmaku) {
         xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), Danmu]
         xgplayerConfig.danmu = {
+          ...danmakuConfig,
           comments: danmuData?.comments?.map((comment) => {
             const [start, postition, color] = comment.p.split(',').map(Number)
             const startInMs = start * 1000
@@ -115,7 +126,7 @@ export const useXgPlayer = (url: string) => {
             const danmakuColor = intToHexColor(color)
             const isWhiteDanmaku = danmakuColor === '#ffffff'
             return {
-              duration: 15000, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
+              duration: +danmakuDuration, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
               id: comment.cid, // 弹幕id，需唯一
               start: startInMs, // 弹幕出现时间，毫秒BB
               txt: comment.m, // 弹幕文字内容
@@ -124,16 +135,16 @@ export const useXgPlayer = (url: string) => {
                 color: danmakuColor,
                 ...(isWhiteDanmaku && {
                   textShadow: `
-                -0.3px -0.3px 0 #000,  
-                 0.3px -0.3px 0 #000,
-                -0.3px  0.3px 0 #000,
-                 0.3px  0.3px 0 #000
+                rgb(0, 0, 0) 1px 0px 1px, 
+                rgb(0, 0, 0) 0px 1px 1px, 
+                rgb(0, 0, 0) 0px -1px 1px, 
+                rgb(0, 0, 0) -1px 0px 1px
               `,
                 }),
               },
             }
           }),
-          ...danmakuConfig,
+          fontSize: +danmakuFontSize,
         }
         toast({
           title: currentMatchedVideo.animeTitle,
@@ -143,7 +154,8 @@ export const useXgPlayer = (url: string) => {
       }
 
       player = new XgPlayer(xgplayerConfig)
-      player.getCssFullscreen()
+
+      player?.getCssFullscreen()
     }
     return () => player?.destroy()
   }, [playerRef, danmuData, url])

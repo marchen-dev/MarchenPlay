@@ -54,3 +54,9 @@ publish:
   provider: github
   owner: marchen-dev
   repo: MarchenPlay
+releaseInfo:
+  releaseNotes: |
+    本次更新:
+      新增设置界面
+      新增弹幕搜索功能
+      支持不加载弹幕,直接播放视频
