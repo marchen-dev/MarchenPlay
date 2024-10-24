@@ -9,6 +9,7 @@ import {
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
+import { db } from '@renderer/database/db'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
@@ -17,10 +18,11 @@ import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { throttle } from 'lodash-es'
 import type { ChangeEvent, DragEvent } from 'react'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { IPlayerOptions } from 'xgplayer'
-import XgPlayer, { Danmu } from 'xgplayer'
+import XgPlayer, { Danmu, Events } from 'xgplayer'
 
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
@@ -106,6 +108,30 @@ export const useXgPlayer = (url: string) => {
     | CommentsModel
     | undefined
 
+  const initializePlayerEvent = useCallback(() => {
+    if (!player) {
+      return
+    }
+
+    if (isLoadDanmaku) {
+      player?.on(
+        Events.TIME_UPDATE,
+        throttle((data) => {
+          db.history.update(currentMatchedVideo.episodeId, {
+            progress: data?.currentTime,
+          })
+        }, 5000),
+      )
+      player.on(Events.LOADED_METADATA, (data) => {
+        db.history.update(currentMatchedVideo.episodeId, {
+          duration: data?.duration,
+        })
+      })
+    }
+
+    player?.getCssFullscreen()
+  }, [currentMatchedVideo.episodeId, isLoadDanmaku])
+
   useEffect(() => {
     if (player?.isPlaying && isLoadDanmaku) {
       player.danmu?.setFontSize(+danmakuFontSize, 24)
@@ -159,8 +185,7 @@ export const useXgPlayer = (url: string) => {
       }
 
       player = new XgPlayer(xgplayerConfig)
-
-      player?.getCssFullscreen()
+      initializePlayerEvent()
     }
     return () => player?.destroy()
   }, [playerRef, danmuData, url])

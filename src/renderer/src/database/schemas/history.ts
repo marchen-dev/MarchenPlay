@@ -7,6 +7,7 @@ export interface DB_History {
   animeTitle: string
   episodeTitle: string
   progress?: number
+  duration?: number
   cover: string
   danmaku: CommentsModel
 }
