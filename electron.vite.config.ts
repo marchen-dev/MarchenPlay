@@ -14,6 +14,8 @@ export default defineConfig({
     resolve: {
       alias: {
         '@pkg': resolve('./package.json'),
+        '@main': resolve('src/main'),
+        '@renderer': resolve('src/renderer/src'),
       },
     },
   },

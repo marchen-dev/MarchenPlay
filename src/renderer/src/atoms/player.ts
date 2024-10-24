@@ -11,7 +11,7 @@ export const videoAtom = atomWithReset({
 export enum LoadingStatus {
   IMPORT_VIDEO = 0,
   CALC_HASH = 1,
-  MARCH_ANIME = 2,
+  MATCH_ANIME = 2,
   GET_DANMU = 3,
   READY_PLAY = 4,
   START_PLAY = 5,
@@ -19,7 +19,7 @@ export enum LoadingStatus {
 
 export const loadingDanmuProgressAtom = atomWithReset<LoadingStatus | null>(null)
 
-const initialMatchedVideo = {
+export const initialMatchedVideo = {
   episodeId: 0,
   animeTitle: '',
   episodeTitle: '',

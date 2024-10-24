@@ -117,20 +117,20 @@ export const useXgPlayer = (url: string) => {
       player?.on(
         Events.TIME_UPDATE,
         throttle((data) => {
-          db.history.update(currentMatchedVideo.episodeId, {
+          db.history.update(currentMatchedVideo.animeId, {
             progress: data?.currentTime,
           })
         }, 5000),
       )
       player.on(Events.LOADED_METADATA, (data) => {
-        db.history.update(currentMatchedVideo.episodeId, {
+        db.history.update(currentMatchedVideo.animeId, {
           duration: data?.duration,
         })
       })
     }
 
     player?.getCssFullscreen()
-  }, [currentMatchedVideo.episodeId, isLoadDanmaku])
+  }, [currentMatchedVideo.animeId, isLoadDanmaku])
 
   useEffect(() => {
     if (player?.isPlaying && isLoadDanmaku) {

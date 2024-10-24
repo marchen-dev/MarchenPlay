@@ -6,7 +6,7 @@ import { dbSchemaV1 } from './db.schema'
 import type { DB_History } from './schemas/history'
 
 class LocalDB extends Dexie {
-  history: EntityTable<DB_History, 'episodeId'>
+  history: EntityTable<DB_History, 'animeId'>
 
   constructor() {
     super(LOCAL_DB_NAME)

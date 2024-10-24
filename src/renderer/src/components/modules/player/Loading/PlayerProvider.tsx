@@ -8,9 +8,10 @@ import { LoadingDanmuTimeLine } from '@renderer/components/modules/player/Timeli
 import { useAtom } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'
 
-import { useDanmuData, useMatchAnimeData } from './hooks'
+import { useDanmuData, useLoadingHistoricalAnime, useMatchAnimeData } from './hooks'
 
 export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
+  useLoadingHistoricalAnime()
   const { clearPlayingVideo, matchData } = useMatchAnimeData()
   useDanmuData()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)

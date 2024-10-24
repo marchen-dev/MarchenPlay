@@ -10,12 +10,14 @@ import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
+import { tipcClient } from '@renderer/lib/client'
 import { apiClient } from '@renderer/request'
+import { RouteName } from '@renderer/router'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export const useMatchAnimeData = () => {
   const { hash, size, name, url } = useAtomValue(videoAtom)
@@ -33,7 +35,6 @@ export const useMatchAnimeData = () => {
   useEffect(() => {
     resetCurrentMatchedVideo()
   }, [url])
-
   useEffect(
     () => () => {
       if (isError) {
@@ -74,27 +75,37 @@ export const useDanmuData = () => {
     enabled: isLoadDanmaku,
   })
 
-  useEffect(() => {
-    if (matchData) {
-      setLoadingProgress(LoadingStatus.MARCH_ANIME)
-      if (matchData.isMatched && matchData.matches) {
-        const matchedVideo = matchData.matches[0]
-        setCurrentMatchedVideo({
-          episodeId: matchedVideo.episodeId,
-          animeTitle: matchedVideo.animeTitle || '',
-          animeId: matchedVideo.animeId,
-          episodeTitle: matchedVideo.episodeTitle || '',
-        })
-      }
+  const matchedVideo = useMemo(() => {
+    if (currentMatchedVideo && currentMatchedVideo.episodeId) {
+      return currentMatchedVideo
     }
-  }, [matchData, setLoadingProgress])
+    if (!matchData || !matchData.matches || !matchData.isMatched) {
+      return null
+    }
+    const matchedVideo = matchData?.matches[0]
+    return {
+      episodeId: matchedVideo.episodeId,
+      animeTitle: matchedVideo.animeTitle || '',
+      animeId: matchedVideo.animeId,
+      episodeTitle: matchedVideo.episodeTitle || '',
+    }
+  }, [matchData, currentMatchedVideo])
 
   useEffect(() => {
-    if (danmuData && matchData?.matches) {
+    if (matchData && matchedVideo) {
+      setLoadingProgress(LoadingStatus.MATCH_ANIME)
+      setCurrentMatchedVideo(matchedVideo)
+    }
+  }, [matchData])
+
+  useEffect(() => {
+    if (danmuData && matchedVideo) {
       saveToHistory({
-        ...currentMatchedVideo,
+        ...matchedVideo,
         danmaku: danmuData,
         path: url,
+        progress: 0,
+        duration: 0,
       })
       setLoadingProgress(LoadingStatus.READY_PLAY)
       const timeoutId = setTimeout(() => {
@@ -102,9 +113,8 @@ export const useDanmuData = () => {
       }, 100)
       return () => clearTimeout(timeoutId)
     }
-
     return () => {}
-  }, [danmuData, setLoadingProgress])
+  }, [danmuData])
 
   useEffect(() => {
     if (isError) {
@@ -129,10 +139,73 @@ const saveToHistory = async (params: Omit<DB_History, 'cover'>) => {
     ...params,
     cover: bangumi.imageUrl,
   }
-  const existingHistory = await db.history.where({ episodeId: params.episodeId }).first()
+  const existingHistory = await db.history.where({ animeId: params.animeId }).first()
   if (existingHistory) {
-    await db.history.update(existingHistory.episodeId, historyData)
+    await db.history.update(existingHistory.animeId, historyData)
     return
   }
   await db.history.add(historyData)
+}
+
+export const useLoadingHistoricalAnime = () => {
+  const setVideo = useSetAtom(videoAtom)
+  const { toast } = useToast()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const setProgress = useSetAtom(loadingDanmuProgressAtom)
+  const effectOnce = useRef(false)
+  const episodeId = location.state?.episodeId
+  const loadingAnime = useCallback(async () => {
+    const anime = await db.history.get({ episodeId })
+    if (!anime || Array.isArray(anime)) {
+      toast({
+        title: '播放失败',
+        description: '未找到历史记录',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const animeData = await tipcClient?.getAnimeDetailByPath({ path: anime.path })
+    if (!animeData?.ok) {
+      toast({
+        title: '播放失败',
+        description: animeData?.message || '未找到历史记录',
+        variant: 'destructive',
+      })
+      return
+    }
+    const { fileName, fileSize, fileHash } = animeData
+    if (!fileHash || !fileName || !fileSize) {
+      toast({
+        title: '播放失败',
+        description: '未找到历史记录',
+        variant: 'destructive',
+      })
+      return
+    }
+    setVideo({
+      hash: fileHash,
+      name: fileName,
+      size: fileSize,
+      url: anime.path,
+    })
+    setProgress(LoadingStatus.CALC_HASH)
+  }, [episodeId])
+
+  useEffect(() => {
+    if (!effectOnce.current) {
+      effectOnce.current = true
+      navigate(location.pathname, { replace: true })
+      if (episodeId && location.pathname === RouteName.PLAYER) {
+        loadingAnime()
+      }
+    }
+  }, [loadingAnime])
+
+  useEffect(() => {
+    if (episodeId && location.pathname === RouteName.PLAYER) {
+      setProgress(LoadingStatus.IMPORT_VIDEO)
+    }
+  }, [episodeId])
 }
