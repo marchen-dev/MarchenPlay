@@ -25,8 +25,9 @@ const vite = () =>
     envDir: resolve(__dirname, '.'),
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src'),
+        '@main': resolve('src/main'),
         '@pkg': resolve('./package.json'),
+        '@renderer': resolve('src/renderer/src'),
       },
     },
     base: '/',
