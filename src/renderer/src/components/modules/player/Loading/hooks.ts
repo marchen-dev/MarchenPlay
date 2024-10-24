@@ -8,6 +8,8 @@ import {
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
+import { db } from '@renderer/database/db'
+import type { DB_History } from '@renderer/database/schemas/history'
 import { apiClient } from '@renderer/request'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -86,7 +88,15 @@ export const useDanmuData = () => {
   }, [matchData, setLoadingProgress])
 
   useEffect(() => {
-    if (danmuData) {
+    if (danmuData && matchData?.matches) {
+      saveToHistory({
+        episodeId: +currentMatchedVideo.episodeId,
+        animeId: matchData?.matches[0].animeId,
+        danmaku: danmuData,
+        path: url,
+        animeTitle: matchData.matches[0].animeTitle || '',
+        episodeTitle: matchData.matches[0].episodeTitle || '',
+      })
       setLoadingProgress(LoadingStatus.READY_PLAY)
       const timeoutId = setTimeout(() => {
         setLoadingProgress(LoadingStatus.START_PLAY)
@@ -111,4 +121,13 @@ export const useDanmuData = () => {
   return {
     danmuData,
   }
+}
+
+const saveToHistory = async (params: Omit<DB_History, 'cover'>) => {
+  const { animeId } = params
+  const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
+  await db.history.add({
+    ...params,
+    cover: bangumi.imageUrl,
+  })
 }

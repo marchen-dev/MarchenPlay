@@ -6,7 +6,6 @@
     "src/preload/**/*",
     "types/**/*.d.ts",
     "src/shared/src/**/*",
-    "src/env.ts"
   ],
   "compilerOptions": {
     "composite": true,

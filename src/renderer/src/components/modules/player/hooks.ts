@@ -1,3 +1,4 @@
+import { MARCHEN_PROTOCOL } from '@main/constants/protocol'
 import {
   currentMatchedVideoAtom,
   isLoadDanmakuAtom,
@@ -50,7 +51,13 @@ export const useVideo = () => {
       return tipcClient?.showErrorDialog({ title: '格式错误', content: '请导入视频文件' })
     }
 
-    const url = URL.createObjectURL(file)
+    let url = ''
+    if (isWeb) {
+      url = URL.createObjectURL(file)
+    } else {
+      const path = window.api.showFilePath(file)
+      url = `${MARCHEN_PROTOCOL}://${path}`
+    }
     const { size, name } = file
     const fileName = name.slice(0, Math.max(0, name.lastIndexOf('.'))) || name
     try {
@@ -124,7 +131,6 @@ export const useXgPlayer = (url: string) => {
 
             const mode = DanmuPosition[postition]
             const danmakuColor = intToHexColor(color)
-            const isWhiteDanmaku = danmakuColor === '#ffffff'
             return {
               duration: +danmakuDuration, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
               id: comment.cid, // 弹幕id，需唯一
@@ -133,14 +139,13 @@ export const useXgPlayer = (url: string) => {
               mode,
               style: {
                 color: danmakuColor,
-                ...(isWhiteDanmaku && {
-                  textShadow: `
+                fontWeight: 700,
+                textShadow: `
                 rgb(0, 0, 0) 1px 0px 1px, 
                 rgb(0, 0, 0) 0px 1px 1px, 
                 rgb(0, 0, 0) 0px -1px 1px, 
                 rgb(0, 0, 0) -1px 0px 1px
               `,
-                }),
               },
             }
           }),

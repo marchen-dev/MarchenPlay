@@ -73,7 +73,7 @@ export const NetWorkCheck = () => {
     return null
   }
   return (
-    <Alert variant="destructive">
+    <Alert style={{fontWeight:500}}variant="destructive">
       <AlertCircle className="size-4" />
       <AlertTitle>网络异常</AlertTitle>
       <AlertDescription>部分功能使用受限</AlertDescription>

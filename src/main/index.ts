@@ -1,7 +1,10 @@
+import path from 'node:path'
+
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { name } from '@pkg'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, protocol } from 'electron'
 
+import { MARCHEN_PROTOCOL } from './constants/protocol'
 import { initializeApp } from './init'
 import { getIconPath } from './lib/icon'
 import createWindow from './windows/main'
@@ -14,6 +17,11 @@ function bootstrap() {
 
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)
+    })
+
+    protocol.registerFileProtocol(MARCHEN_PROTOCOL, (request, callback) => {
+      const url = request.url.slice(`${MARCHEN_PROTOCOL}://`.length)
+      callback({ path: path.normalize(url) })
     })
 
     createWindow()

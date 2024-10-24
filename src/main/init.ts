@@ -1,12 +1,23 @@
-import { registerIpcMain } from "@egoist/tipc/main"
+import { registerIpcMain } from '@egoist/tipc/main'
+import { protocol } from 'electron'
 
-import { appUpdater } from "./lib/update"
-import { registerAppMenu } from "./menu"
-import { router } from "./tipc"
+import { MARCHEN_PROTOCOL } from './constants/protocol'
+import { appUpdater } from './lib/update'
+import { registerAppMenu } from './menu'
+import { router } from './tipc'
 
-export const initializeApp = ()=>{
-  
+export const initializeApp = () => {
   registerIpcMain(router)
   appUpdater.autoUpdate()
   registerAppMenu()
+
+  protocol.registerSchemesAsPrivileged([
+    {
+      scheme: MARCHEN_PROTOCOL,
+      privileges: {
+        bypassCSP: true,
+        stream: true,
+      },
+    },
+  ])
 }

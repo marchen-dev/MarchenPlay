@@ -4,7 +4,7 @@ import History from '@renderer/page/history'
 import LastAnime from '@renderer/page/latest-anime'
 import VideoPlayer from '@renderer/page/player'
 import type { NonIndexRouteObject, RouteObject } from 'react-router-dom'
-import { createHashRouter, Navigate } from 'react-router-dom'
+import { createHashRouter, Navigate, useLocation } from 'react-router-dom'
 
 import { RouteName } from '.'
 
@@ -56,5 +56,10 @@ export const router = [
     ],
   },
 ] satisfies RouteObject[]
+
+export const useCurrentRoute = () => {
+  const { pathname } = useLocation()
+  return siderbarRoutes.find((route) => route.path === pathname)
+}
 
 export const reactRouter = createHashRouter(router)
