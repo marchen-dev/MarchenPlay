@@ -13,7 +13,9 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@pkg": ["./package.json"]
+      "@pkg": ["./package.json"],
+      "@renderer/*": ["src/renderer/src/*"],
+      "@main/*": ["src/main/*"],
     }
   }
 }
