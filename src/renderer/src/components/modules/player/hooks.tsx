@@ -108,28 +108,46 @@ export const useXgPlayer = (url: string) => {
     | CommentsModel
     | undefined
 
-  const initializePlayerEvent = useCallback(() => {
+  const initializePlayerEvent = useCallback(async () => {
     if (!player) {
       return
     }
 
+    player?.getCssFullscreen()
     if (isLoadDanmaku) {
       player?.on(
         Events.TIME_UPDATE,
         throttle((data) => {
           db.history.update(currentMatchedVideo.animeId, {
             progress: data?.currentTime,
+            duration: data?.duration,
           })
-        }, 5000),
+        }, 2000),
       )
       player.on(Events.LOADED_METADATA, (data) => {
         db.history.update(currentMatchedVideo.animeId, {
           duration: data?.duration,
         })
       })
-    }
 
-    player?.getCssFullscreen()
+      const anime = await db.history.get(currentMatchedVideo.animeId)
+      const enablePositioningProgress =
+        anime?.progress && anime.episodeId === currentMatchedVideo.episodeId
+      if (enablePositioningProgress) {
+        player.currentTime = anime?.progress || 0
+      }
+
+      toast({
+        title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
+        description: (
+          <div>
+            <p>共加载 {danmuData?.count} 条弹幕</p>
+            {enablePositioningProgress && <p>已为您定位到上次观看进度</p>}
+          </div>
+        ),
+        duration: 5000,
+      })
+    }
   }, [currentMatchedVideo.animeId, isLoadDanmaku])
 
   useEffect(() => {
@@ -177,17 +195,14 @@ export const useXgPlayer = (url: string) => {
           }),
           fontSize: +danmakuFontSize,
         }
-        toast({
-          title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
-          description: `共加载 ${danmuData?.count} 条弹幕`,
-          duration: 3000,
-        })
       }
 
       player = new XgPlayer(xgplayerConfig)
       initializePlayerEvent()
     }
-    return () => player?.destroy()
+    return () => {
+      player?.destroy()
+    }
   }, [playerRef, danmuData, url])
 
   return { playerRef }

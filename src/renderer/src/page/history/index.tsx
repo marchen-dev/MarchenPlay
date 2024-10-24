@@ -7,6 +7,7 @@ import { cn, isWeb } from '@renderer/lib/utils'
 import { RouteName } from '@renderer/router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import type { FC } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function History() {
@@ -32,6 +33,12 @@ const HistoryItem: FC<DB_History> = (props) => {
   const { cover, animeTitle, episodeTitle, progress, duration, episodeId } = props
   const navigation = useNavigate()
   const { toast } = useToast()
+  const percentage = useMemo(() => {
+    const percentage = progress / duration
+    return Number.isFinite(percentage) && !Number.isNaN(percentage)
+      ? Math.round(percentage * 100)
+      : 0
+  }, [progress, duration])
   return (
     <li
       className={cn(' flex cursor-default flex-col items-center', !isWeb && 'group')}
@@ -70,7 +77,7 @@ const HistoryItem: FC<DB_History> = (props) => {
         >
           <span className="truncate">{episodeTitle}</span>
           <div className="shrink-0 ">
-            <Badge variant={'outline'}>{Math.round((progress / duration) * 100) || 0}%</Badge>
+            <Badge variant={'outline'}>{percentage}%</Badge>
           </div>
         </div>
       </div>

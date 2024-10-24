@@ -5,5 +5,5 @@ export const dbSchemaV1 = {
   // [TABLES.PLAYER]: '++id, duration',
   // [TABLES.DANMAKU]: '&type, duration, fontSize',
   [TABLES.HISTORY]:
-    '&episodeId, animeId, path, animeTitle, episodeTitle, progress, duration, cover, danmaku',
+    '&animeId, episodeId, path, animeTitle, episodeTitle, progress, duration, cover, danmaku',
 }

@@ -141,7 +141,11 @@ const saveToHistory = async (params: Omit<DB_History, 'cover'>) => {
   }
   const existingHistory = await db.history.where({ animeId: params.animeId }).first()
   if (existingHistory) {
-    await db.history.update(existingHistory.animeId, historyData)
+    await db.history.update(existingHistory.animeId, {
+      ...historyData,
+      duration: existingHistory.duration,
+      progress: existingHistory.progress,
+    })
     return
   }
   await db.history.add(historyData)
