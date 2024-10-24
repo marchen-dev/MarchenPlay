@@ -23,15 +23,10 @@ export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
         <MatchAnimeDialog
           matchData={currentMatchedVideo.episodeId ? undefined : matchData}
           onSelected={(params) => {
-            const id = params?.episodeId
-            const title = params?.title
-            if (!id || !title) {
+            if (!params) {
               return setLoadingProgress(LoadingStatus.START_PLAY)
             }
-            setCurrentMatchedVideo({
-              episodeId: id,
-              animeTitle: title,
-            })
+            setCurrentMatchedVideo(params)
           }}
           onClosed={clearPlayingVideo}
         />

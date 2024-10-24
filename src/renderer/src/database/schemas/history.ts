@@ -1,8 +1,6 @@
 import type { CommentsModel } from '@renderer/request/models/comment'
 
-import type { DB_Base } from './base'
-
-export interface DB_History extends DB_Base {
+export interface DB_History {
   path: string
   animeId: number
   episodeId: number

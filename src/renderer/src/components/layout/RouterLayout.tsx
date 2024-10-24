@@ -1,6 +1,8 @@
 import { useCurrentRoute } from '@renderer/router'
 import type { FC, PropsWithChildren } from 'react'
 
+import { ScrollArea } from '../ui/scrollArea'
+
 export const RouterLayout: FC<PropsWithChildren> = ({ children }) => {
   const currentRoute = useCurrentRoute()
   return (
@@ -8,7 +10,7 @@ export const RouterLayout: FC<PropsWithChildren> = ({ children }) => {
       <section>
         <h3 className="border-b pb-3 text-2xl font-medium">{currentRoute?.meta.title}</h3>
       </section>
-      {children}
+      <ScrollArea>{children}</ScrollArea>
     </div>
   )
 }

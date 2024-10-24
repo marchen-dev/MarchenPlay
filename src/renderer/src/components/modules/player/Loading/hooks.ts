@@ -81,7 +81,9 @@ export const useDanmuData = () => {
         const matchedVideo = matchData.matches[0]
         setCurrentMatchedVideo({
           episodeId: matchedVideo.episodeId,
-          animeTitle: `${matchedVideo.animeTitle} - ${matchedVideo.episodeTitle}`,
+          animeTitle: matchedVideo.animeTitle || '',
+          animeId: matchedVideo.animeId,
+          episodeTitle: matchedVideo.episodeTitle || '',
         })
       }
     }
@@ -90,12 +92,9 @@ export const useDanmuData = () => {
   useEffect(() => {
     if (danmuData && matchData?.matches) {
       saveToHistory({
-        episodeId: +currentMatchedVideo.episodeId,
-        animeId: matchData?.matches[0].animeId,
+        ...currentMatchedVideo,
         danmaku: danmuData,
         path: url,
-        animeTitle: matchData.matches[0].animeTitle || '',
-        episodeTitle: matchData.matches[0].episodeTitle || '',
       })
       setLoadingProgress(LoadingStatus.READY_PLAY)
       const timeoutId = setTimeout(() => {
@@ -126,8 +125,14 @@ export const useDanmuData = () => {
 const saveToHistory = async (params: Omit<DB_History, 'cover'>) => {
   const { animeId } = params
   const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
-  await db.history.add({
+  const historyData = {
     ...params,
     cover: bangumi.imageUrl,
-  })
+  }
+  const existingHistory = await db.history.where({ episodeId: params.episodeId }).first()
+  if (existingHistory) {
+    await db.history.update(existingHistory.episodeId, historyData)
+    return
+  }
+  await db.history.add(historyData)
 }

@@ -1,3 +1,4 @@
+import type { MatchedVideoType } from '@renderer/atoms/player'
 import {
   Accordion,
   AccordionContent,
@@ -18,7 +19,7 @@ import { showMatchAnimeDialogAtom, useSearchAnime } from './hooks'
 
 interface MatchAnimeDialogProps {
   matchData?: MatchResponseV2
-  onSelected?: (params?: { episodeId: number; title: string }) => void
+  onSelected?: (params?: MatchedVideoType) => void
   onClosed?: () => void
 }
 
@@ -99,7 +100,9 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
                               onSelected &&
                                 onSelected({
                                   episodeId: item.episodeId,
-                                  title: `${animeTitle} - ${item.episodeTitle}`,
+                                  animeId: item.animeId,
+                                  animeTitle: item.animeTitle || '',
+                                  episodeTitle: item.episodeTitle || '',
                                 })
                               setShowMatchAnimeDialog(false)
                               toast({

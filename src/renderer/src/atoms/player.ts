@@ -19,10 +19,15 @@ export enum LoadingStatus {
 
 export const loadingDanmuProgressAtom = atomWithReset<LoadingStatus | null>(null)
 
-export const currentMatchedVideoAtom = atomWithReset({
+const initialMatchedVideo = {
   episodeId: 0,
   animeTitle: '',
-})
+  episodeTitle: '',
+  animeId: 0,
+}
+export type MatchedVideoType = typeof initialMatchedVideo
+
+export const currentMatchedVideoAtom = atomWithReset<MatchedVideoType>(initialMatchedVideo)
 
 export const isLoadDanmakuAtom = atom((get) => get(currentMatchedVideoAtom).episodeId !== 0)
 export const useSetLoadingDanmuProgress = () => useSetAtom(loadingDanmuProgressAtom)

@@ -1,4 +1,3 @@
-import path from 'node:path'
 
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { name } from '@pkg'
@@ -20,8 +19,8 @@ function bootstrap() {
     })
 
     protocol.registerFileProtocol(MARCHEN_PROTOCOL, (request, callback) => {
-      const url = request.url.slice(`${MARCHEN_PROTOCOL}://`.length)
-      callback({ path: path.normalize(url) })
+      const path = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}://`.length))
+      callback({ path })
     })
 
     createWindow()

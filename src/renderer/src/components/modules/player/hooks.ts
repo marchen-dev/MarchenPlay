@@ -152,9 +152,9 @@ export const useXgPlayer = (url: string) => {
           fontSize: +danmakuFontSize,
         }
         toast({
-          title: currentMatchedVideo.animeTitle,
+          title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
           description: `共加载 ${danmuData?.count} 条弹幕`,
-          duration: 2000,
+          duration: 3000,
         })
       }
 
