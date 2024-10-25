@@ -26,7 +26,7 @@ export const useMatchAnimeData = () => {
   const location = useLocation()
   const resetCurrentMatchedVideo = useResetAtom(currentMatchedVideoAtom)
   const { data: matchData, isError } = useQuery({
-    queryKey: [apiClient.match.Matchkeys, url],
+    queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, url],
     queryFn: () =>
       apiClient.match.postVideoEpisodeId({ fileSize: size, fileHash: hash, fileName: name }),
     enabled: !!hash,
@@ -60,21 +60,14 @@ export const useDanmuData = () => {
   const clearPlayingVideo = useClearPlayingVideo()
   const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
   const { data: danmuData, isError } = useQuery({
-    queryKey: [apiClient.comment.Commentkeys, url],
+    queryKey: [apiClient.comment.Commentkeys.getDanmu, url, enableTraditionalToSimplified],
     queryFn: () => {
-      if (!matchData?.matches) {
-        return null
-      }
-      if (!currentMatchedVideo) {
-        return null
-      }
       return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
         chConvert: enableTraditionalToSimplified ? 1 : 0,
       })
     },
-    enabled: isLoadDanmaku,
+    enabled: isLoadDanmaku && !!matchData?.matches && !!currentMatchedVideo,
   })
-
   const matchedVideo = useMemo(() => {
     if (currentMatchedVideo && currentMatchedVideo.episodeId) {
       return currentMatchedVideo
@@ -129,6 +122,7 @@ export const useDanmuData = () => {
 
   return {
     danmuData,
+    startPlaying: !!danmuData || !isLoadDanmaku,
   }
 }
 

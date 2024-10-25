@@ -104,16 +104,16 @@ export const useXgPlayer = (url: string) => {
   const playerSettings = usePlayerSettingsValue()
   const { danmakuDuration, danmakuFontSize } = playerSettings
 
-  const danmuData = queryClient.getQueryData([apiClient.comment.Commentkeys, url]) as
-    | CommentsModel
-    | undefined
-
+  const danmuData = queryClient.getQueryData([
+    apiClient.comment.Commentkeys.getDanmu,
+    url,
+    playerSettings.enableTraditionalToSimplified,
+  ]) as CommentsModel | undefined
   const initializePlayerEvent = useCallback(async () => {
     if (!player) {
       return
     }
 
-    player?.getCssFullscreen()
     if (isLoadDanmaku) {
       player?.on(
         Events.TIME_UPDATE,

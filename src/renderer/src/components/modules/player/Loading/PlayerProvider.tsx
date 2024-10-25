@@ -13,11 +13,11 @@ import { useDanmuData, useLoadingHistoricalAnime, useMatchAnimeData } from './ho
 export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
   useLoadingHistoricalAnime()
   const { clearPlayingVideo, matchData } = useMatchAnimeData()
-  useDanmuData()
+  const { startPlaying } = useDanmuData()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
   const [loadingProgress, setLoadingProgress] = useAtom(loadingDanmuProgressAtom)
 
-  if (loadingProgress !== null && loadingProgress < LoadingStatus.START_PLAY) {
+  if (loadingProgress !== null && loadingProgress < LoadingStatus.START_PLAY || !startPlaying) {
     return (
       <>
         <LoadingDanmuTimeLine />

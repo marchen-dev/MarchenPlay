@@ -1,6 +1,7 @@
 html {
   --font-family: 'Noto Sans SC', sans-serif, system-ui;
   font-size: 16px;
+  overflow: hidden
 }
 
 body,
