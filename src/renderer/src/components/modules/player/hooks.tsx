@@ -132,7 +132,7 @@ export const useXgPlayer = (url: string) => {
 
       const anime = await db.history.get(currentMatchedVideo.animeId)
       const enablePositioningProgress =
-        anime?.progress && anime.episodeId === currentMatchedVideo.episodeId
+        !!anime?.progress && anime.episodeId === currentMatchedVideo.episodeId
       if (enablePositioningProgress) {
         player.currentTime = anime?.progress || 0
       }

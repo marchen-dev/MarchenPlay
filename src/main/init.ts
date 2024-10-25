@@ -17,6 +17,7 @@ export const initializeApp = () => {
         privileges: {
           bypassCSP: true,
           stream: true,
+          standard: true,
         },
       },
     ])
