@@ -22,9 +22,10 @@ function bootstrap() {
     })
 
     protocol.handle(MARCHEN_PROTOCOL, async (request) => {
-      let filePath = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}://`.length));
+      let filePath = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}:/`.length));
 
       if (isWindows) {
+        filePath = filePath.slice(1)
         filePath = path.win32.normalize(filePath);
         // eslint-disable-next-line unicorn/prefer-regexp-test
         if (filePath.match(/^[a-z]\\/i)) {
