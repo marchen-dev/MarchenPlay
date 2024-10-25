@@ -6,4 +6,8 @@
   .no-drag-region {
     -webkit-app-region: no-drag;
   }
+
+  .grid-auto-cols {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }

@@ -132,13 +132,15 @@ export const useDanmuData = () => {
   }
 }
 
-const saveToHistory = async (params: Omit<DB_History, 'cover'>) => {
+const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedAt'>) => {
   const { animeId } = params
   const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
   const historyData = {
     ...params,
     cover: bangumi.imageUrl,
-  }
+    updatedAt: new Date().toISOString(),
+  } satisfies DB_History
+
   const existingHistory = await db.history.where({ animeId: params.animeId }).first()
   if (existingHistory) {
     await db.history.update(existingHistory.animeId, {

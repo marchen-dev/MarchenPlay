@@ -1,5 +1,6 @@
 import { RouterLayout } from '@renderer/components/layout/RouterLayout'
 import { Badge } from '@renderer/components/ui/badge'
+import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
@@ -11,20 +12,22 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function History() {
-  const historyData = useLiveQuery(() => db.history.toArray())
+  const historyData = useLiveQuery(() => db.history.orderBy('updatedAt').reverse().toArray())
 
   return (
     <RouterLayout>
-      {historyData?.length !== 0 ? (
-        <ul className="grid grid-cols-3 gap-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {historyData?.map((item) => <HistoryItem {...item} key={item.episodeId} />)}
-        </ul>
-      ) : (
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-gray-500">
-          <i className="icon-[mingcute--folder-info-line] text-6xl " />
-          <p className="text-xl">没有内容</p>
-        </div>
-      )}
+      <ScrollArea className="h-full px-8 pb-20">
+        {historyData?.length !== 0 ? (
+          <ul className="grid-auto-cols grid gap-2">
+            {historyData?.map((item) => <HistoryItem {...item} key={item.episodeId} />)}
+          </ul>
+        ) : (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-gray-500">
+            <i className="icon-[mingcute--folder-info-line] text-6xl " />
+            <p className="text-xl">没有内容</p>
+          </div>
+        )}
+      </ScrollArea>
     </RouterLayout>
   )
 }
@@ -41,12 +44,13 @@ const HistoryItem: FC<DB_History> = (props) => {
   }, [progress, duration])
   return (
     <li
-      className={cn(' flex cursor-default flex-col items-center', !isWeb && 'group')}
+      className={cn(' flex cursor-default select-none flex-col items-center', !isWeb && 'group')}
       onClick={() => {
         if (isWeb) {
           return toast({
-            title: 'Web 版本暂不支持',
-            description: '请使用客户端播放',
+            title: '请使用客户端播放',
+            description: 'WEB 版本暂时不支持续播功能',
+            duration: 5000,
           })
         }
         return navigation(RouteName.PLAYER, { state: { episodeId } })

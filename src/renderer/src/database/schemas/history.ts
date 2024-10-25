@@ -10,4 +10,5 @@ export interface DB_History {
   duration: number
   cover: string
   danmaku: CommentsModel
+  updatedAt: string
 }
