@@ -1,4 +1,3 @@
-
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { name } from '@pkg'
 import { app, BrowserWindow, protocol } from 'electron'
@@ -6,6 +5,7 @@ import { app, BrowserWindow, protocol } from 'electron'
 import { MARCHEN_PROTOCOL } from './constants/protocol'
 import { initializeApp } from './init'
 import { getIconPath } from './lib/icon'
+import { handleCustomProtocol } from './lib/protocols'
 import createWindow from './windows/main'
 
 function bootstrap() {
@@ -18,9 +18,9 @@ function bootstrap() {
       optimizer.watchWindowShortcuts(window)
     })
 
-    protocol.registerFileProtocol(MARCHEN_PROTOCOL, (request, callback) => {
-      const path = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}://`.length))
-      callback({ path })
+    protocol.handle(MARCHEN_PROTOCOL, async (request) => {
+      const filePath = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}://`.length))
+      return handleCustomProtocol(filePath, request)
     })
 
     createWindow()

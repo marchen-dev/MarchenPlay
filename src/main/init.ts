@@ -11,13 +11,13 @@ export const initializeApp = () => {
   appUpdater.autoUpdate()
   registerAppMenu()
 
-  protocol.registerSchemesAsPrivileged([
-    {
-      scheme: MARCHEN_PROTOCOL,
-      privileges: {
-        bypassCSP: true,
-        stream: true,
+    protocol.registerSchemesAsPrivileged([
+      {
+        scheme: MARCHEN_PROTOCOL,
+        privileges: {
+          bypassCSP: true,
+          stream: true,
+        },
       },
-    },
-  ])
+    ])
 }
