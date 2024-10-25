@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## [0.0.1-alpha.2](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.1...v0.0.1-alpha.2) (2024-10-25)
+
+
+### Bug Fixes
+
+* adjust api url in env example ([3f7082c](https://github.com/suemor233/MarchenPlay/commit/3f7082cb5b80c851b088364e986ec8671aeedd9e))
+* can't load anime ([4576c6c](https://github.com/suemor233/MarchenPlay/commit/4576c6c73b1771956e15996c589f2cc4a61b9401))
+* **deps:** update dependency tailwind-merge to v2.5.3 ([#30](https://github.com/suemor233/MarchenPlay/issues/30)) ([3836806](https://github.com/suemor233/MarchenPlay/commit/3836806561a19eedeb7307fb21ee1462ac1f8db8))
+* **deps:** update dependency tailwind-merge to v2.5.3 ([#40](https://github.com/suemor233/MarchenPlay/issues/40)) ([d9740bb](https://github.com/suemor233/MarchenPlay/commit/d9740bbb5bdd976cefc9728933f4b86e73f218d3))
+* **deps:** update radix-ui-primitives monorepo ([#31](https://github.com/suemor233/MarchenPlay/issues/31)) ([24b9710](https://github.com/suemor233/MarchenPlay/commit/24b97108e7afb9122c8c2c37d4cddba088db0f33))
+* history progress cannot be displayed ([146f3b5](https://github.com/suemor233/MarchenPlay/commit/146f3b517d8547774d1f70c65b5f789af88c5007))
+* windows can't load anime ([be57b5b](https://github.com/suemor233/MarchenPlay/commit/be57b5b37aae94af4b93d9babfd250194bd55924))
+
+
+### Features
+
+* custom marchen protocol ([0495ca1](https://github.com/suemor233/MarchenPlay/commit/0495ca11c85427a663d66fcc28bbe9d53617cac7))
+* history page add anime cover preview ([d6b4b88](https://github.com/suemor233/MarchenPlay/commit/d6b4b887b44569ea41576ed917d7881be484952a))
+* history record percentage ([07f65f4](https://github.com/suemor233/MarchenPlay/commit/07f65f4b6045bbdc6cadc7efac05350b815335c8))
+* history records sorted by update time ([f3731d0](https://github.com/suemor233/MarchenPlay/commit/f3731d071164c3649af436e228f0471abb7229ad))
+* network check ([3c8d994](https://github.com/suemor233/MarchenPlay/commit/3c8d99439adcc7c24871eeeddf2a62a1a00744f3))
+* play animes through history records ([948639a](https://github.com/suemor233/MarchenPlay/commit/948639a92be994f7d22846f1c777b49781abef79))
+* update renovate extends ([d7fb5c2](https://github.com/suemor233/MarchenPlay/commit/d7fb5c2051bab1ea508857ac12bc55e0e1b16e1a))
+
+
+
 ## [0.0.1-alpha.1](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.0...v0.0.1-alpha.1) (2024-10-22)
 
 
