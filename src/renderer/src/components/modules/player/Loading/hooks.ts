@@ -35,14 +35,14 @@ export const useMatchAnimeData = () => {
   useEffect(() => {
     resetCurrentMatchedVideo()
   }, [url])
-  useEffect(
-    () => () => {
-      if (isError) {
-        showFailedToast({ title: '匹配失败', description: '请检查网络连接或稍后再试' })
-      }
-    },
-    [location.pathname, isError],
-  )
+
+  useEffect(() => {
+    if (isError) {
+      showFailedToast({ title: '匹配失败', description: '请检查网络连接或稍后再试' })
+    }
+    clearPlayingVideo()
+  }, [location.pathname, isError])
+
   return { matchData, url, clearPlayingVideo }
 }
 
