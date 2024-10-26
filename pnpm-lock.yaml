@@ -79,7 +79,7 @@ importers:
         version: 6.3.9
       framer-motion:
         specifier: ^11.11.9
-        version: 11.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 11.11.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       jotai:
         specifier: ^2.9.3
         version: 2.10.1(@types/react@18.3.12)(react@18.3.1)
@@ -113,7 +113,7 @@ importers:
     devDependencies:
       '@electron-toolkit/tsconfig':
         specifier: ^1.0.1
-        version: 1.0.1(@types/node@20.17.0)
+        version: 1.0.1(@types/node@20.17.1)
       '@iconify-json/mingcute':
         specifier: ^1.1.19
         version: 1.2.1
@@ -128,7 +128,7 @@ importers:
         version: 4.17.12
       '@types/node':
         specifier: ^20.14.8
-        version: 20.17.0
+        version: 20.17.1
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.12
@@ -137,7 +137,7 @@ importers:
         version: 18.3.1
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.3(vite@5.4.10(@types/node@20.17.0))
+        version: 4.3.3(vite@5.4.10(@types/node@20.17.1))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.47)
@@ -152,7 +152,7 @@ importers:
         version: 25.1.8(electron-builder-squirrel-windows@24.13.3)
       electron-vite:
         specifier: ^2.3.0
-        version: 2.3.0(vite@5.4.10(@types/node@20.17.0))
+        version: 2.3.0(vite@5.4.10(@types/node@20.17.1))
       eslint:
         specifier: ^9.8.0
         version: 9.13.0(jiti@1.21.6)
@@ -191,7 +191,7 @@ importers:
         version: 5.6.3
       vite:
         specifier: ^5.3.1
-        version: 5.4.10(@types/node@20.17.0)
+        version: 5.4.10(@types/node@20.17.1)
 
 packages:
 
@@ -1600,8 +1600,8 @@ packages:
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
-  '@types/node@20.17.0':
-    resolution: {integrity: sha512-a7zRo0f0eLo9K5X9Wp5cAqTUNGzuFLDG2R7C4HY2BhcMAsxgSPuRvAC1ZB6QkuUQXf0YZAgfOX2ZyrBa2n4nHQ==}
+  '@types/node@20.17.1':
+    resolution: {integrity: sha512-j2VlPv1NnwPJbaCNv69FO/1z4lId0QmGvpT41YxitRtWlg96g/j8qcv2RKsLKe2F6OJgyXhupN1Xo17b2m139Q==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -2828,8 +2828,8 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
-  framer-motion@11.11.9:
-    resolution: {integrity: sha512-XpdZseuCrZehdHGuW22zZt3SF5g6AHJHJi7JwQIigOznW4Jg1n0oGPMJQheMaKLC+0rp5gxUKMRYI6ytd3q4RQ==}
+  framer-motion@11.11.10:
+    resolution: {integrity: sha512-061Bt1jL/vIm+diYIiA4dP/Yld7vD47ROextS7ESBW5hr4wQFhxB5D5T5zAc3c/5me3cOa+iO5LqhA38WDln/A==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -4378,9 +4378,6 @@ packages:
   ts-pattern@5.5.0:
     resolution: {integrity: sha512-jqbIpTsa/KKTJYWgPNsFNbLVpwCgzXfFJ1ukNn4I8hMwyQzHMJnk/BqWzggB0xpkILuKzaO/aMYhS0SkaJyKXg==}
 
-  tslib@2.7.0:
-    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
-
   tslib@2.8.0:
     resolution: {integrity: sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==}
 
@@ -5095,9 +5092,9 @@ snapshots:
     dependencies:
       electron: 32.2.2
 
-  '@electron-toolkit/tsconfig@1.0.1(@types/node@20.17.0)':
+  '@electron-toolkit/tsconfig@1.0.1(@types/node@20.17.1)':
     dependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
 
   '@electron-toolkit/utils@3.0.0(electron@32.2.2)':
     dependencies:
@@ -6137,7 +6134,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
       '@types/responselike': 1.0.3
 
   '@types/debug@4.1.12':
@@ -6148,12 +6145,12 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
 
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
 
   '@types/http-cache-semantics@4.0.4': {}
 
@@ -6161,7 +6158,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
 
   '@types/lodash-es@4.17.12':
     dependencies:
@@ -6173,7 +6170,7 @@ snapshots:
 
   '@types/ms@0.7.34': {}
 
-  '@types/node@20.17.0':
+  '@types/node@20.17.1':
     dependencies:
       undici-types: 6.19.8
 
@@ -6181,7 +6178,7 @@ snapshots:
 
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
       xmlbuilder: 15.1.1
     optional: true
 
@@ -6198,7 +6195,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
 
   '@types/semver@7.5.8': {}
 
@@ -6207,7 +6204,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.11.0(@typescript-eslint/parser@8.11.0(eslint@9.13.0(jiti@1.21.6))(typescript@5.6.3))(eslint@9.13.0(jiti@1.21.6))(typescript@5.6.3)':
@@ -6320,14 +6317,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@vitejs/plugin-react@4.3.3(vite@5.4.10(@types/node@20.17.0))':
+  '@vitejs/plugin-react@4.3.3(vite@5.4.10(@types/node@20.17.1))':
     dependencies:
       '@babel/core': 7.25.8
       '@babel/plugin-transform-react-jsx-self': 7.25.7(@babel/core@7.25.8)
       '@babel/plugin-transform-react-jsx-source': 7.25.7(@babel/core@7.25.8)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.10(@types/node@20.17.0)
+      vite: 5.4.10(@types/node@20.17.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -7230,7 +7227,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@2.3.0(vite@5.4.10(@types/node@20.17.0)):
+  electron-vite@2.3.0(vite@5.4.10(@types/node@20.17.1)):
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-arrow-functions': 7.24.7(@babel/core@7.25.2)
@@ -7238,14 +7235,14 @@ snapshots:
       esbuild: 0.21.5
       magic-string: 0.30.11
       picocolors: 1.0.1
-      vite: 5.4.10(@types/node@20.17.0)
+      vite: 5.4.10(@types/node@20.17.1)
     transitivePeerDependencies:
       - supports-color
 
   electron@32.2.2:
     dependencies:
       '@electron/get': 2.0.3
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
@@ -7833,9 +7830,9 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@11.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.11.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -9437,8 +9434,6 @@ snapshots:
 
   ts-pattern@5.5.0: {}
 
-  tslib@2.7.0: {}
-
   tslib@2.8.0: {}
 
   tsx@4.19.1:
@@ -9560,13 +9555,13 @@ snapshots:
       extsprintf: 1.4.1
     optional: true
 
-  vite@5.4.10(@types/node@20.17.0):
+  vite@5.4.10(@types/node@20.17.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
       rollup: 4.24.0
     optionalDependencies:
-      '@types/node': 20.17.0
+      '@types/node': 20.17.1
       fsevents: 2.3.3
 
   wcwidth@1.0.1:
