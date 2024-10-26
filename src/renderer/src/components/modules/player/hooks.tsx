@@ -77,7 +77,7 @@ let player: (XgPlayer & { danmu?: Danmu }) | null = null
 
 export const useXgPlayer = (url: string) => {
   const playerRef = useRef<HTMLDivElement | null>(null)
-  const { toast } = useToast()
+  const { toast, dismiss } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const playerSettings = usePlayerSettingsValue()
@@ -111,7 +111,6 @@ export const useXgPlayer = (url: string) => {
         ),
         duration: 5000,
       })
-
       player?.on(
         Events.TIME_UPDATE,
         throttle((data) => {
@@ -133,6 +132,9 @@ export const useXgPlayer = (url: string) => {
     if (player?.isPlaying && isLoadDanmaku) {
       player.danmu?.setFontSize(+danmakuFontSize, 24)
       player.danmu?.setAllDuration('all', +danmakuDuration)
+    }
+    return () => {
+      dismiss()
     }
   }, [playerSettings])
 

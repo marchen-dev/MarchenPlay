@@ -40,7 +40,9 @@ export const useMatchAnimeData = () => {
     if (isError) {
       showFailedToast({ title: '匹配失败', description: '请检查网络连接或稍后再试' })
     }
-    clearPlayingVideo()
+    return () => {
+      clearPlayingVideo()
+    }
   }, [location.pathname, isError])
 
   return { matchData, url, clearPlayingVideo }
