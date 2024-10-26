@@ -1,7 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { MARCHEN_PROTOCOL } from '@main/constants/protocol'
+import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
+import FFmpeg from '@main/lib/ffmpeg'
 import { calculateFileHashByBuffer } from '@renderer/lib/calc-file-hash'
 import { dialog } from 'electron'
 
@@ -12,7 +13,7 @@ export const playerRoute = {
     .input<{ title: string; content: string }>()
     .action(async ({ input }) => dialog.showErrorBox(input.title, input.content)),
   getAnimeDetailByPath: t.procedure.input<{ path: string }>().action(async ({ input }) => {
-    const animePath = input?.path.replace(`${MARCHEN_PROTOCOL}://`, '')
+    const animePath = input?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
     if (!animePath || !fs.existsSync(animePath)) {
       return {
         ok: 0,
@@ -39,5 +40,10 @@ export const playerRoute = {
         message: '获取视频信息失败',
       }
     }
+  }),
+  grabFrame: t.procedure.input<{ path: string; time: string }>().action(async ({ input }) => {
+    const ffmpeg = new FFmpeg(input.path)
+    const base64Image = (await ffmpeg.grabFrame(input.time)) as string
+    return base64Image
   }),
 }

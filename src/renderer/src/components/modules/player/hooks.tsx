@@ -1,4 +1,4 @@
-import { MARCHEN_PROTOCOL } from '@main/constants/protocol'
+import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import {
   currentMatchedVideoAtom,
   isLoadDanmakuAtom,
@@ -11,6 +11,7 @@ import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
+import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
 import queryClient from '@renderer/lib/query-client'
 import { isWeb } from '@renderer/lib/utils'
@@ -48,7 +49,7 @@ export const useVideo = () => {
       url = URL.createObjectURL(file)
     } else {
       const path = window.api.showFilePath(file)
-      url = `${MARCHEN_PROTOCOL}://${path}`
+      url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
     }
     const { size, name } = file
     const fileName = name.slice(0, Math.max(0, name.lastIndexOf('.'))) || name
@@ -88,6 +89,7 @@ export const useXgPlayer = (url: string) => {
     url,
     playerSettings.enableTraditionalToSimplified,
   ]) as CommentsModel | undefined
+
   const initializePlayerEvent = useCallback(async () => {
     if (!player) {
       return
@@ -125,6 +127,23 @@ export const useXgPlayer = (url: string) => {
           duration: data?.duration,
         })
       })
+
+      if (!isWeb) {
+        player.on(Events.DESTROY, async () => {
+          const latestAnime = await db.history.get(currentMatchedVideo.animeId)
+          const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
+          if (!animePath) {
+            return
+          }
+          const base64Image = await tipcClient?.grabFrame({
+            path: animePath,
+            time: latestAnime?.progress.toString() || '0',
+          })
+          await db.history.update(currentMatchedVideo.animeId, {
+            thumbnail: base64Image,
+          })
+        })
+      }
     }
   }, [currentMatchedVideo.animeId, isLoadDanmaku])
 

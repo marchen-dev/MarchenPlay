@@ -17,7 +17,7 @@ export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
   const [loadingProgress, setLoadingProgress] = useAtom(loadingDanmuProgressAtom)
 
-  if (loadingProgress !== null && loadingProgress < LoadingStatus.START_PLAY || !startPlaying) {
+  if ((loadingProgress !== null && loadingProgress < LoadingStatus.START_PLAY) || !startPlaying) {
     return (
       <>
         <LoadingDanmuTimeLine />

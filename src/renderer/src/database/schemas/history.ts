@@ -9,6 +9,7 @@ export interface DB_History {
   progress: number
   duration: number
   cover: string
+  thumbnail?: string
   danmaku: CommentsModel
   updatedAt: string
 }

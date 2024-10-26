@@ -1,7 +1,9 @@
+import { useAppSettings, useAppSettingsValue } from '@renderer/atoms/settings/app'
 import { RouterLayout } from '@renderer/components/layout/RouterLayout'
 import { Badge } from '@renderer/components/ui/badge'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
+import { Toggle } from '@renderer/components/ui/toggle'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { cn, isWeb } from '@renderer/lib/utils'
@@ -13,13 +15,15 @@ import { useNavigate } from 'react-router-dom'
 
 export default function History() {
   const historyData = useLiveQuery(() => db.history.orderBy('updatedAt').reverse().toArray())
-
+  const { showPoster } = useAppSettingsValue()
   return (
-    <RouterLayout>
+    <RouterLayout FunctionArea={<FunctionArea />}>
       <ScrollArea className="h-full px-8">
         {historyData?.length !== 0 ? (
           <ul className="grid-auto-cols grid gap-2">
-            {historyData?.map((item) => <HistoryItem {...item} key={item.episodeId} />)}
+            {historyData?.map((item) => (
+              <HistoryItem {...item} showPoster={showPoster} key={item.episodeId} />
+            ))}
           </ul>
         ) : (
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-gray-500">
@@ -32,8 +36,9 @@ export default function History() {
   )
 }
 
-const HistoryItem: FC<DB_History> = (props) => {
-  const { cover, animeTitle, episodeTitle, progress, duration, episodeId } = props
+const HistoryItem: FC<DB_History & { showPoster: boolean }> = (props) => {
+  const { cover, animeTitle, episodeTitle, progress, duration, episodeId, thumbnail, showPoster } =
+    props
   const navigation = useNavigate()
   const { toast } = useToast()
   const percentage = useMemo(() => {
@@ -58,7 +63,7 @@ const HistoryItem: FC<DB_History> = (props) => {
     >
       <div className="relative h-72 w-full overflow-hidden rounded-md ">
         <img
-          src={cover}
+          src={showPoster ? cover : (thumbnail ?? cover)}
           className="pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85"
         />
         {!isWeb && (
@@ -86,5 +91,24 @@ const HistoryItem: FC<DB_History> = (props) => {
         </div>
       </div>
     </li>
+  )
+}
+
+const FunctionArea = () => {
+  const [appSettings, setAppSettings] = useAppSettings()
+  return (
+    <div className="no-drag-region flex items-center space-x-2 text-zinc-500">
+      {!isWeb && (
+        <Toggle
+          size="sm"
+          aria-label="Thumbnail and poster switch"
+          className="text-2xl"
+          pressed={appSettings.showPoster}
+          onPressedChange={(value) => setAppSettings({ showPoster: value })}
+        >
+          <i className="icon-[mingcute--pic-line]" />
+        </Toggle>
+      )}
+    </div>
   )
 }
