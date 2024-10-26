@@ -7,9 +7,9 @@ import {
   videoAtom,
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
-import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
+import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { tipcClient } from '@renderer/lib/client'
 import { apiClient } from '@renderer/request'
 import { RouteName } from '@renderer/router'
@@ -22,8 +22,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 export const useMatchAnimeData = () => {
   const { hash, size, name, url } = useAtomValue(videoAtom)
   const clearPlayingVideo = useClearPlayingVideo()
-  const { toast } = useToast()
   const location = useLocation()
+  const { showFailedToast } = usePlayAnimeFailedToast()
   const resetCurrentMatchedVideo = useResetAtom(currentMatchedVideoAtom)
   const { data: matchData, isError } = useQuery({
     queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, url],
@@ -38,13 +38,8 @@ export const useMatchAnimeData = () => {
   useEffect(
     () => () => {
       if (isError) {
-        toast({
-          title: '播放失败',
-          description: '请检查网络连接或稍后再试',
-          variant: 'destructive',
-        })
+        showFailedToast({ title: '匹配失败', description: '请检查网络连接或稍后再试' })
       }
-      clearPlayingVideo()
     },
     [location.pathname, isError],
   )
@@ -56,9 +51,8 @@ export const useDanmuData = () => {
   const { enableTraditionalToSimplified } = usePlayerSettingsValue()
   const { matchData, url } = useMatchAnimeData()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
-  const { toast } = useToast()
-  const clearPlayingVideo = useClearPlayingVideo()
   const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
+  const { showFailedToast } = usePlayAnimeFailedToast()
   const { data: danmuData, isError } = useQuery({
     queryKey: [apiClient.comment.Commentkeys.getDanmu, url, enableTraditionalToSimplified],
     queryFn: () => {
@@ -111,12 +105,7 @@ export const useDanmuData = () => {
 
   useEffect(() => {
     if (isError) {
-      toast({
-        title: '播放失败',
-        description: '请检查网络连接或稍后再试',
-        variant: 'destructive',
-      })
-      clearPlayingVideo()
+      showFailedToast({ title: '弹幕加载失败', description: '请检查网络连接或稍后再试' })
     }
   }, [isError])
 
@@ -134,13 +123,12 @@ const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedAt'>) =>
     cover: bangumi.imageUrl,
     updatedAt: new Date().toISOString(),
   } satisfies DB_History
-
-  const existingHistory = await db.history.where({ animeId: params.animeId }).first()
-  if (existingHistory) {
-    await db.history.update(existingHistory.animeId, {
+  const existingAnime = await db.history.where({ animeId: params.animeId }).first()
+  if (existingAnime) {
+    const oldEspisode = params.episodeId === existingAnime.episodeId
+    await db.history.update(existingAnime.animeId, {
       ...historyData,
-      duration: existingHistory.duration,
-      progress: existingHistory.progress,
+      ...(oldEspisode && { duration: existingAnime.duration, progress: existingAnime.progress }),
     })
     return
   }
@@ -149,39 +137,38 @@ const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedAt'>) =>
 
 export const useLoadingHistoricalAnime = () => {
   const setVideo = useSetAtom(videoAtom)
-  const { toast } = useToast()
   const location = useLocation()
   const navigate = useNavigate()
   const setProgress = useSetAtom(loadingDanmuProgressAtom)
   const effectOnce = useRef(false)
+  const { showFailedToast } = usePlayAnimeFailedToast()
   const episodeId = location.state?.episodeId
+
+  const handleDeleteHistory = useCallback(async (animeId: number) => {
+    try {
+      db.history.delete(animeId)
+    } catch (error) {
+      console.error('Failed to delete history:', error)
+    }
+  }, [])
+
   const loadingAnime = useCallback(async () => {
     const anime = await db.history.get({ episodeId })
     if (!anime || Array.isArray(anime)) {
-      toast({
-        title: '播放失败',
-        description: '未找到历史记录',
-        variant: 'destructive',
-      })
+      showFailedToast({ title: '播放失败', description: '未找到历史记录' })
       return
     }
 
     const animeData = await tipcClient?.getAnimeDetailByPath({ path: anime.path })
     if (!animeData?.ok) {
-      toast({
-        title: '播放失败',
-        description: animeData?.message || '未找到历史记录',
-        variant: 'destructive',
-      })
+      showFailedToast({ title: '播放失败', description: animeData?.message || '未找到历史记录' })
+      handleDeleteHistory(anime.animeId)
       return
     }
     const { fileName, fileSize, fileHash } = animeData
     if (!fileHash || !fileName || !fileSize) {
-      toast({
-        title: '播放失败',
-        description: '未找到历史记录',
-        variant: 'destructive',
-      })
+      showFailedToast({ title: '播放失败', description: '未找到历史记录' })
+      handleDeleteHistory(anime.animeId)
       return
     }
     setVideo({

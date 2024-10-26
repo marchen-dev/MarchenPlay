@@ -4,14 +4,13 @@ import {
   isLoadDanmakuAtom,
   loadingDanmuProgressAtom,
   LoadingStatus,
-  useClearPlayingVideo,
   videoAtom,
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
+import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
-import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
 import queryClient from '@renderer/lib/query-client'
 import { isWeb } from '@renderer/lib/utils'
@@ -27,8 +26,7 @@ import XgPlayer, { Danmu, Events } from 'xgplayer'
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
   const setProgress = useSetAtom(loadingDanmuProgressAtom)
-  const { toast } = useToast()
-  const clearPlayingVideo = useClearPlayingVideo()
+  const { showFailedToast } = usePlayAnimeFailedToast()
   const handleNewVideo = async (e: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setProgress(LoadingStatus.IMPORT_VIDEO)
@@ -42,15 +40,7 @@ export const useVideo = () => {
     }
 
     if (!file || !file?.type.startsWith('video/')) {
-      clearPlayingVideo()
-      if (isWeb) {
-        return toast({
-          title: '格式错误',
-          description: '请导入视频文件',
-          variant: 'destructive',
-        })
-      }
-      return tipcClient?.showErrorDialog({ title: '格式错误', content: '请导入视频文件' })
+      return showFailedToast({ title: '格式错误', description: '请导入视频文件' })
     }
 
     let url = ''
@@ -68,18 +58,7 @@ export const useVideo = () => {
       setProgress(LoadingStatus.CALC_HASH)
     } catch (error) {
       console.error('Failed to calculate file hash:', error)
-      clearPlayingVideo()
-      if (isWeb) {
-        toast({
-          title: '播放失败',
-          description: '计算视频 hash 值出现异常，请重试',
-          variant: 'destructive',
-        })
-      }
-      return tipcClient?.showErrorDialog({
-        title: '播放失败',
-        content: '计算视频 hash 值出现异常，请重试',
-      })
+      showFailedToast({ title: '播放失败', description: '计算视频 hash 值出现异常，请重试' })
     }
   }
 
@@ -115,21 +94,6 @@ export const useXgPlayer = (url: string) => {
     }
 
     if (isLoadDanmaku) {
-      player?.on(
-        Events.TIME_UPDATE,
-        throttle((data) => {
-          db.history.update(currentMatchedVideo.animeId, {
-            progress: data?.currentTime,
-            duration: data?.duration,
-          })
-        }, 2000),
-      )
-      player.on(Events.LOADED_METADATA, (data) => {
-        db.history.update(currentMatchedVideo.animeId, {
-          duration: data?.duration,
-        })
-      })
-
       const anime = await db.history.get(currentMatchedVideo.animeId)
       const enablePositioningProgress =
         !!anime?.progress && anime.episodeId === currentMatchedVideo.episodeId
@@ -146,6 +110,21 @@ export const useXgPlayer = (url: string) => {
           </div>
         ),
         duration: 5000,
+      })
+
+      player?.on(
+        Events.TIME_UPDATE,
+        throttle((data) => {
+          db.history.update(currentMatchedVideo.animeId, {
+            progress: data?.currentTime,
+            duration: data?.duration,
+          })
+        }, 2000),
+      )
+      player.on(Events.LOADED_METADATA, (data) => {
+        db.history.update(currentMatchedVideo.animeId, {
+          duration: data?.duration,
+        })
       })
     }
   }, [currentMatchedVideo.animeId, isLoadDanmaku])

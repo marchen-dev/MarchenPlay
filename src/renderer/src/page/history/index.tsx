@@ -16,7 +16,7 @@ export default function History() {
 
   return (
     <RouterLayout>
-      <ScrollArea className="h-full px-8 pb-20">
+      <ScrollArea className="h-full px-8">
         {historyData?.length !== 0 ? (
           <ul className="grid-auto-cols grid gap-2">
             {historyData?.map((item) => <HistoryItem {...item} key={item.episodeId} />)}
@@ -59,7 +59,7 @@ const HistoryItem: FC<DB_History> = (props) => {
       <div className="relative h-72 w-full overflow-hidden rounded-md ">
         <img
           src={cover}
-          className="size-full object-cover transition-all duration-100 group-hover:opacity-85"
+          className="pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85"
         />
         {!isWeb && (
           <i
@@ -71,7 +71,7 @@ const HistoryItem: FC<DB_History> = (props) => {
           />
         )}
       </div>
-      <div className="mt-1 w-full px-0.5  ">
+      <div className="mt-1 w-full px-0.5">
         <p className="truncate text-sm" title={animeTitle}>
           {animeTitle}
         </p>
