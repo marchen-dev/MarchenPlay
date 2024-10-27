@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
 
 import { RootLayout } from './components/layout/RootLayout'
 import { Sidebar } from './components/modules/sidebar'
 import { Titlebar } from './components/modules/windows/Titlebar'
+import AnimatedOutlet from './components/ui/animate/AnimatedOutlet'
 import { appLog } from './lib/log'
 import { cn, isWeb, isWindows } from './lib/utils'
 import { RootProviders } from './providers'
@@ -48,7 +48,7 @@ const Prepare = () => {
 
 const Content = () => (
   <main className="flex-1">
-    <Outlet />
+    <AnimatedOutlet />
   </main>
 )
 export default App

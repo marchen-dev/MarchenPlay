@@ -23,7 +23,7 @@ export default function History() {
         {historyData?.length !== 0 ? (
           <ul
             className={cn(
-              'grid gap-2',
+              'grid gap-2 gap-y-3',
               showPoster
                 ? 'grid-auto-cols'
                 : 'grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5',
@@ -78,7 +78,8 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
         <img
           src={showPoster ? cover : (thumbnail ?? cover)}
           className={cn(
-            'pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85',
+            'pointer-events-none aspect-video size-full object-cover transition-all duration-100 group-hover:opacity-85',
+            showPoster && 'aspect-auto',
           )}
         />
         {!isWeb && (

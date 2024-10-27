@@ -2,7 +2,7 @@ import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import { Menu } from 'electron'
 
 import { isMacOS } from './lib/env'
-import { createSettingWindow } from './windows/setting'
+import { clearData, createSettingWindow } from './windows/setting'
 
 export const registerAppMenu = () => {
   if (!isMacOS) {
@@ -30,7 +30,7 @@ export const registerAppMenu = () => {
         { type: 'separator' },
         {
           label: '清除数据',
-          click: () => {},
+          click: clearData,
         },
         { role: 'quit', label: `退出 Marchen Play` },
       ],

@@ -1,6 +1,8 @@
 import { useCurrentRoute } from '@renderer/router'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
 
+import FadeTransitionView from '../ui/animate/FadeTransitionView'
+
 interface RouterLayoutProps extends PropsWithChildren {
   FunctionArea?: ReactNode
 }
@@ -13,7 +15,7 @@ export const RouterLayout: FC<RouterLayoutProps> = ({ children, FunctionArea }) 
         <h3 className=" align-middle text-2xl font-medium">{currentRoute?.meta.title}</h3>
         {FunctionArea}
       </section>
-      {children}
+      <FadeTransitionView>{children}</FadeTransitionView>
     </div>
   )
 }

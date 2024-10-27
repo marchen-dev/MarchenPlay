@@ -19,13 +19,13 @@ export default class FFmpeg {
 
   grabFrame = (time: string): Promise<string> => {
     const fileName = `${Date.now()}-${nanoid(10)}.jpeg`
-    const fullPath = path.join(screenshotsPath, fileName)
+    const fullPath = path.join(screenshotsPath(), fileName)
     return new Promise((resolve, reject) => {
       this.ffmepg
         .screenshots({
           timestamps: [time],
           filename: fileName,
-          folder: screenshotsPath,
+          folder: screenshotsPath(),
           size: '640x360', // 可根据需要调整尺寸
         })
         .on('end', () => {

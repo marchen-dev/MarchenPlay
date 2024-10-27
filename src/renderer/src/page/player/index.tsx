@@ -1,6 +1,7 @@
 import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/hooks'
 import { VideoProvider } from '@renderer/components/modules/player/Loading/PlayerProvider'
+import FadeTransitionView from '@renderer/components/ui/animate/FadeTransitionView'
 import { cn } from '@renderer/lib/utils'
 import type { FC } from 'react'
 import { useMemo, useRef } from 'react'
@@ -14,24 +15,26 @@ export default function VideoPlayer() {
     [url],
   )
   return (
-    <VideoProvider>
-      <div
-        onDrop={handleNewVideo}
-        onDragOver={handleDragOver}
-        className={cn('flex size-full items-center justify-center ')}
-      >
-        {content}
-        {showAddVideoTips && (
-          <input
-            type="file"
-            accept="video/mp4, video/x-matroska"
-            ref={fileInputRef}
-            onChange={handleNewVideo}
-            className="hidden"
-          />
-        )}
-      </div>
-    </VideoProvider>
+    <FadeTransitionView>
+      <VideoProvider>
+        <div
+          onDrop={handleNewVideo}
+          onDragOver={handleDragOver}
+          className={cn('flex size-full items-center justify-center ')}
+        >
+          {content}
+          {showAddVideoTips && (
+            <input
+              type="file"
+              accept="video/mp4, video/x-matroska"
+              ref={fileInputRef}
+              onChange={handleNewVideo}
+              className="hidden"
+            />
+          )}
+        </div>
+      </VideoProvider>
+    </FadeTransitionView>
   )
 }
 

@@ -1,7 +1,7 @@
 import { useNetworkStatus } from '@renderer/atoms/network'
 import Show from '@renderer/components/common/Show'
 import { Logo } from '@renderer/components/icons/Logo'
-import { Alert, AlertDescription, AlertTitle } from '@renderer/components/ui/Alert'
+import { Alert, AlertDescription, AlertTitle } from '@renderer/components/ui/alert'
 import { PROJECT_NAME } from '@renderer/constants'
 import { cn, isMac } from '@renderer/lib/utils'
 import type { SidebarRouteObject } from '@renderer/router'
