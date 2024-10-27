@@ -15,14 +15,22 @@ import { useNavigate } from 'react-router-dom'
 
 export default function History() {
   const historyData = useLiveQuery(() => db.history.orderBy('updatedAt').reverse().toArray())
-  const { showPoster } = useAppSettingsValue()
+  const appSettings = useAppSettingsValue()
+  const showPoster = appSettings.showPoster || isWeb
   return (
     <RouterLayout FunctionArea={<FunctionArea />}>
       <ScrollArea className="h-full px-8">
         {historyData?.length !== 0 ? (
-          <ul className="grid-auto-cols grid gap-2">
+          <ul
+            className={cn(
+              'grid gap-2',
+              showPoster
+                ? 'grid-auto-cols'
+                : 'grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5',
+            )}
+          >
             {historyData?.map((item) => (
-              <HistoryItem {...item} showPoster={showPoster} key={item.episodeId} />
+              <HistoryItem {...item} showPoster={showPoster || isWeb} key={item.episodeId} />
             ))}
           </ul>
         ) : (
@@ -36,11 +44,16 @@ export default function History() {
   )
 }
 
-const HistoryItem: FC<DB_History & { showPoster: boolean }> = (props) => {
+interface HistoryItemProps extends DB_History {
+  showPoster: boolean
+}
+
+const HistoryItem: FC<HistoryItemProps> = (props) => {
   const { cover, animeTitle, episodeTitle, progress, duration, episodeId, thumbnail, showPoster } =
     props
   const navigation = useNavigate()
   const { toast } = useToast()
+
   const percentage = useMemo(() => {
     const percentage = progress / duration
     return Number.isFinite(percentage) && !Number.isNaN(percentage)
@@ -49,7 +62,7 @@ const HistoryItem: FC<DB_History & { showPoster: boolean }> = (props) => {
   }, [progress, duration])
   return (
     <li
-      className={cn(' flex cursor-default select-none flex-col items-center', !isWeb && 'group')}
+      className={cn('flex cursor-default select-none flex-col items-center', !isWeb && 'group')}
       onClick={() => {
         if (isWeb) {
           return toast({
@@ -61,10 +74,12 @@ const HistoryItem: FC<DB_History & { showPoster: boolean }> = (props) => {
         return navigation(RouteName.PLAYER, { state: { episodeId } })
       }}
     >
-      <div className="relative h-72 w-full overflow-hidden rounded-md ">
+      <div className={cn('relative w-full overflow-hidden rounded-md', showPoster && 'h-72')}>
         <img
           src={showPoster ? cover : (thumbnail ?? cover)}
-          className="pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85"
+          className={cn(
+            'pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85',
+          )}
         />
         {!isWeb && (
           <i
@@ -75,6 +90,10 @@ const HistoryItem: FC<DB_History & { showPoster: boolean }> = (props) => {
             )}
           />
         )}
+        <div
+          className={cn('absolute bottom-0 left-0 h-1 rounded-md bg-warning')}
+          style={{ width: `${percentage}%` }}
+        />
       </div>
       <div className="mt-1 w-full px-0.5">
         <p className="truncate text-sm" title={animeTitle}>
