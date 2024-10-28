@@ -135,7 +135,7 @@ const FunctionArea = memo(() => {
       <FunctionAreaButton
         onClick={() =>
           present({
-            title: '是否删除所有历史记录?',
+            title: '是否删除历史记录?',
             handleConfirm: () => {
               db.history.clear()
             },

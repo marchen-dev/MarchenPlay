@@ -21,22 +21,24 @@ export const useDialog = () => {
           title: params.title,
           overlay: true,
           content: ({ dismiss }) => (
-            <div>
-              <Button
-                onClick={() => {
-                  params.handleConfirm?.()
-                  dismiss()
-                }}
-              >
-                Confirm
-              </Button>
+            <div className="mt-3 flex justify-end gap-2">
               <Button
                 onClick={() => {
                   params.handleCancel?.()
                   dismiss()
                 }}
+                variant={'outline'}
               >
-                Cancel
+                取消
+              </Button>
+              <Button
+                onClick={() => {
+                  params.handleConfirm?.()
+                  dismiss()
+                }}
+                variant={'destructive'}
+              >
+                确认
               </Button>
             </div>
           ),
