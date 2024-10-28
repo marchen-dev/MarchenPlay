@@ -38,7 +38,7 @@ export const appRoute = {
     const result = await dialog.showMessageBox({
       type: 'warning',
       message: input.title,
-      buttons: ['取消', '确定'],
+      buttons: ['确定','取消'],
     })
     return !!result.response
   }),
