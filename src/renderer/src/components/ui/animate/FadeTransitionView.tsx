@@ -1,12 +1,10 @@
-import { m } from 'framer-motion'
 import type { FC, PropsWithChildren } from 'react'
 
-const FadeTransitionView: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <m.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="h-full">
-      {children}
-    </m.div>
-  )
-}
+import type { TransitionViewProps } from './CreateTranstion'
+import { createTransition } from './CreateTranstion'
 
+const FadeTransitionView: FC<PropsWithChildren<TransitionViewProps>> = createTransition({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+})
 export default FadeTransitionView

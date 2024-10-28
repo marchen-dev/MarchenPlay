@@ -13,9 +13,14 @@ const getRendererHandlers = () => {
   return getAppRendererHandlers<RendererHandlers>(mainWindow.webContents)
 }
 
-export const createSettingWindow = () => {
+export const createSettingWindow = (tab?: string) => {
   const handlers = getRendererHandlers()
-  handlers?.showSetting.send()
+  handlers?.showSetting.send(tab)
+}
+
+export const importAnime = () => {
+  const handlers = getRendererHandlers()
+  handlers?.importAnime.send()
 }
 
 export const clearData = async () => {

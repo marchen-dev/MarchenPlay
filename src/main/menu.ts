@@ -2,7 +2,7 @@ import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import { Menu } from 'electron'
 
 import { isMacOS } from './lib/env'
-import { clearData, createSettingWindow } from './windows/setting'
+import { clearData, createSettingWindow, importAnime } from './windows/setting'
 
 export const registerAppMenu = () => {
   if (!isMacOS) {
@@ -15,7 +15,7 @@ export const registerAppMenu = () => {
         {
           type: 'normal',
           label: `关于 Marchen Play`,
-          click: () => {},
+          click: () => createSettingWindow('关于'),
         },
         { type: 'separator' },
         {
@@ -42,7 +42,7 @@ export const registerAppMenu = () => {
         {
           type: 'normal',
           label: '导入动漫',
-          click: () => {},
+          click: importAnime,
         },
         { type: 'separator' },
         { role: 'close', label: '关闭' },

@@ -21,6 +21,9 @@ export default class FFmpeg {
     const fileName = `${Date.now()}-${nanoid(10)}.jpeg`
     const fullPath = path.join(screenshotsPath(), fileName)
     return new Promise((resolve, reject) => {
+      if (!fs.existsSync(screenshotsPath())) {
+        fs.mkdirSync(screenshotsPath(), { recursive: true })
+      }
       this.ffmepg
         .screenshots({
           timestamps: [time],

@@ -15,7 +15,7 @@
     "paths": {
       "@pkg": ["./package.json"],
       "@renderer/*": ["src/renderer/src/*"],
-      "@main/*": ["src/main/*"],
+      "@main/*": ["src/main/*"]
     }
   }
 }

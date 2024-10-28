@@ -4,6 +4,7 @@ import {
   isLoadDanmakuAtom,
   loadingDanmuProgressAtom,
   LoadingStatus,
+  useClearPlayingVideo,
   videoAtom,
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
@@ -28,7 +29,10 @@ export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
   const setProgress = useSetAtom(loadingDanmuProgressAtom)
   const { showFailedToast } = usePlayAnimeFailedToast()
-  const handleNewVideo = async (e: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>) => {
+  const clearPlayingVideo = useClearPlayingVideo()
+  const importAnimeViaBrowser = async (
+    e: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>,
+  ) => {
     e.preventDefault()
     setProgress(LoadingStatus.IMPORT_VIDEO)
     let file: File | undefined
@@ -41,7 +45,7 @@ export const useVideo = () => {
     }
 
     if (!file || !file?.type.startsWith('video/')) {
-      return showFailedToast({ title: '格式错误', description: '请导入视频文件' })
+      return showFailedToast({ title: '格式错误', description: '请导入 mp4 或者 mkv 格式的动漫' })
     }
 
     let url = ''
@@ -63,13 +67,30 @@ export const useVideo = () => {
     }
   }
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-  }
+  const importAnimeViaIPC = useCallback(async () => {
+    const path = await tipcClient?.importAnime()
+    clearPlayingVideo()
+    if (!path) {
+      return
+    }
+    const url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
+    const animeData = await tipcClient?.getAnimeDetailByPath({ path: url })
+    if (!animeData?.ok) {
+      showFailedToast({ title: '播放失败', description: animeData?.message || '' })
+      return
+    }
+    const { fileHash, fileName, fileSize } = animeData
+    if (!fileHash || !fileHash || !fileSize) {
+      showFailedToast({ title: '播放失败', description: '无法读取视频' })
+      return
+    }
+    setVideo({ url, hash: fileHash, size: fileSize, name: fileName })
+    setProgress(LoadingStatus.CALC_HASH)
+  }, [])
 
   return {
-    handleNewVideo,
-    handleDragOver,
+    importAnimeViaBrowser,
+    importAnimeViaIPC,
     url: video.url,
     showAddVideoTips: !video.url,
   }

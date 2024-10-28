@@ -2,24 +2,33 @@ import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/hooks'
 import { VideoProvider } from '@renderer/components/modules/player/Loading/PlayerProvider'
 import FadeTransitionView from '@renderer/components/ui/animate/FadeTransitionView'
-import { cn } from '@renderer/lib/utils'
+import { cn, isWeb } from '@renderer/lib/utils'
 import type { FC } from 'react'
-import { useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 export default function VideoPlayer() {
-  const { handleDragOver, handleNewVideo, url, showAddVideoTips } = useVideo()
+  const { importAnimeViaIPC, importAnimeViaBrowser, url, showAddVideoTips } = useVideo()
+
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const clickImportvideo = () => fileInputRef.current?.click()
+
+  const manualImport = useCallback(() => {
+    if (isWeb) {
+      return fileInputRef.current?.click()
+    }
+    importAnimeViaIPC()
+  }, [importAnimeViaIPC])
+
   const content = useMemo(
-    () => (url ? <Player url={url} /> : <DragTips onClick={clickImportvideo} />),
-    [url],
+    () => (url ? <Player url={url} /> : <DragTips onClick={manualImport} />),
+    [url, manualImport],
   )
+
   return (
-    <FadeTransitionView>
+    <FadeTransitionView className="h-full">
       <VideoProvider>
         <div
-          onDrop={handleNewVideo}
-          onDragOver={handleDragOver}
+          onDrop={importAnimeViaBrowser}
+          onDragOver={(e) => e.preventDefault()}
           className={cn('flex size-full items-center justify-center ')}
         >
           {content}
@@ -28,7 +37,7 @@ export default function VideoPlayer() {
               type="file"
               accept="video/mp4, video/x-matroska"
               ref={fileInputRef}
-              onChange={handleNewVideo}
+              onChange={importAnimeViaBrowser}
               className="hidden"
             />
           )}

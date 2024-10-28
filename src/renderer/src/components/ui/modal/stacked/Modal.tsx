@@ -176,7 +176,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
         <Wrapper>
           <Dialog.Root open onOpenChange={onClose}>
             <Dialog.Portal>
-              <Dialog.Content asChild ref={modalContentRef}>
+              <Dialog.Content asChild ref={modalContentRef} >
                 <div
                   className={cn(
                     'fixed inset-0 z-20 overflow-auto',

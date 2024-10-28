@@ -28,7 +28,7 @@ export const Sidebar = () => {
           </Link>
           <button
             type="button"
-            onClick={showModal}
+            onClick={() => showModal()}
             className="no-drag-region flex size-8 cursor-default items-center justify-center rounded-md transition-colors hover:bg-base-300"
           >
             <i className="icon-[mingcute--settings-3-line] text-xl" />
@@ -73,7 +73,7 @@ export const NetWorkCheck = () => {
     return null
   }
   return (
-    <Alert style={{fontWeight:500}}variant="destructive">
+    <Alert style={{ fontWeight: 500 }} variant="destructive">
       <AlertCircle className="size-4" />
       <AlertTitle>网络异常</AlertTitle>
       <AlertDescription>部分功能使用受限</AlertDescription>

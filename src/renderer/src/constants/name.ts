@@ -1,1 +1,1 @@
-export const PROJECT_NAME = 'MarchenPlay'
+export const PROJECT_NAME = 'Marchen'

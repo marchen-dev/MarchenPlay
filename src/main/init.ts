@@ -25,6 +25,6 @@ export const initializeApp = () => {
     },
   ])
   if (isDev) {
-    app.setPath('appData', path.join(app.getPath('appData'), 'marchen-play-dev'))
+    app.setPath('appData', path.join(app.getPath('appData'), 'Marchen (dev)'))
   }
 }

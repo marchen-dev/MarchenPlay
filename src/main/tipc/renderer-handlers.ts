@@ -1,4 +1,5 @@
+
 export type RendererHandlers = {
-  showSetting: () => void
-  clearData: () => void
+  showSetting: (tab?: string) => void
+  importAnime: () => void
 }

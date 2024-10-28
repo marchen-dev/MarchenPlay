@@ -1,9 +1,12 @@
 import { useAppSettings, useAppSettingsValue } from '@renderer/atoms/settings/app'
+import {
+  FunctionAreaButton,
+  FunctionAreaToggle,
+} from '@renderer/components/layout/header/FunctionAreaButton'
 import { RouterLayout } from '@renderer/components/layout/RouterLayout'
 import { Badge } from '@renderer/components/ui/badge'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
-import { Toggle } from '@renderer/components/ui/toggle'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { cn, isWeb } from '@renderer/lib/utils'
@@ -35,7 +38,7 @@ export default function History() {
           </ul>
         ) : (
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-gray-500">
-            <i className="icon-[mingcute--folder-info-line] text-6xl " />
+            <i className="icon-[mingcute--file-more-line] text-6xl " />
             <p className="text-xl">没有内容</p>
           </div>
         )}
@@ -117,18 +120,20 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
 const FunctionArea = () => {
   const [appSettings, setAppSettings] = useAppSettings()
   return (
-    <div className="no-drag-region flex items-center space-x-2 text-zinc-500">
+    <div className="no-drag-region flex items-center space-x-2 text-2xl text-zinc-500 ">
       {!isWeb && (
-        <Toggle
-          size="sm"
-          aria-label="Thumbnail and poster switch"
-          className="text-2xl"
+        <FunctionAreaToggle
           pressed={appSettings.showPoster}
           onPressedChange={(value) => setAppSettings({ showPoster: value })}
         >
           <i className="icon-[mingcute--pic-line]" />
-        </Toggle>
+        </FunctionAreaToggle>
       )}
+      <FunctionAreaButton onClick={()=>{
+        
+      }}>
+        <i className="icon-[mingcute--delete-2-line]" />
+      </FunctionAreaButton>
     </div>
   )
 }

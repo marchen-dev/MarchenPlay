@@ -72,6 +72,7 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
+        aria-description="请手动选择弹幕库"
       >
         <DialogHeader>
           <DialogTitle className="text-xl">请手动选择弹幕库</DialogTitle>

@@ -15,6 +15,7 @@ export default defineConfig(
     },
     rules: {
       'unicorn/prefer-math-trunc': 'off',
+      'package-json/valid-name': 'off',
       'no-restricted-globals': [
         'error',
         {

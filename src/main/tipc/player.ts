@@ -46,4 +46,14 @@ export const playerRoute = {
     const base64Image = (await ffmpeg.grabFrame(input.time)) as string
     return base64Image
   }),
+  importAnime: t.procedure.action(async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: '视频文件', extensions: ['mp4', 'mkv'] }],
+    })
+    if (result.canceled) {
+      return
+    }
+    return result.filePaths[0]
+  }),
 }
