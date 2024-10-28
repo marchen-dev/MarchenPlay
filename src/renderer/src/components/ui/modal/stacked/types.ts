@@ -10,7 +10,7 @@ export interface ModalProps {
   clickOutsideToDismiss?: boolean
   max?: boolean
   content: FC<ModalContentPropsInternal>
-  classNames: classNamesProps
+  classNames?: classNamesProps
 }
 
 interface classNamesProps {

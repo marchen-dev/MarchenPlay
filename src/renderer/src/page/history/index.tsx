@@ -9,11 +9,12 @@ import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
+import { useDialog } from '@renderer/hooks/use-dialog'
 import { cn, isWeb } from '@renderer/lib/utils'
 import { RouteName } from '@renderer/router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import type { FC } from 'react'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function History() {
@@ -117,8 +118,10 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
   )
 }
 
-const FunctionArea = () => {
+const FunctionArea = memo(() => {
   const [appSettings, setAppSettings] = useAppSettings()
+  const present = useDialog()
+
   return (
     <div className="no-drag-region flex items-center space-x-2 text-2xl text-zinc-500 ">
       {!isWeb && (
@@ -129,11 +132,18 @@ const FunctionArea = () => {
           <i className="icon-[mingcute--pic-line]" />
         </FunctionAreaToggle>
       )}
-      <FunctionAreaButton onClick={()=>{
-        
-      }}>
+      <FunctionAreaButton
+        onClick={() =>
+          present({
+            title: '是否删除所有历史记录?',
+            handleConfirm: () => {
+              db.history.clear()
+            },
+          })
+        }
+      >
         <i className="icon-[mingcute--delete-2-line]" />
       </FunctionAreaButton>
     </div>
   )
-}
+})

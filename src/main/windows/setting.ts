@@ -34,7 +34,7 @@ export const clearData = async () => {
     message: '是否清除全部数据',
     buttons: ['取消', '确定'],
   })
-  if (!result) {
+  if (!result.response) {
     return
   }
 

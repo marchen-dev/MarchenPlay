@@ -76,7 +76,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
       wrapper: Wrapper = Fragment,
       CustomModalComponent,
       clickOutsideToDismiss,
-      classNames: { modalContainerClassName, modalClassName },
+      classNames,
       title,
       max,
       content,
@@ -176,13 +176,13 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
         <Wrapper>
           <Dialog.Root open onOpenChange={onClose}>
             <Dialog.Portal>
-              <Dialog.Content asChild ref={modalContentRef} >
+              <Dialog.Content asChild ref={modalContentRef}>
                 <div
                   className={cn(
                     'fixed inset-0 z-20 overflow-auto',
                     currentIsClosing ? '!pointer-events-none' : 'pointer-events-auto',
 
-                    modalContainerClassName,
+                    classNames?.modalContainerClassName,
                   )}
                   onClick={clickOutsideToDismiss ? dismiss : undefined}
                   style={zIndexStyle}
@@ -210,7 +210,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
                 className={cn(
                   'fixed inset-0 z-20 flex items-center justify-center',
                   currentIsClosing ? '!pointer-events-none' : 'pointer-events-auto',
-                  modalContainerClassName,
+                  classNames?.modalContainerClassName,
                 )}
                 style={zIndexStyle}
                 onClick={clickOutsideToDismiss ? dismiss : noticeModal}
@@ -230,7 +230,7 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
                       : 'max-h-[70vh] min-w-[300px] max-w-[90vw] lg:max-h-[calc(100vh-20rem)] lg:max-w-[70vw]',
 
                     'border border-slate-200 dark:border-neutral-800',
-                    modalClassName,
+                    classNames?.modalClassName,
                   )}
                   onClick={stopPropagation}
                   onKeyUp={handleSelectStart}
@@ -269,4 +269,3 @@ export const ModalInternal: FC<ModalInternalProps> = memo(
 )
 
 export default ModalInternal
-

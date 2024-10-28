@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, dialog } from 'electron'
 
 import { appUpdater } from '../lib/update'
 import { t } from './_instance'
@@ -33,5 +33,13 @@ export const appRoute = {
     }),
   checkUpdate: t.procedure.action(async () => {
     appUpdater.instance.checkForUpdates()
+  }),
+  clearHistoryDialog: t.procedure.input<{ title: string }>().action(async ({ input }) => {
+    const result = await dialog.showMessageBox({
+      type: 'warning',
+      message: input.title,
+      buttons: ['取消', '确定'],
+    })
+    return !!result.response
   }),
 }
