@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## [0.0.1-alpha.3](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.2...v0.0.1-alpha.3) (2024-10-29)
+
+
+### Bug Fixes
+
+* anime cannot be played ([ffab23d](https://github.com/suemor233/MarchenPlay/commit/ffab23df2869e5fad32f790f4cdbc7d670da0296))
+* when switching tabs, the timeline cannot disappear ([60ada24](https://github.com/suemor233/MarchenPlay/commit/60ada24a35473f80cd1b3aede9b6c359d4190d3b))
+
+
+### Features
+
+* adapt thumbnail layout ([e11eea9](https://github.com/suemor233/MarchenPlay/commit/e11eea9d73b5d0ef47ef661199fce60030250b95))
+* adapt web version dialog ([52c3110](https://github.com/suemor233/MarchenPlay/commit/52c311087e923f0a7b5eb1eadc844cba68a2e9d9))
+* clear historical data ([9535e94](https://github.com/suemor233/MarchenPlay/commit/9535e94796d92af651b44565b76733308e6283dd))
+* page transition animation ([72d5ca0](https://github.com/suemor233/MarchenPlay/commit/72d5ca0d09c2cba093a1767a1c122a7ad07b9137))
+* react query devtools ([5636c6e](https://github.com/suemor233/MarchenPlay/commit/5636c6eb45a6484698965a2cac296d7934bcab44))
+* simplified and traditional chinese danmaku dynamic switching ([10237f7](https://github.com/suemor233/MarchenPlay/commit/10237f79d07e815b5a39b916bf38456c1b0ab854))
+* switch thumbnail and poster ([a73a25f](https://github.com/suemor233/MarchenPlay/commit/a73a25f02854a3fe931bfe9001ba7f8f5c6c8bc2))
+
+
+### Performance Improvements
+
+* expand router layout padding ([1c86690](https://github.com/suemor233/MarchenPlay/commit/1c866900ce5e326c20e4b0d0123990f1c84c5b06))
+* packaged toast ([4c21203](https://github.com/suemor233/MarchenPlay/commit/4c21203eb23fa58899c2b5c1718246b16d02ca7d))
+
+
+
 ## [0.0.1-alpha.2](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.1...v0.0.1-alpha.2) (2024-10-25)
 
 
