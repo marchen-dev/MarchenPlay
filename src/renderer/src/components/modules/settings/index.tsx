@@ -19,7 +19,7 @@ export const SettingModal = () => {
         </ul>
       </div>
       <DividerVertical className="mr-0 shrink-0 border-slate-200 opacity-80 dark:border-neutral-800" />
-      <div className="flex-1 bg-cn-primary-foreground">
+      <div className="flex-1 bg-base-100">
         <ScrollArea className="h-full">{component}</ScrollArea>
       </div>
     </div>

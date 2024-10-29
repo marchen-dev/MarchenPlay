@@ -1,19 +1,8 @@
 import { cn } from '@renderer/lib/utils'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
 
-import { useCurrentSetting } from '../provider'
-
 export const SettingViewContainer: FC<PropsWithChildren> = ({ children }) => {
-  const { title, icon } = useCurrentSetting()
-  return (
-    <div className="space-y-4 p-5">
-      <p className="flex items-center gap-1">
-        <i className={cn(icon, 'size-6')} />
-        <span className='font-medium" text-lg'>{title}</span>
-      </p>
-      {children}
-    </div>
-  )
+  return <div className="space-y-4 p-5">{children}</div>
 }
 
 interface FieldsCardLayoutProps extends PropsWithChildren {

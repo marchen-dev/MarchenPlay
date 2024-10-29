@@ -3,10 +3,10 @@ import { useBeforeMounted } from '@renderer/hooks/use-before-mounted'
 import { atom, useAtomValue } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'
 
-import type {SettingTabsModel} from './tabs';
-import { settingTabs  } from './tabs'
+import type { SettingTabsModel } from './tabs'
+import { settingTabs } from './tabs'
 
-const currentSettingAtom = atom<SettingTabsModel | null>(null)
+const currentSettingAtom = atom<SettingTabsModel | null>(settingTabs[0])
 
 export const SettingProvider: FC<PropsWithChildren & { data: SettingTabsModel }> = (props) => {
   const { children, data } = props
