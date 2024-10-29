@@ -1,7 +1,6 @@
 import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/hooks'
 import { VideoProvider } from '@renderer/components/modules/player/Loading/PlayerProvider'
-import FadeTransitionView from '@renderer/components/ui/animate/FadeTransitionView'
 import { cn, isWeb } from '@renderer/lib/utils'
 import type { FC } from 'react'
 import { useCallback, useMemo, useRef } from 'react'
@@ -24,7 +23,6 @@ export default function VideoPlayer() {
   )
 
   return (
-    <FadeTransitionView className="h-full">
       <VideoProvider>
         <div
           onDrop={importAnimeViaBrowser}
@@ -43,7 +41,6 @@ export default function VideoPlayer() {
           )}
         </div>
       </VideoProvider>
-    </FadeTransitionView>
   )
 }
 
