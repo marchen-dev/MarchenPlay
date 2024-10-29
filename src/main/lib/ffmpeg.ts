@@ -7,8 +7,8 @@ import { screenshotsPath } from '@main/constants/app'
 import ffmpeg from 'fluent-ffmpeg'
 import { nanoid } from 'nanoid'
 
-ffmpeg.setFfmpegPath(ffmpegPath.path)
-ffmpeg.setFfprobePath(ffprobePath.path)
+ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'))
+ffmpeg.setFfprobePath(ffprobePath.path.replace('app.asar', 'app.asar.unpacked'))
 
 export default class FFmpeg {
   ffmepg: ffmpeg.FfmpegCommand
