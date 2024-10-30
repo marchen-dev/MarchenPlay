@@ -22,7 +22,7 @@ export const Sidebar = () => {
             <Show when={!isMac}>
               <p className="flex items-center gap-1">
                 <Logo clasNames={{ icon: 'size-8' }} />
-                <span className="font-logo text-lg">{PROJECT_NAME}</span>
+                <span className="font-logo text-lg font-bold">{PROJECT_NAME}</span>
               </p>
             </Show>
           </Link>

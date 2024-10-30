@@ -204,7 +204,7 @@ export const useXgPlayer = (url: string) => {
               mode,
               style: {
                 color: danmakuColor,
-                fontWeight: 700,
+                fontWeight: 600,
                 textShadow: `
                 rgb(0, 0, 0) 1px 0px 1px, 
                 rgb(0, 0, 0) 0px 1px 1px, 

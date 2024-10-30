@@ -10,6 +10,7 @@ import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { useDialog } from '@renderer/hooks/use-dialog'
+import { relativeTimeToNow } from '@renderer/lib/date'
 import { cn, isWeb } from '@renderer/lib/utils'
 import { RouteName } from '@renderer/router'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -53,8 +54,17 @@ interface HistoryItemProps extends DB_History {
 }
 
 const HistoryItem: FC<HistoryItemProps> = (props) => {
-  const { cover, animeTitle, episodeTitle, progress, duration, episodeId, thumbnail, showPoster } =
-    props
+  const {
+    cover,
+    animeTitle,
+    episodeTitle,
+    progress,
+    duration,
+    episodeId,
+    thumbnail,
+    showPoster,
+    updatedAt,
+  } = props
   const navigation = useNavigate()
   const { toast } = useToast()
 
@@ -110,7 +120,7 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
         >
           <span className="truncate">{episodeTitle}</span>
           <div className="shrink-0 ">
-            <Badge variant={'outline'}>{percentage}%</Badge>
+            <Badge variant={'outline'}>{relativeTimeToNow(updatedAt)}</Badge>
           </div>
         </div>
       </div>

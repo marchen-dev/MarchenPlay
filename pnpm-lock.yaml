@@ -71,6 +71,9 @@ importers:
       danmu.js:
         specifier: ^1.1.13
         version: 1.1.13
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       dexie:
         specifier: ^4.0.8
         version: 4.0.9
@@ -2394,6 +2397,9 @@ packages:
 
   danmu.js@1.1.13:
     resolution: {integrity: sha512-knFd0/cB2HA4FFWiA7eB2suc5vCvoHdqio33FyyCSfP7C+1A+zQcTvnvwfxaZhrxsGj4qaQI2I8XiTqedRaVmg==}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debug@3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
@@ -7253,6 +7259,8 @@ snapshots:
   danmu.js@1.1.13:
     dependencies:
       event-emitter: 0.3.5
+
+  dayjs@1.11.13: {}
 
   debug@3.2.7:
     dependencies:
