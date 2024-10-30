@@ -13,9 +13,9 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@pkg': resolve('./package.json'),
         '@main': resolve('src/main'),
         '@renderer': resolve('src/renderer/src'),
+        '@pkg': resolve('./package.json'),
       },
     },
   },

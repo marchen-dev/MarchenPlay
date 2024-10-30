@@ -13,7 +13,7 @@ export const AboutView = () => {
           <div className="flex gap-3">
             <Logo round clasNames={{ wrapper: 'size-20 border' }} />
             <div className="flex flex-col gap-1">
-              <h4 className="text-lg font-medium">Marchen Play</h4>
+              <h4 className="text-lg font-medium">Marchen</h4>
               <div className="text-sm text-zinc-500">
                 <p>当前版本: {version}</p>
                 <p>Copyright @ 2024 Suemor</p>
