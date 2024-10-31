@@ -3,7 +3,7 @@ import { usePlayerSettings } from '@renderer/atoms/settings/player'
 import { FieldLayout, FieldsCardLayout, SettingViewContainer } from '../Layout'
 import { SettingSelect } from '../Select'
 import { SettingSwitch } from '../Switch'
-import { danmakuDurationList, danmakuFontSizeList } from './list'
+import { danmakuDurationList, danmakuEndAreaList, danmakuFontSizeList } from './list'
 
 export const PlayerView = () => {
   const [playerSetting, setPlayerSetting] = usePlayerSettings()
@@ -35,6 +35,16 @@ export const PlayerView = () => {
             value={playerSetting.danmakuDuration}
             onValueChange={(value) =>
               setPlayerSetting((prev) => ({ ...prev, danmakuDuration: value }))
+            }
+          />
+        </FieldLayout>
+        <FieldLayout title="显示区域">
+          <SettingSelect
+            placeholder="弹幕显示区域"
+            groups={danmakuEndAreaList}
+            value={playerSetting.danmakuEndArea}
+            onValueChange={(value) =>
+              setPlayerSetting((prev) => ({ ...prev, danmakuEndArea: value }))
             }
           />
         </FieldLayout>

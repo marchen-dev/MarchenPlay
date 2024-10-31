@@ -47,3 +47,27 @@ export const danmakuDurationList = [
     value: '10000',
   },
 ] satisfies SelectGroup[]
+
+export const danmakuEndAreaList = [
+  {
+    label: '10%',
+    value: '0.1',
+  },
+  {
+    label: '25%',
+    value: '0.25',
+    default: true,
+  },
+  {
+    label: '50%',
+    value: '0.5',
+  },
+  {
+    label: '75%',
+    value: '0.75',
+  },
+  {
+    label: '100%',
+    value: '1',
+  },
+] satisfies SelectGroup[]

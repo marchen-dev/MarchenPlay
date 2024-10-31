@@ -10,7 +10,7 @@ import type { FC } from 'react'
 
 export interface SelectGroup {
   label: string
-  value: string
+  value: string  
   default?: boolean
 }
 
@@ -23,6 +23,7 @@ interface SettingSelectProps {
 
 export const SettingSelect: FC<SettingSelectProps> = (props) => {
   const { placeholder, groups, value, onValueChange } = props
+
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="h-9 w-[150px]">
@@ -31,7 +32,7 @@ export const SettingSelect: FC<SettingSelectProps> = (props) => {
       <SelectContent>
         <SelectGroup>
           {groups.map((group) => (
-            <SelectItem key={group.value} value={group.value}>
+            <SelectItem key={group.label} value={group.value}>
               {group.label}
             </SelectItem>
           ))}

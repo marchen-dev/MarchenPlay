@@ -103,7 +103,7 @@ export const useXgPlayer = (url: string) => {
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const playerSettings = usePlayerSettingsValue()
-  const { danmakuDuration, danmakuFontSize } = playerSettings
+  const { danmakuDuration, danmakuFontSize, danmakuEndArea } = playerSettings
 
   const danmuData = queryClient.getQueryData([
     apiClient.comment.Commentkeys.getDanmu,
@@ -172,6 +172,10 @@ export const useXgPlayer = (url: string) => {
     if (player?.isPlaying && isLoadDanmaku) {
       player.danmu?.setFontSize(+danmakuFontSize, 24)
       player.danmu?.setAllDuration('all', +danmakuDuration)
+      player.danmu?.setArea({
+        start: 0,
+        end: +danmakuEndArea,
+      })
     }
     return () => {
       dismiss()
@@ -215,6 +219,10 @@ export const useXgPlayer = (url: string) => {
             }
           }),
           fontSize: +danmakuFontSize,
+          area: {
+            start: 0,
+            end: +danmakuEndArea,
+          },
         }
       }
 
@@ -239,7 +247,6 @@ const playerBaseConfig = {
   screenShot: true,
   pip: true,
   rotate: true,
-  download: true,
 } satisfies IPlayerOptions
 
 const danmakuConfig = {

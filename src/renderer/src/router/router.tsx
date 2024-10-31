@@ -1,7 +1,6 @@
 import App from '@renderer/App'
 import NotFound from '@renderer/components/common/NotFound'
 import History from '@renderer/page/history'
-import LastAnime from '@renderer/page/latest-anime'
 import VideoPlayer from '@renderer/page/player'
 import type { NonIndexRouteObject, RouteObject } from 'react-router-dom'
 import { createHashRouter, Navigate, useLocation } from 'react-router-dom'
@@ -24,14 +23,14 @@ export const siderbarRoutes = [
     },
     element: <VideoPlayer />,
   },
-  {
-    path: RouteName.LATEST_ANIME,
-    meta: {
-      icon: 'icon-[mingcute--lightning-line]',
-      title: '最新番剧',
-    },
-    element: <LastAnime />,
-  },
+  // {
+  //   path: RouteName.LATEST_ANIME,
+  //   meta: {
+  //     icon: 'icon-[mingcute--lightning-line]',
+  //     title: '最新番剧',
+  //   },
+  //   element: <LastAnime />,
+  // },
   {
     path: RouteName.HISTORY,
     meta: {

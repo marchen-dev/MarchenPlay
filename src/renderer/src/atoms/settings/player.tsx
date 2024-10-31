@@ -1,5 +1,6 @@
 import {
   danmakuDurationList,
+  danmakuEndAreaList,
   danmakuFontSizeList,
 } from '@renderer/components/modules/settings/views/player/list'
 import type { SelectGroup } from '@renderer/components/modules/settings/views/Select'
@@ -16,6 +17,7 @@ const createPlayerDefaultSettings = () => {
     enableTraditionalToSimplified: false,
     danmakuFontSize: getSelectedDefaultValue(danmakuFontSizeList) ?? '26',
     danmakuDuration: getSelectedDefaultValue(danmakuDurationList) ?? '15000',
+    danmakuEndArea: getSelectedDefaultValue(danmakuEndAreaList)!,
   }
 }
 
