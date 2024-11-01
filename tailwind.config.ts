@@ -24,7 +24,7 @@ module.exports = {
     extend: {
       fontFamily: {
         theme: 'var(--font-family)',
-        default: 'Noto Sans SC, sans-serif, system-ui',
+        default: 'sans-serif, system-ui',
         logo: 'Manrope, sans-serif, system-ui',
       },
       colors: {

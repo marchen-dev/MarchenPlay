@@ -1,6 +1,8 @@
 import { atom, useSetAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 
+import { jotaiStore } from './store'
+
 export const videoAtom = atomWithReset({
   url: '',
   hash: '',
@@ -25,6 +27,9 @@ export const initialMatchedVideo = {
   episodeTitle: '',
   animeId: 0,
 }
+
+export const playerSettingSheetAtom = atom(false)
+
 export type MatchedVideoType = typeof initialMatchedVideo
 
 export const currentMatchedVideoAtom = atomWithReset<MatchedVideoType>(initialMatchedVideo)
@@ -41,3 +46,5 @@ export const useClearPlayingVideo = () => {
     resetProgress()
   }
 }
+
+export const showPlayerSettingSheet = () => jotaiStore.set(playerSettingSheetAtom, true)

@@ -17,7 +17,7 @@ export const playerRoute = {
     if (!animePath || !fs.existsSync(animePath)) {
       return {
         ok: 0,
-        message: '视频文件可能移动或者损坏，无法继续播放',
+        message: '视频文件可能被移动，无法继续播放',
       }
     }
 

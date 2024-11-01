@@ -9,11 +9,13 @@ import {
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
+import subtitle from '@renderer/components/ui/xgplayer/plugins/subtitle'
 import { db } from '@renderer/database/db'
 import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
+import { isDev } from '@renderer/lib/env'
 import queryClient from '@renderer/lib/query-client'
 import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
@@ -95,7 +97,7 @@ export const useVideo = () => {
     showAddVideoTips: !video.url,
   }
 }
-let player: (XgPlayer & { danmu?: Danmu }) | null = null
+export let player: (XgPlayer & { danmu?: Danmu }) | null = null
 
 export const useXgPlayer = (url: string) => {
   const playerRef = useRef<HTMLDivElement | null>(null)
@@ -115,6 +117,7 @@ export const useXgPlayer = (url: string) => {
     if (!player) {
       return
     }
+    !isDev && player.getCssFullscreen()
 
     if (isLoadDanmaku) {
       const anime = await db.history.get(currentMatchedVideo.animeId)
@@ -166,6 +169,19 @@ export const useXgPlayer = (url: string) => {
         })
       }
     }
+    // player.on(Events.LOADED_DATA, () => {
+    //   const instance = new SubtitlesOctopus({
+    //     availableFonts: {
+    //       'times new roman': TimesNewRomanFont,
+    //     },
+    //     fallbackFont,
+    //     video: player?.media,
+    //     subUrl: Test,
+    //     workerUrl,
+    //     legacyWorkerUrl,
+    //     // legacyWorkerUrl:'/subtitles-octopus-worker-legacy.js'
+    //   })
+    // })
   }, [currentMatchedVideo.animeId, isLoadDanmaku])
 
   useEffect(() => {
@@ -177,6 +193,7 @@ export const useXgPlayer = (url: string) => {
         end: +danmakuEndArea,
       })
     }
+
     return () => {
       dismiss()
     }
@@ -234,7 +251,7 @@ export const useXgPlayer = (url: string) => {
     }
   }, [playerRef, danmuData, url])
 
-  return { playerRef }
+  return { playerRef, player }
 }
 
 const playerBaseConfig = {
@@ -242,11 +259,27 @@ const playerBaseConfig = {
   width: '100%',
   lang: 'zh',
   autoplay: true,
-  volume: 1,
   miniprogress: true,
-  screenShot: true,
-  pip: true,
-  rotate: true,
+  fullscreen: {
+    index: 0,
+  },
+  cssFullscreen: {
+    index: 1,
+  },
+  setting: {
+    index: 2,
+  },
+  volume: {
+    index: 3,
+    default: 1,
+  },
+  rotate: {
+    index: 4,
+  },
+  playbackRate: {
+    index: 5,
+  },
+  plugins: [subtitle],
 } satisfies IPlayerOptions
 
 const danmakuConfig = {

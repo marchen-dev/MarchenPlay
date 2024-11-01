@@ -25,6 +25,7 @@
       "@renderer/*": ["src/renderer/src/*"],
       "@main/*": ["src/main/*"],
       "@pkg": ["./package.json"]
-    }
+    },
+    "types": ["@hrgui/libass-wasm-ts"]
   }
 }
