@@ -32,14 +32,20 @@ export default class FFmpeg {
           size: '640x360', // 可根据需要调整尺寸
         })
         .on('end', () => {
-          const data = fs.readFileSync(fullPath)
-          const base64Image = `data:image/jpeg;base64,${data.toString('base64')}`
-          fs.unlinkSync(fullPath)
-          resolve(base64Image)
+          try {
+            const data = fs.readFileSync(fullPath)
+            const base64Image = `data:image/jpeg;base64,${data.toString('base64')}`
+            fs.unlinkSync(fullPath)
+            resolve(base64Image)
+          } catch (error) {
+            reject(error)
+          }
         })
         .on('error', (err) => {
           reject(err?.message)
         })
     })
   }
+
+
 }

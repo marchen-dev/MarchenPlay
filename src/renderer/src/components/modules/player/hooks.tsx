@@ -9,7 +9,7 @@ import {
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
-import subtitle from '@renderer/components/ui/xgplayer/plugins/subtitle'
+import subtitle from '@renderer/components/ui/xgplayer/plugins/subtitle/subtitle'
 import { db } from '@renderer/database/db'
 import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
@@ -152,16 +152,26 @@ export const useXgPlayer = (url: string) => {
         })
       })
 
+      player.on(Events.ENDED, async () => {
+        const latestAnime = await db.history.get(currentMatchedVideo.animeId)
+        await db.history.update(currentMatchedVideo.animeId, {
+          progress: latestAnime?.duration,
+        })
+      })
+
       if (!isWeb) {
         player.on(Events.DESTROY, async () => {
           const latestAnime = await db.history.get(currentMatchedVideo.animeId)
           const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
+          const isEnd = latestAnime?.progress === latestAnime?.duration
           if (!animePath) {
             return
           }
           const base64Image = await tipcClient?.grabFrame({
             path: animePath,
-            time: latestAnime?.progress.toString() || '0',
+            time: isEnd
+              ? ((latestAnime?.progress ?? 3) - 3).toString()
+              : latestAnime?.progress.toString() || '0',
           })
           await db.history.update(currentMatchedVideo.animeId, {
             thumbnail: base64Image,
@@ -169,19 +179,6 @@ export const useXgPlayer = (url: string) => {
         })
       }
     }
-    // player.on(Events.LOADED_DATA, () => {
-    //   const instance = new SubtitlesOctopus({
-    //     availableFonts: {
-    //       'times new roman': TimesNewRomanFont,
-    //     },
-    //     fallbackFont,
-    //     video: player?.media,
-    //     subUrl: Test,
-    //     workerUrl,
-    //     legacyWorkerUrl,
-    //     // legacyWorkerUrl:'/subtitles-octopus-worker-legacy.js'
-    //   })
-    // })
   }, [currentMatchedVideo.animeId, isLoadDanmaku])
 
   useEffect(() => {
@@ -266,7 +263,7 @@ const playerBaseConfig = {
   cssFullscreen: {
     index: 1,
   },
-  setting: {
+  [subtitle.pluginName]: {
     index: 2,
   },
   volume: {

@@ -9,6 +9,7 @@
     "src/main/lib/*",
     "src/main/windows/*",
     "src/main/tipc/**/*",
+    "src/main/modules/**/*",
     "src/main/constants",
     "types/**/*.d.ts",
     "src/env.ts"

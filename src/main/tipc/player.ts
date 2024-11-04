@@ -3,6 +3,7 @@ import path from 'node:path'
 
 import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import FFmpeg from '@main/lib/ffmpeg'
+import { showFileSelectionDialog } from '@main/modules/showDialog'
 import { calculateFileHashByBuffer } from '@renderer/lib/calc-file-hash'
 import { dialog } from 'electron'
 
@@ -55,5 +56,19 @@ export const playerRoute = {
       return
     }
     return result.filePaths[0]
+  }),
+  importSubtitle: t.procedure.action(async () => {
+    const filePath = await showFileSelectionDialog({
+      filters: [{ name: '字幕文件', extensions: ['srt', 'ass', 'ssa', 'vtt'] }],
+    })
+    if (!filePath) {
+      return
+    }
+    const exName = path.extname(filePath)
+    if (!exName) {
+      return
+    }
+
+    // new FFmpeg(filePath)
   }),
 }
