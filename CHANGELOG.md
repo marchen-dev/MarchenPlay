@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## [0.0.1-alpha.4](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.3...v0.0.1-alpha.4) (2024-11-05)
+
+
+### Bug Fixes
+
+* path issue of ffmpeg under Windows ([7c782b5](https://github.com/suemor233/MarchenPlay/commit/7c782b59dd4fd7a86769535e3a8893be8ff6bd89))
+
+
+### Features
+
+* control the display area of the danmaku ([be7a4ea](https://github.com/suemor233/MarchenPlay/commit/be7a4eafa9ded59a8a16a40a83fb795048b6e65f))
+* relative time in anime history ([58f4905](https://github.com/suemor233/MarchenPlay/commit/58f49052af1b9cc0debd9bd064c32142b44e605e))
+* remove noto sans sc ([2da6a4c](https://github.com/suemor233/MarchenPlay/commit/2da6a4cbe9f29d2502fd32049e4ac57204d5c90e))
+* support ass subtitle import ([4835ddf](https://github.com/suemor233/MarchenPlay/commit/4835ddfc294f7683e068fedf2d8643ef0df77c30))
+* support srt and vtt subtitle import ([8e92fa3](https://github.com/suemor233/MarchenPlay/commit/8e92fa307803cbdc79f19a71866828d2c1b68399))
+
+
+### Performance Improvements
+
+* adjust the order of player icons ([26754ae](https://github.com/suemor233/MarchenPlay/commit/26754aec14e0d06bd861ae5df84a91e7e48efdd5))
+* optimize the client import subtitle button ([12c2038](https://github.com/suemor233/MarchenPlay/commit/12c203877f10c1d8b8d993e836fc99f84548f137))
+
+
+
 ## [0.0.1-alpha.3](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.2...v0.0.1-alpha.3) (2024-10-29)
 
 
