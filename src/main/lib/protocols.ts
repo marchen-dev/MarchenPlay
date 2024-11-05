@@ -1,9 +1,35 @@
 import type { ReadStream } from 'node:fs'
-import { createReadStream, statSync } from 'node:fs'
+import fs, { createReadStream, statSync } from 'node:fs'
+import path from 'node:path'
 
 import { fromFilename } from './mime-utils'
 
 export const handleCustomProtocol = (filePath: string, request: Request) => {
+  const extName = path.extname(filePath).toLowerCase()
+  switch (extName) {
+    case '.mp4':
+    case '.mkv': {
+      return handleVideoProtocol(filePath, request)
+    }
+
+    case '.ass':
+    case '.ssa': {
+      return handleSubtitleProtocol(filePath)
+    }
+  }
+  return new Response('Not Found', { status: 404 })
+}
+
+const handleSubtitleProtocol = (filePath: string) => {
+  const content = fs.readFileSync(filePath, 'utf-8')
+  return new Response(content, {
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  })
+}
+
+const handleVideoProtocol = (filePath: string, request: Request) => {
   const makeUnsupportedRangeResponse = () => {
     return new Response('unsupported range', {
       status: 416,

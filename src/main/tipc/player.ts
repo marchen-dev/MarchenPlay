@@ -64,11 +64,17 @@ export const playerRoute = {
     if (!filePath) {
       return
     }
-    const exName = path.extname(filePath)
-    if (!exName) {
+    const extName = path.extname(filePath)
+    if (!extName) {
       return
     }
+    if (extName === 'ass' || extName === 'ssa') {
+      return filePath
+    }
 
-    // new FFmpeg(filePath)
+    const ffmepg = new FFmpeg(filePath)
+    const outPutPath = ffmepg.coverToAssSubtitle()
+
+    return outPutPath
   }),
 }

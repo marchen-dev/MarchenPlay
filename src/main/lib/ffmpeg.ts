@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import ffprobePath from '@ffprobe-installer/ffprobe'
-import { screenshotsPath } from '@main/constants/app'
+import { screenshotsPath, subtitlesPath } from '@main/constants/app'
 import ffmpeg from 'fluent-ffmpeg'
 import { nanoid } from 'nanoid'
 
@@ -47,5 +47,19 @@ export default class FFmpeg {
     })
   }
 
-
+  coverToAssSubtitle = (): Promise<string> => {
+    const fileName = `${Date.now()}-${nanoid(10)}.ass`
+    const outPutPath = path.join(subtitlesPath(), fileName)
+    return new Promise((resolve, reject) => {
+      this.ffmepg
+        .outputOptions('-c:s ass')
+        .save(outPutPath)
+        .on('end', () => {
+          resolve(outPutPath)
+        })
+        .on('error', (err) => {
+          reject(err)
+        })
+    })
+  }
 }

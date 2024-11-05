@@ -1,3 +1,4 @@
+import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { toast } from '@renderer/components/ui/toast'
 import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
@@ -67,7 +68,17 @@ export default class subtitle extends Plugin {
   }
 
   async importSubtitleFromClient() {
-    await tipcClient?.importSubtitle()
+    const subtitlePath = await tipcClient?.importSubtitle()
+    if (!subtitlePath) {
+      return
+    }
+    new SubtitlesOctopus({
+      fonts: [NotoSansSC],
+      video: this.player?.media as HTMLVideoElement,
+      subUrl: `${MARCHEN_PROTOCOL_PREFIX}${subtitlePath}`,
+      workerUrl,
+      legacyWorkerUrl,
+    })
   }
 
   destroy(): void {
