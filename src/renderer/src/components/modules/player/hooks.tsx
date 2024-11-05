@@ -263,14 +263,14 @@ const playerBaseConfig = {
   cssFullscreen: {
     index: 1,
   },
-  [subtitle.pluginName]: {
-    index: 2,
-  },
   volume: {
-    index: 3,
+    index: 2,
     default: 1,
   },
   rotate: {
+    index: 3,
+  },
+  [subtitle.pluginName]: {
     index: 4,
   },
   playbackRate: {

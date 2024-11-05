@@ -1,2 +1,6 @@
 @import 'xgplayer/dist/index.min.css';
 @import 'xgplayer/es/plugins/danmu/index.css';
+/* 
+.xgplayer {
+  cursor: default;
+} */

@@ -13,9 +13,14 @@ import { subtitlePopoverToString } from './Popover'
 
 export default class subtitle extends Plugin {
   static readonly pluginName = 'subtitle'
-  private readonly pluginClassName = `xgplayer-plugin-${subtitle.pluginName}`
+  private readonly pluginClassName = {
+    icon: `xgplayer-plugin-${subtitle.pluginName}-icon`,
+    input: `xgplayer-plugin-${subtitle.pluginName}-input`,
+  }
 
-  icon: HTMLElement | HTMLInputElement | undefined
+  icon: HTMLElement | undefined
+  input: HTMLInputElement | undefined
+
   constructor(args) {
     super(args)
   }
@@ -27,44 +32,49 @@ export default class subtitle extends Plugin {
   }
 
   afterCreate() {
-    this.icon = this.find(`.${this.pluginClassName}`) as HTMLElement | HTMLInputElement
-    if (isWeb) {
-      this.icon.onchange = (e: Event) => {
-        this.importSubtitleFromBrowser(e as unknown as ChangeEvent<HTMLInputElement>)
-      }
-      return
-    }
-
-    this.icon.onclick = () => {
-      this.importSubtitleFromClient()
-    }
-  }
-
-  importSubtitleFromBrowser(e: ChangeEvent<HTMLInputElement>) {
+    this.icon = this.find(`.${this.pluginClassName.icon}`) as HTMLElement
+    this.input = this.find(`.${this.pluginClassName.input}`) as HTMLInputElement
     try {
-      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
-      const file = changeEvent.target?.files?.[0]
-      if (!file) {
+      if (isWeb) {
+        this.input.onchange = (e: Event) => {
+          this.importSubtitleFromBrowser(e as unknown as ChangeEvent<HTMLInputElement>)
+        }
+
+        this.icon.onclick = () => {
+          this.input?.click()
+        }
         return
       }
-      const url = URL.createObjectURL(file)
-      new SubtitlesOctopus({
-        fonts: [NotoSansSC],
-        video: this.player?.media as HTMLVideoElement,
-        subUrl: url,
-        workerUrl,
-        legacyWorkerUrl,
-      })
-      toast({
-        title: '导入字幕成功',
-        duration: 1500,
-      })
+
+      this.icon.onclick = () => {
+        this.importSubtitleFromClient()
+      }
     } catch {
       toast({
         variant: 'destructive',
         title: '导入字幕失败',
       })
     }
+  }
+
+  importSubtitleFromBrowser(e: ChangeEvent<HTMLInputElement>) {
+    const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
+    const file = changeEvent.target?.files?.[0]
+    if (!file) {
+      return
+    }
+    const url = URL.createObjectURL(file)
+    new SubtitlesOctopus({
+      fonts: [NotoSansSC],
+      video: this.player?.media as HTMLVideoElement,
+      subUrl: url,
+      workerUrl,
+      legacyWorkerUrl,
+    })
+    toast({
+      title: '导入字幕成功',
+      duration: 1500,
+    })
   }
 
   async importSubtitleFromClient() {
@@ -78,6 +88,10 @@ export default class subtitle extends Plugin {
       subUrl: `${MARCHEN_PROTOCOL_PREFIX}${subtitlePath}`,
       workerUrl,
       legacyWorkerUrl,
+    })
+    toast({
+      title: '导入字幕成功',
+      duration: 1500,
     })
   }
 
