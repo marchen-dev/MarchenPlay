@@ -39,7 +39,7 @@ export default defineConfig({
             targets: [
               {
                 src: 'node_modules/libass-wasm/dist/js/subtitles-octopus-worker.wasm',
-                dest: 'out/web/assets',
+                dest: 'out/renderer/assets',
               },
             ],
             hook: 'writeBundle',
