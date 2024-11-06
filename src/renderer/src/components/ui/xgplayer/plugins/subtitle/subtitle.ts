@@ -2,7 +2,7 @@ import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { toast } from '@renderer/components/ui/toast'
 import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
-import NotoSansSC from '@renderer/styles/fonts/NotoSansSC.woff2'
+import NotoSansSC from '@renderer/styles/fonts/NotoSansSC.woff2?url'
 import SubtitlesOctopus from 'libass-wasm'
 import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
 import legacyWorkerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker-legacy.js?url'
@@ -66,6 +66,7 @@ export default class subtitle extends Plugin {
     const url = URL.createObjectURL(file)
     new SubtitlesOctopus({
       fonts: [NotoSansSC],
+      fallbackFont: NotoSansSC,
       video: this.player?.media as HTMLVideoElement,
       subUrl: url,
       workerUrl,
@@ -84,6 +85,7 @@ export default class subtitle extends Plugin {
     }
     new SubtitlesOctopus({
       fonts: [NotoSansSC],
+      fallbackFont: NotoSansSC,
       video: this.player?.media as HTMLVideoElement,
       subUrl: `${MARCHEN_PROTOCOL_PREFIX}${subtitlePath}`,
       workerUrl,

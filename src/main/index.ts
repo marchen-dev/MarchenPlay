@@ -13,15 +13,16 @@ import createWindow from './windows/main'
 
 function bootstrap() {
   initializeApp()
-
   app.whenReady().then(() => {
     electronApp.setAppUserModelId(`re.${name}`)
-
+    
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)
     })
-
+    
     protocol.handle(MARCHEN_PROTOCOL, async (request) => {
+      // eslint-disable-next-line no-console
+      console.log('start!!!!!!!!!!',request.url)
       let filePath = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}:/`.length))
       if (isWindows) {
         filePath = filePath.slice(1)

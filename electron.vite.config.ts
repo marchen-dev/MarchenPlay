@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import react from '@vitejs/plugin-react'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import copy from 'rollup-plugin-copy'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const packageJson = JSON.parse(fs.readFileSync(join(__dirname, 'package.json'), 'utf-8'))
@@ -31,6 +32,21 @@ export default defineConfig({
       },
     },
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        plugins: [
+          copy({
+            targets: [
+              {
+                src: 'node_modules/libass-wasm/dist/js/subtitles-octopus-worker.wasm',
+                dest: 'out/web/assets',
+              },
+            ],
+            hook: 'writeBundle',
+          }),
+        ],
+      },
+    },
     define: {
       APP_NAME: JSON.stringify(packageJson.name),
     },
