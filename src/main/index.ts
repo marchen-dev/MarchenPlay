@@ -6,7 +6,7 @@ import { app, BrowserWindow, protocol } from 'electron'
 
 import { MARCHEN_PROTOCOL } from './constants/protocol'
 import { initializeApp } from './init'
-import { isWindows } from './lib/env'
+import { isDev, isWindows } from './lib/env'
 import { getIconPath } from './lib/icon'
 import { handleCustomProtocol } from './lib/protocols'
 import createWindow from './windows/main'
@@ -15,14 +15,12 @@ function bootstrap() {
   initializeApp()
   app.whenReady().then(() => {
     electronApp.setAppUserModelId(`re.${name}`)
-    
+
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)
     })
-    
+
     protocol.handle(MARCHEN_PROTOCOL, async (request) => {
-      // eslint-disable-next-line no-console
-      console.log('start!!!!!!!!!!',request.url)
       let filePath = decodeURIComponent(request.url.slice(`${MARCHEN_PROTOCOL}:/`.length))
       if (isWindows) {
         filePath = filePath.slice(1)
@@ -38,7 +36,7 @@ function bootstrap() {
 
     createWindow()
 
-    if (app.dock) {
+    if (app.dock && isDev) {
       app.dock.setIcon(getIconPath())
     }
 
