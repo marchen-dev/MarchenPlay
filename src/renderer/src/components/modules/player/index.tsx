@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 
 import { useXgPlayer } from './hooks'
-import { SettingSheet } from './setting/SettingSheet'
+import { SettingSheet } from './setting/Sheet'
 
 interface PlayerProps {
   url: string
@@ -13,8 +13,6 @@ export const Player: FC<PlayerProps> = (props) => {
   return (
     <>
       <div ref={playerRef} />
-      
-      
       <SettingSheet />
     </>
   )

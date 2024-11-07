@@ -5,13 +5,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@renderer/components/ui/accordion'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@renderer/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
 import { useAtom } from 'jotai'
+
+import { Audio } from './items/Audio'
+import { Danmaku } from './items/Danmaku'
+import { Subtitle } from './items/Subtitle'
 
 export const SettingSheet = () => {
   const [show, setShow] = useAtom(playerSettingSheetAtom)
@@ -27,22 +26,26 @@ export const SettingSheet = () => {
           <Accordion
             type="multiple"
             className="w-full"
-            defaultValue={['item-1', 'item-2', 'item-3']}
+            defaultValue={['danmaku', 'subtitle', 'audio']}
           >
-            <AccordionItem value="item-1">
+            <AccordionItem value="danmaku">
               <AccordionTrigger>弹幕设置</AccordionTrigger>
-              <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>字幕设置</AccordionTrigger>
               <AccordionContent>
-                Yes. It comes with default styles that matches the other components&apos; aesthetic.
+                <Danmaku />
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-3">
+
+            <AccordionItem value="subtitle">
+              <AccordionTrigger>字幕设置</AccordionTrigger>
+              <AccordionContent>
+                <Subtitle />
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="audio">
               <AccordionTrigger>音频设置</AccordionTrigger>
               <AccordionContent>
-                Yes. It&apos;s animated by default, but you can disable it if you prefer.
+                <Audio />
               </AccordionContent>
             </AccordionItem>
           </Accordion>
