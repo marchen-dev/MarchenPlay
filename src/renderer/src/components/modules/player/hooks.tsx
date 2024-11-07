@@ -9,7 +9,7 @@ import {
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
-import subtitle from '@renderer/components/ui/xgplayer/plugins/subtitle/subtitle'
+import setting from '@renderer/components/ui/xgplayer/plugins/setting/setting'
 import { db } from '@renderer/database/db'
 import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
@@ -20,12 +20,12 @@ import queryClient from '@renderer/lib/query-client'
 import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
+import type { IPlayerOptions } from '@suemor/xgplayer'
+import XgPlayer, { Danmu, Events } from '@suemor/xgplayer'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { throttle } from 'lodash-es'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
-import type { IPlayerOptions } from 'xgplayer'
-import XgPlayer, { Danmu, Events } from 'xgplayer'
 
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)
@@ -257,27 +257,26 @@ const playerBaseConfig = {
   lang: 'zh',
   autoplay: true,
   miniprogress: true,
-  closeVideoClick: true,
   fullscreen: {
     index: 0,
   },
   cssFullscreen: {
     index: 1,
   },
-  volume: {
+  [setting.pluginName]: {
     index: 2,
+  },
+  volume: {
+    index: 3,
     default: 1,
   },
   rotate: {
-    index: 3,
-  },
-  [subtitle.pluginName]: {
     index: 4,
   },
   playbackRate: {
     index: 5,
   },
-  plugins: [subtitle],
+  plugins: [setting],
 } satisfies IPlayerOptions
 
 const danmakuConfig = {

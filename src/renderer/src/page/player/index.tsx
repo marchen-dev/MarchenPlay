@@ -1,6 +1,6 @@
 import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/hooks'
-import { VideoProvider } from '@renderer/components/modules/player/Loading/PlayerProvider'
+import { VideoProvider } from '@renderer/components/modules/player/loading/PlayerProvider'
 import { cn, isWeb } from '@renderer/lib/utils'
 import type { FC } from 'react'
 import { useCallback, useMemo, useRef } from 'react'

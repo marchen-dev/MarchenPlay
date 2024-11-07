@@ -3,7 +3,7 @@ import {
   loadingDanmuProgressAtom,
   LoadingStatus,
 } from '@renderer/atoms/player'
-import { MatchAnimeDialog } from '@renderer/components/modules/player/Dialog/MatchAnimeDialog'
+import { MatchAnimeDialog } from '@renderer/components/modules/player/loading/dialog/MatchAnimeDialog'
 import { LoadingDanmuTimeLine } from '@renderer/components/modules/player/Timeline'
 import { useAtom } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'

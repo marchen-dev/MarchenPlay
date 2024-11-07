@@ -52,6 +52,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-toggle": "^1.1.0",
     "@remix-run/router": "^1.19.2",
+    "@suemor/xgplayer": "^3.0.21",
     "@tanstack/react-query": "^5.51.23",
     "class-variance-authority": "^0.7.0",
     "click-to-react-component": "^1.1.0",
@@ -74,8 +75,7 @@
     "react-router-dom": "6.27.0",
     "spark-md5": "^3.0.2",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7",
-    "xgplayer": "^3.0.20"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",

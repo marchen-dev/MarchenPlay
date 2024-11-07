@@ -62,6 +62,9 @@ importers:
       '@remix-run/router':
         specifier: ^1.19.2
         version: 1.20.0
+      '@suemor/xgplayer':
+        specifier: ^3.0.21
+        version: 3.0.21(core-js@3.38.1)
       '@tanstack/react-query':
         specifier: ^5.51.23
         version: 5.59.18(react@18.3.1)
@@ -131,9 +134,6 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14)
-      xgplayer:
-        specifier: ^3.0.20
-        version: 3.0.20(core-js@3.38.1)
     devDependencies:
       '@electron-toolkit/tsconfig':
         specifier: ^1.0.1
@@ -1688,6 +1688,11 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
+
+  '@suemor/xgplayer@3.0.21':
+    resolution: {integrity: sha512-mXgXXVsLl8VHzEs6PZ12eMR4al+XesTnDt9YY0D5YzJ2FA2igW7HlJnHo/6n+8rPH18Z70wzHwD62sIQ9cGfoQ==}
+    peerDependencies:
+      core-js: '>=3.12.1'
 
   '@swc/core-darwin-arm64@1.9.1':
     resolution: {integrity: sha512-2/ncHSCdAh5OHem1fMITrWEzzl97OdMK1PHc9CkxSJnphLjRubfxB5sbc5tDhcO68a5tVy+DxwaBgDec3PXnOg==}
@@ -4871,13 +4876,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  xgplayer-subtitles@3.0.20:
-    resolution: {integrity: sha512-I1bjsIY+aKOrhYQspLdneOkYg+Vf4cJVGPnDSFnNebnxXl9Mhz5SEpWGzYizMYxL9UvsQ9pgjeEY0o4hkwM+kQ==}
-    peerDependencies:
-      core-js: '>=3.12.1'
-
-  xgplayer@3.0.20:
-    resolution: {integrity: sha512-UNKZJRyODOZGdka83ao8fI18xdhzOV8qG4aNEOOkuOQbXFXfXsJMr/dazRHFP+uXmTqiCXr568euee3ch7CS7g==}
+  xgplayer-subtitles@3.0.21-rc.7:
+    resolution: {integrity: sha512-op7lerWIgviMxonmUqPYIDaQFauhsn26ndJgyuBPem3HUg3DVtw7TcORxzbw9KI6R3LO2g0WOywWmy+2TA0zhQ==}
     peerDependencies:
       core-js: '>=3.12.1'
 
@@ -6489,6 +6489,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  '@suemor/xgplayer@3.0.21(core-js@3.38.1)':
+    dependencies:
+      core-js: 3.38.1
+      danmu.js: 1.1.13
+      delegate: 3.2.0
+      downloadjs: 1.4.7
+      eventemitter3: 4.0.7
+      xgplayer-subtitles: 3.0.21-rc.7(core-js@3.38.1)
 
   '@swc/core-darwin-arm64@1.9.1':
     optional: true
@@ -10128,19 +10137,10 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  xgplayer-subtitles@3.0.20(core-js@3.38.1):
+  xgplayer-subtitles@3.0.21-rc.7(core-js@3.38.1):
     dependencies:
       core-js: 3.38.1
       eventemitter3: 4.0.7
-
-  xgplayer@3.0.20(core-js@3.38.1):
-    dependencies:
-      core-js: 3.38.1
-      danmu.js: 1.1.13
-      delegate: 3.2.0
-      downloadjs: 1.4.7
-      eventemitter3: 4.0.7
-      xgplayer-subtitles: 3.0.20(core-js@3.38.1)
 
   xmlbuilder@15.1.1: {}
 
