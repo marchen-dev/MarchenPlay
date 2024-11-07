@@ -1,7 +1,6 @@
 import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { toast } from '@renderer/components/ui/toast'
 import { tipcClient } from '@renderer/lib/client'
-import { isWeb } from '@renderer/lib/utils'
 import NotoSansSC from '@renderer/styles/fonts/NotoSansSC.woff2?url'
 import SubtitlesOctopus from 'libass-wasm'
 import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
@@ -14,15 +13,26 @@ import { subtitlePopoverToString } from './Popover'
 export default class subtitle extends Plugin {
   static readonly pluginName = 'subtitle'
   private readonly pluginClassName = {
-    icon: `xgplayer-plugin-${subtitle.pluginName}-icon`,
-    input: `xgplayer-plugin-${subtitle.pluginName}-input`,
+    popoverContainer: `xgplayer-plugin-${subtitle.pluginName}-popover-container`,
+    toggleButton: `xgplayer-plugin-${subtitle.pluginName}-toggle-button`,
+    popoverContent: `xgplayer-plugin-${subtitle.pluginName}-popover-content`,
   }
 
-  icon: HTMLElement | undefined
-  input: HTMLInputElement | undefined
+  popoverContainer: HTMLDivElement | undefined
+  toggleButton: HTMLDivElement | undefined
+  popoverContent: HTMLDivElement | undefined
+  private handleClickOutside: (event: MouseEvent) => void
+  private toggleButtonClickListener: () => void
 
   constructor(args) {
     super(args)
+
+    this.popoverContainer = this.find(`.${this.pluginClassName.popoverContainer}`) as HTMLDivElement
+    this.toggleButton = this.find(`.${this.pluginClassName.toggleButton}`) as HTMLDivElement
+    this.popoverContent = this.find(`.${this.pluginClassName.popoverContent}`) as HTMLDivElement
+
+    this.handleClickOutside = this.handleClickOutsideFunction.bind(this)
+    this.toggleButtonClickListener = this.toggleButtonClickFunction.bind(this)
   }
 
   static get defaultConfig() {
@@ -32,29 +42,8 @@ export default class subtitle extends Plugin {
   }
 
   afterCreate() {
-    this.icon = this.find(`.${this.pluginClassName.icon}`) as HTMLElement
-    this.input = this.find(`.${this.pluginClassName.input}`) as HTMLInputElement
-    try {
-      if (isWeb) {
-        this.input.onchange = (e: Event) => {
-          this.importSubtitleFromBrowser(e as unknown as ChangeEvent<HTMLInputElement>)
-        }
-
-        this.icon.onclick = () => {
-          this.input?.click()
-        }
-        return
-      }
-
-      this.icon.onclick = () => {
-        this.importSubtitleFromClient()
-      }
-    } catch {
-      toast({
-        variant: 'destructive',
-        title: '导入字幕失败',
-      })
-    }
+    this.toggleButton?.addEventListener('click', this.toggleButtonClickListener)
+    document.addEventListener('mousedown', this.handleClickOutside)
   }
 
   importSubtitleFromBrowser(e: ChangeEvent<HTMLInputElement>) {
@@ -97,8 +86,29 @@ export default class subtitle extends Plugin {
     })
   }
 
+  private handleClickOutsideFunction(event: MouseEvent) {
+    if (this.popoverContainer && !this.popoverContainer.contains(event.target as Node)) {
+      this.popoverContent?.classList.add('hidden')
+      this.popoverContent?.classList.remove('block')
+    }
+  }
+
+  private toggleButtonClickFunction() {
+    if (this.popoverContent?.classList.contains('hidden')) {
+      this.popoverContent?.classList.remove('hidden')
+      this.popoverContent?.classList.add('block')
+    } else {
+      this.popoverContent?.classList.add('hidden')
+      this.popoverContent?.classList.remove('block')
+    }
+  }
+
   destroy(): void {
-    this.icon = undefined
+    this.toggleButton?.removeEventListener('click', this.toggleButtonClickListener)
+    document.removeEventListener('mousedown', this.handleClickOutside)
+    this.popoverContainer = undefined
+    this.popoverContent = undefined
+    this.toggleButton = undefined
   }
 
   render(): string {

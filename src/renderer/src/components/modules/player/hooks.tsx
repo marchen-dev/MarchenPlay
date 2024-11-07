@@ -257,6 +257,7 @@ const playerBaseConfig = {
   lang: 'zh',
   autoplay: true,
   miniprogress: true,
+  closeVideoClick: true,
   fullscreen: {
     index: 0,
   },
