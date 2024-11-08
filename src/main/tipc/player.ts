@@ -3,6 +3,7 @@ import path from 'node:path'
 
 import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import FFmpeg from '@main/lib/ffmpeg'
+import { getFilePathFromProtocolURL } from '@main/lib/protocols'
 import { showFileSelectionDialog } from '@main/modules/showDialog'
 import { calculateFileHashByBuffer } from '@renderer/lib/calc-file-hash'
 import { dialog } from 'electron'
@@ -76,5 +77,10 @@ export const playerRoute = {
     const outPutPath = ffmepg.coverToAssSubtitle()
 
     return outPutPath
+  }),
+  extractSubtitlesFromAnime: t.procedure.input<{ path: string }>().action(async ({ input }) => {
+    const ffmpeg = new FFmpeg(getFilePathFromProtocolURL(input.path))
+    const subtitles = await ffmpeg.extractAndCoverAllSubtitles()
+    return subtitles
   }),
 }

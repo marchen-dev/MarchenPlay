@@ -2,6 +2,9 @@ import type { ReadStream } from 'node:fs'
 import fs, { createReadStream, statSync } from 'node:fs'
 import path from 'node:path'
 
+import { MARCHEN_PROTOCOL } from '@main/constants/protocol'
+
+import { isWindows } from './env'
 import { fromFilename } from './mime-utils'
 
 export const handleCustomProtocol = (filePath: string, request: Request) => {
@@ -111,4 +114,17 @@ const nodeStreamToWeb = (resultStream: ReadStream) => {
     },
     { highWaterMark: resultStream.readableHighWaterMark },
   )
+}
+
+export const getFilePathFromProtocolURL = (protocolUrl: string) => {
+  let filePath = decodeURIComponent(protocolUrl.slice(`${MARCHEN_PROTOCOL}:/`.length))
+  if (isWindows) {
+    filePath = filePath.slice(1)
+    filePath = path.win32.normalize(filePath)
+    // eslint-disable-next-line unicorn/prefer-regexp-test
+    if (filePath.match(/^[a-z]\\/i)) {
+      filePath = `${filePath.charAt(0).toUpperCase()}:${filePath.slice(1)}`
+    }
+  }
+  return filePath
 }

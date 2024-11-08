@@ -11,10 +11,10 @@ ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'))
 ffmpeg.setFfprobePath(ffprobePath.path.replace('app.asar', 'app.asar.unpacked'))
 
 export default class FFmpeg {
-  ffmepg: ffmpeg.FfmpegCommand
+  ffmpeg: ffmpeg.FfmpegCommand
 
   constructor(inputPath: string) {
-    this.ffmepg = ffmpeg(inputPath)
+    this.ffmpeg = ffmpeg(inputPath)
   }
 
   grabFrame = (time: string): Promise<string> => {
@@ -24,7 +24,7 @@ export default class FFmpeg {
       if (!fs.existsSync(screenshotsPath())) {
         fs.mkdirSync(screenshotsPath(), { recursive: true })
       }
-      this.ffmepg
+      this.ffmpeg
         .screenshots({
           timestamps: [time],
           filename: fileName,
@@ -51,7 +51,7 @@ export default class FFmpeg {
     const fileName = `${Date.now()}-${nanoid(10)}.ass`
     const outPutPath = path.join(subtitlesPath(), fileName)
     return new Promise((resolve, reject) => {
-      this.ffmepg
+      this.ffmpeg
         .outputOptions('-c:s ass')
         .save(outPutPath)
         .on('end', () => {
@@ -60,6 +60,47 @@ export default class FFmpeg {
         .on('error', (err) => {
           reject(err)
         })
+    })
+  }
+
+  extractAndCoverAllSubtitles = (): Promise<string[]> => {
+    return new Promise((resolve, reject) => {
+      if (!fs.existsSync(subtitlesPath())) {
+        fs.mkdirSync(subtitlesPath(), { recursive: true })
+      }
+      ffmpeg.ffprobe(this.ffmpeg._inputs[0].source, (err, metadata) => {
+        if (err) {
+          return reject(err)
+        }
+        const subtitleStreams = metadata.streams.filter(
+          (stream) => stream.codec_type === 'subtitle',
+        )
+        if (subtitleStreams.length === 0) {
+          return reject(['No subtitles'])
+        }
+
+        const promises = subtitleStreams.map((_, index) => {
+          const fileName = `${Date.now()}-${nanoid(10)}-${index}.ass`
+          const outputPath = path.join(subtitlesPath(), fileName)
+
+          return new Promise<string>((resolve, reject) => {
+            this.ffmpeg
+              .clone() // Ensure a new instance for each command
+              .outputOptions(['-map', `0:s:${index}`, '-c:s', 'ass'])
+              .save(outputPath)
+              .on('end', () => {
+                resolve(outputPath)
+              })
+              .on('error', (err) => {
+                reject(err)
+              })
+          })
+        })
+
+        Promise.all(promises)
+          .then((result) => resolve(result))
+          .catch((error) => reject(error))
+      })
     })
   }
 }
