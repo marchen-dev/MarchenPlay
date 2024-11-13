@@ -46,7 +46,7 @@ const useAppToast = () => {
         })
       }
 
-      return tipcClient?.showErrorDialog({ title, content: description })
+      return tipcClient?.showWarningDialog({ title, content: description })
     },
     [toast],
   )
