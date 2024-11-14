@@ -64,6 +64,7 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
     thumbnail,
     showPoster,
     updatedAt,
+    hash,
   } = props
   const navigation = useNavigate()
   const { toast } = useToast()
@@ -85,7 +86,7 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
             duration: 5000,
           })
         }
-        return navigation(RouteName.PLAYER, { state: { episodeId } })
+        return navigation(RouteName.PLAYER, { state: { episodeId, hash } })
       }}
     >
       <div className={cn('relative w-full overflow-hidden rounded-md', showPoster && 'h-72')}>

@@ -1,3 +1,4 @@
+import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import {
   currentMatchedVideoAtom,
   isLoadDanmakuAtom,
@@ -10,14 +11,87 @@ import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
+import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
+import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import { RouteName } from '@renderer/router'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
+import type { ChangeEvent, DragEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+
+export const useVideo = () => {
+  const [video, setVideo] = useAtom(videoAtom)
+  const setProgress = useSetAtom(loadingDanmuProgressAtom)
+  const { showFailedToast } = usePlayAnimeFailedToast()
+  const clearPlayingVideo = useClearPlayingVideo()
+  const importAnimeViaBrowser = async (
+    e: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault()
+    setProgress(LoadingStatus.IMPORT_VIDEO)
+    let file: File | undefined
+    if (e.type === 'drop') {
+      const dragEvent = e as DragEvent<HTMLDivElement>
+      file = dragEvent.dataTransfer?.files[0]
+    } else if (e.type === 'change') {
+      const changeEvent = e as ChangeEvent<HTMLInputElement>
+      file = changeEvent.target?.files?.[0]
+    }
+
+    if (!file || !file?.type.startsWith('video/')) {
+      return showFailedToast({ title: '格式错误', description: '请导入 mp4 或者 mkv 格式的动漫' })
+    }
+
+    let url = ''
+    if (isWeb) {
+      url = URL.createObjectURL(file)
+    } else {
+      const path = window.api.showFilePath(file)
+      url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
+    }
+    const { size, name } = file
+    const fileName = name.slice(0, Math.max(0, name.lastIndexOf('.'))) || name
+    try {
+      const hash = await calculateFileHash(file)
+      setVideo((prev) => ({ ...prev, url, hash, size, name: fileName }))
+      setProgress(LoadingStatus.CALC_HASH)
+    } catch (error) {
+      console.error('Failed to calculate file hash:', error)
+      showFailedToast({ title: '播放失败', description: '计算视频 hash 值出现异常，请重试' })
+    }
+  }
+
+  const importAnimeViaIPC = useCallback(async () => {
+    const path = await tipcClient?.importAnime()
+    clearPlayingVideo()
+    if (!path) {
+      return
+    }
+    const url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
+    const animeData = await tipcClient?.getAnimeDetailByPath({ path: url })
+    if (!animeData?.ok) {
+      showFailedToast({ title: '播放失败', description: animeData?.message || '' })
+      return
+    }
+    const { fileHash, fileName, fileSize } = animeData
+    if (!fileHash || !fileHash || !fileSize) {
+      showFailedToast({ title: '播放失败', description: '无法读取视频' })
+      return
+    }
+    setVideo((prev) => ({ ...prev, url, hash: fileHash, size: fileSize, name: fileName }))
+    setProgress(LoadingStatus.CALC_HASH)
+  }, [])
+  return {
+    importAnimeViaBrowser,
+    importAnimeViaIPC,
+    url: video.url,
+    showAddVideoTips: !video.url,
+  }
+}
 
 export const useMatchAnimeData = () => {
   const { hash, size, name, url } = useAtomValue(videoAtom)
@@ -31,6 +105,21 @@ export const useMatchAnimeData = () => {
       apiClient.match.postVideoEpisodeId({ fileSize: size, fileHash: hash, fileName: name }),
     enabled: !!hash,
   })
+
+  // const fetchAnimeSubtitles = useCallback(async (params: { path: string; hash: string }) => {
+  //   if (isWeb) {
+  //     return
+  //   }
+  //   const { path, hash } = params
+  //   const existingAnime = await db.history.get(hash)
+  //   if (existingAnime?.subtitles && existingAnime.subtitles.length > 0) {
+  //     return
+  //   }
+  //   const subtitles = await tipcClient?.extractSubtitlesFromAnime({ path })
+  //   if (subtitles) {
+  //     db.history.update(hash, { subtitles })
+  //   }
+  // }, [])
 
   useEffect(() => {
     resetCurrentMatchedVideo()
@@ -50,6 +139,7 @@ export const useMatchAnimeData = () => {
 
 export const useDanmuData = () => {
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
+  const video = useAtomValue(videoAtom)
   const { enableTraditionalToSimplified } = usePlayerSettingsValue()
   const { matchData, url } = useMatchAnimeData()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
@@ -91,6 +181,7 @@ export const useDanmuData = () => {
     if (danmuData && matchedVideo) {
       saveToHistory({
         ...matchedVideo,
+        hash: video.hash,
         danmaku: danmuData,
         path: url,
         progress: 0,
@@ -117,23 +208,36 @@ export const useDanmuData = () => {
   }
 }
 
-const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedAt'>) => {
-  const { animeId } = params
-  const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
+export const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedAt'>) => {
+  const { animeId, hash } = params
+  const existingAnime = await db.history.where({ hash }).first()
   const historyData = {
     ...params,
-    cover: bangumi.imageUrl,
     updatedAt: new Date().toISOString(),
   } satisfies DB_History
-  const existingAnime = await db.history.where({ animeId: params.animeId }).first()
-  if (existingAnime) {
-    const oldEspisode = params.episodeId === existingAnime.episodeId
-    await db.history.update(existingAnime.animeId, {
-      ...historyData,
-      ...(oldEspisode && { duration: existingAnime.duration, progress: existingAnime.progress }),
+  if (animeId) {
+    const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
+
+    Object.assign(historyData, {
+      cover: bangumi.imageUrl,
     })
-    return
+
+    if (existingAnime) {
+      // 确保能够对不同集进行更新
+      const oldEspisode = params.episodeId === existingAnime.episodeId
+      await db.history.update(existingAnime.hash, {
+        ...historyData,
+        ...(oldEspisode && { duration: existingAnime.duration, progress: existingAnime.progress }),
+      })
+      return
+    }
+  } else {
+    if (existingAnime) {
+      await db.history.update(existingAnime.hash, historyData)
+      return
+    }
   }
+
   await db.history.add(historyData)
 }
 
@@ -145,17 +249,18 @@ export const useLoadingHistoricalAnime = () => {
   const effectOnce = useRef(false)
   const { showFailedToast } = usePlayAnimeFailedToast()
   const episodeId = location.state?.episodeId
+  const hash = location.state?.hash
 
-  const handleDeleteHistory = useCallback(async (animeId: number) => {
+  const handleDeleteHistory = useCallback(async (hash: string) => {
     try {
-      db.history.delete(animeId)
+      db.history.delete(hash)
     } catch (error) {
       console.error('Failed to delete history:', error)
     }
   }, [])
 
   const loadingAnime = useCallback(async () => {
-    const anime = await db.history.get({ episodeId })
+    const anime = await db.history.get({ hash })
     if (!anime || Array.isArray(anime)) {
       showFailedToast({ title: '播放失败', description: '未找到历史记录' })
       return
@@ -164,13 +269,13 @@ export const useLoadingHistoricalAnime = () => {
     const animeData = await tipcClient?.getAnimeDetailByPath({ path: anime.path })
     if (!animeData?.ok) {
       showFailedToast({ title: '播放失败', description: animeData?.message || '未找到历史记录' })
-      handleDeleteHistory(anime.animeId)
+      handleDeleteHistory(anime.hash)
       return
     }
     const { fileName, fileSize, fileHash } = animeData
     if (!fileHash || !fileName || !fileSize) {
       showFailedToast({ title: '播放失败', description: '未找到历史记录' })
-      handleDeleteHistory(anime.animeId)
+      handleDeleteHistory(anime.hash)
       return
     }
     setVideo({
@@ -180,21 +285,21 @@ export const useLoadingHistoricalAnime = () => {
       url: anime.path,
     })
     setProgress(LoadingStatus.CALC_HASH)
-  }, [episodeId])
+  }, [episodeId, hash])
 
   useEffect(() => {
     if (!effectOnce.current) {
       effectOnce.current = true
       navigate(location.pathname, { replace: true })
-      if (episodeId && location.pathname === RouteName.PLAYER) {
+      if (hash && location.pathname === RouteName.PLAYER) {
         loadingAnime()
       }
     }
   }, [loadingAnime])
 
   useEffect(() => {
-    if (episodeId && location.pathname === RouteName.PLAYER) {
+    if (hash && location.pathname === RouteName.PLAYER) {
       setProgress(LoadingStatus.IMPORT_VIDEO)
     }
-  }, [episodeId])
+  }, [hash])
 }

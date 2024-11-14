@@ -1,4 +1,4 @@
-import { useVideo } from '@renderer/components/modules/player/hooks'
+import { useVideo } from '@renderer/components/modules/player/loading/hooks'
 import { useSettingModal } from '@renderer/components/modules/settings/hooks'
 import { settingTabs } from '@renderer/components/modules/settings/tabs'
 import { handlers } from '@renderer/lib/client'

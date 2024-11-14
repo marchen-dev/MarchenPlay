@@ -14,6 +14,7 @@ import { Subtitle } from './items/Subtitle'
 
 export const SettingSheet = () => {
   const [show, setShow] = useAtom(playerSettingSheetAtom)
+
   return (
     <Sheet open={show} onOpenChange={setShow}>
       <SheetContent

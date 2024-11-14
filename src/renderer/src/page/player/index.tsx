@@ -1,5 +1,5 @@
 import { Player } from '@renderer/components/modules/player'
-import { useVideo } from '@renderer/components/modules/player/hooks'
+import { useVideo } from '@renderer/components/modules/player/loading/hooks'
 import { VideoProvider } from '@renderer/components/modules/player/loading/PlayerProvider'
 import { cn, isWeb } from '@renderer/lib/utils'
 import type { FC } from 'react'
@@ -23,24 +23,24 @@ export default function VideoPlayer() {
   )
 
   return (
-      <VideoProvider>
-        <div
-          onDrop={importAnimeViaBrowser}
-          onDragOver={(e) => e.preventDefault()}
-          className={cn('flex size-full items-center justify-center ')}
-        >
-          {content}
-          {showAddVideoTips && (
-            <input
-              type="file"
-              accept="video/mp4, video/x-matroska"
-              ref={fileInputRef}
-              onChange={importAnimeViaBrowser}
-              className="hidden"
-            />
-          )}
-        </div>
-      </VideoProvider>
+    <VideoProvider>
+      <div
+        onDrop={importAnimeViaBrowser}
+        onDragOver={(e) => e.preventDefault()}
+        className={cn('flex size-full items-center justify-center ')}
+      >
+        {content}
+        {showAddVideoTips && (
+          <input
+            type="file"
+            accept="video/mp4, video/x-matroska"
+            ref={fileInputRef}
+            onChange={importAnimeViaBrowser}
+            className="hidden"
+          />
+        )}
+      </div>
+    </VideoProvider>
   )
 }
 

@@ -84,9 +84,15 @@ export const playerRoute = {
 
     return outPutPath
   }),
-  extractSubtitlesFromAnime: t.procedure.input<{ path: string }>().action(async ({ input }) => {
+  getSubtitlesIntroFromAnime: t.procedure.input<{ path: string }>().action(async ({ input }) => {
     const ffmpeg = new FFmpeg(getFilePathFromProtocolURL(input.path))
-    const subtitles = await ffmpeg.extractAndCoverAllSubtitles()
+    const subtitles = await ffmpeg.getSubtitlesIntroFromAnime()
     return subtitles
   }),
+  getSubtitlesBody: t.procedure
+    .input<{ path: string; index: number }>()
+    .action(async ({ input }) => {
+      const ffmpeg = new FFmpeg(getFilePathFromProtocolURL(input.path))
+      return ffmpeg.extractSubtitles(input.index)
+    }),
 }

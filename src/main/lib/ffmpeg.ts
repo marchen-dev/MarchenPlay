@@ -63,44 +63,43 @@ export default class FFmpeg {
     })
   }
 
-  extractAndCoverAllSubtitles = (): Promise<string[]> => {
-    return new Promise((resolve, reject) => {
-      if (!fs.existsSync(subtitlesPath())) {
-        fs.mkdirSync(subtitlesPath(), { recursive: true })
-      }
+  getSubtitlesIntroFromAnime = (): Promise<ffmpeg.FfprobeStream[]> => {
+    return new Promise((resolve) => {
       ffmpeg.ffprobe(this.ffmpeg._inputs[0].source, (err, metadata) => {
         if (err) {
-          return reject(err)
+          resolve([])
         }
         const subtitleStreams = metadata.streams.filter(
           (stream) => stream.codec_type === 'subtitle',
         )
         if (subtitleStreams.length === 0) {
-          return reject(['No subtitles'])
+          resolve([])
         }
 
-        const promises = subtitleStreams.map((_, index) => {
-          const fileName = `${Date.now()}-${nanoid(10)}-${index}.ass`
-          const outputPath = path.join(subtitlesPath(), fileName)
-
-          return new Promise<string>((resolve, reject) => {
-            this.ffmpeg
-              .clone() // Ensure a new instance for each command
-              .outputOptions(['-map', `0:s:${index}`, '-c:s', 'ass'])
-              .save(outputPath)
-              .on('end', () => {
-                resolve(outputPath)
-              })
-              .on('error', (err) => {
-                reject(err)
-              })
-          })
-        })
-
-        Promise.all(promises)
-          .then((result) => resolve(result))
-          .catch((error) => reject(error))
+        return resolve(subtitleStreams)
       })
+    })
+  }
+
+  extractSubtitles = async (index: number): Promise<string> => {
+    if (!fs.existsSync(subtitlesPath())) {
+      fs.mkdirSync(subtitlesPath(), { recursive: true })
+    }
+
+    const fileName = `${Date.now()}-${nanoid(10)}-${index}.ass`
+    const outputPath = path.join(subtitlesPath(), fileName)
+
+    return new Promise<string>((resolve, reject) => {
+      this.ffmpeg
+        .clone() // Ensure a new instance for each command
+        .outputOptions(['-map', `0:s:${index}`, '-c:s', 'ass'])
+        .save(outputPath)
+        .on('end', () => {
+          resolve(outputPath)
+        })
+        .on('error', (err) => {
+          reject(err)
+        })
     })
   }
 }

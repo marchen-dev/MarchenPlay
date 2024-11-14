@@ -79,7 +79,6 @@ export default class setting extends Plugin {
   }
 
   private toggleButtonClickFunction() {
-    // this.importSubtitleFromClient()
     showPlayerSettingSheet()
   }
 

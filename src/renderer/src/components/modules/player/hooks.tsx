@@ -1,18 +1,9 @@
 import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
-import {
-  currentMatchedVideoAtom,
-  isLoadDanmakuAtom,
-  loadingDanmuProgressAtom,
-  LoadingStatus,
-  useClearPlayingVideo,
-  videoAtom,
-} from '@renderer/atoms/player'
+import { currentMatchedVideoAtom, isLoadDanmakuAtom, videoAtom } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import setting from '@renderer/components/ui/xgplayer/plugins/setting/setting'
 import { db } from '@renderer/database/db'
-import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
-import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
 import { isDev } from '@renderer/lib/env'
@@ -22,87 +13,20 @@ import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
 import XgPlayer, { Danmu, Events } from '@suemor/xgplayer'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { throttle } from 'lodash-es'
-import type { ChangeEvent, DragEvent } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
 
-export const useVideo = () => {
-  const [video, setVideo] = useAtom(videoAtom)
-  const setProgress = useSetAtom(loadingDanmuProgressAtom)
-  const { showFailedToast } = usePlayAnimeFailedToast()
-  const clearPlayingVideo = useClearPlayingVideo()
-  const importAnimeViaBrowser = async (
-    e: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>,
-  ) => {
-    e.preventDefault()
-    setProgress(LoadingStatus.IMPORT_VIDEO)
-    let file: File | undefined
-    if (e.type === 'drop') {
-      const dragEvent = e as DragEvent<HTMLDivElement>
-      file = dragEvent.dataTransfer?.files[0]
-    } else if (e.type === 'change') {
-      const changeEvent = e as ChangeEvent<HTMLInputElement>
-      file = changeEvent.target?.files?.[0]
-    }
-
-    if (!file || !file?.type.startsWith('video/')) {
-      return showFailedToast({ title: '格式错误', description: '请导入 mp4 或者 mkv 格式的动漫' })
-    }
-
-    let url = ''
-    if (isWeb) {
-      url = URL.createObjectURL(file)
-    } else {
-      const path = window.api.showFilePath(file)
-      url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
-    }
-    const { size, name } = file
-    const fileName = name.slice(0, Math.max(0, name.lastIndexOf('.'))) || name
-    try {
-      const hash = await calculateFileHash(file)
-      setVideo({ url, hash, size, name: fileName })
-      setProgress(LoadingStatus.CALC_HASH)
-    } catch (error) {
-      console.error('Failed to calculate file hash:', error)
-      showFailedToast({ title: '播放失败', description: '计算视频 hash 值出现异常，请重试' })
-    }
-  }
-
-  const importAnimeViaIPC = useCallback(async () => {
-    const path = await tipcClient?.importAnime()
-    clearPlayingVideo()
-    if (!path) {
-      return
-    }
-    const url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
-    const animeData = await tipcClient?.getAnimeDetailByPath({ path: url })
-    if (!animeData?.ok) {
-      showFailedToast({ title: '播放失败', description: animeData?.message || '' })
-      return
-    }
-    const { fileHash, fileName, fileSize } = animeData
-    if (!fileHash || !fileHash || !fileSize) {
-      showFailedToast({ title: '播放失败', description: '无法读取视频' })
-      return
-    }
-    setVideo({ url, hash: fileHash, size: fileSize, name: fileName })
-    setProgress(LoadingStatus.CALC_HASH)
-  }, [])
-
-  return {
-    importAnimeViaBrowser,
-    importAnimeViaIPC,
-    url: video.url,
-    showAddVideoTips: !video.url,
-  }
+export interface PlayerType extends XgPlayer {
+  danmu?: Danmu
 }
-export let player: (XgPlayer & { danmu?: Danmu }) | null = null
 
 export const useXgPlayer = (url: string) => {
   const playerRef = useRef<HTMLDivElement | null>(null)
   const { toast, dismiss } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
+  const { hash, player } = useAtomValue(videoAtom)
+  const setPlayer = useSetAtom(videoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const playerSettings = usePlayerSettingsValue()
   const { danmakuDuration, danmakuFontSize, danmakuEndArea } = playerSettings
@@ -119,14 +43,56 @@ export const useXgPlayer = (url: string) => {
     }
     !isDev && player.getCssFullscreen()
 
-    if (isLoadDanmaku) {
-      const anime = await db.history.get(currentMatchedVideo.animeId)
-      const enablePositioningProgress =
-        !!anime?.progress && anime.episodeId === currentMatchedVideo.episodeId
-      if (enablePositioningProgress) {
-        player.currentTime = anime?.progress || 0
-      }
+    const anime = await db.history.get(hash)
+    const enablePositioningProgress = !!anime?.progress
+    if (enablePositioningProgress) {
+      player.currentTime = anime?.progress || 0
+    }
 
+    player?.on(
+      Events.TIME_UPDATE,
+      throttle((data) => {
+        db.history.update(hash, {
+          progress: data?.currentTime,
+          duration: data?.duration,
+        })
+      }, 2000),
+    )
+
+    player.on(Events.LOADED_METADATA, (data) => {
+      db.history.update(hash, {
+        duration: data?.duration,
+      })
+    })
+
+    player.on(Events.ENDED, async () => {
+      const latestAnime = await db.history.get(hash)
+      await db.history.update(hash, {
+        progress: latestAnime?.duration,
+      })
+    })
+
+    if (!isWeb) {
+      player.on(Events.DESTROY, async () => {
+        const latestAnime = await db.history.get(hash)
+        const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
+        const isEnd = latestAnime?.progress === latestAnime?.duration
+        if (!animePath) {
+          return
+        }
+        const base64Image = await tipcClient?.grabFrame({
+          path: animePath,
+          time: isEnd
+            ? ((latestAnime?.progress ?? 3) - 3).toString()
+            : latestAnime?.progress.toString() || '0',
+        })
+        await db.history.update(hash, {
+          thumbnail: base64Image,
+        })
+      })
+    }
+
+    if (isLoadDanmaku) {
       toast({
         title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
         description: (
@@ -137,49 +103,8 @@ export const useXgPlayer = (url: string) => {
         ),
         duration: 5000,
       })
-      player?.on(
-        Events.TIME_UPDATE,
-        throttle((data) => {
-          db.history.update(currentMatchedVideo.animeId, {
-            progress: data?.currentTime,
-            duration: data?.duration,
-          })
-        }, 2000),
-      )
-      player.on(Events.LOADED_METADATA, (data) => {
-        db.history.update(currentMatchedVideo.animeId, {
-          duration: data?.duration,
-        })
-      })
-
-      player.on(Events.ENDED, async () => {
-        const latestAnime = await db.history.get(currentMatchedVideo.animeId)
-        await db.history.update(currentMatchedVideo.animeId, {
-          progress: latestAnime?.duration,
-        })
-      })
-
-      if (!isWeb) {
-        player.on(Events.DESTROY, async () => {
-          const latestAnime = await db.history.get(currentMatchedVideo.animeId)
-          const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
-          const isEnd = latestAnime?.progress === latestAnime?.duration
-          if (!animePath) {
-            return
-          }
-          const base64Image = await tipcClient?.grabFrame({
-            path: animePath,
-            time: isEnd
-              ? ((latestAnime?.progress ?? 3) - 3).toString()
-              : latestAnime?.progress.toString() || '0',
-          })
-          await db.history.update(currentMatchedVideo.animeId, {
-            thumbnail: base64Image,
-          })
-        })
-      }
     }
-  }, [currentMatchedVideo.animeId, isLoadDanmaku])
+  }, [currentMatchedVideo.animeId, isLoadDanmaku, hash])
 
   useEffect(() => {
     if (player?.isPlaying && isLoadDanmaku) {
@@ -240,7 +165,7 @@ export const useXgPlayer = (url: string) => {
         }
       }
 
-      player = new XgPlayer(xgplayerConfig)
+      setPlayer((prev) => ({ ...prev, player: new XgPlayer(xgplayerConfig) }))
       initializePlayerEvent()
     }
     return () => {
