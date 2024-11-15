@@ -6,7 +6,6 @@ import setting from '@renderer/components/ui/xgplayer/plugins/setting/setting'
 import { db } from '@renderer/database/db'
 import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
-import { isDev } from '@renderer/lib/env'
 import queryClient from '@renderer/lib/query-client'
 import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
@@ -14,8 +13,7 @@ import type { CommentsModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
 import XgPlayer, { Danmu, Events } from '@suemor/xgplayer'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { throttle } from 'lodash-es'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 export interface PlayerType extends XgPlayer {
   danmu?: Danmu
@@ -25,7 +23,7 @@ export const useXgPlayer = (url: string) => {
   const playerRef = useRef<HTMLDivElement | null>(null)
   const { toast, dismiss } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
-  const { hash, player } = useAtomValue(videoAtom)
+  const { player, hash } = useAtomValue(videoAtom)
   const setPlayer = useSetAtom(videoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const playerSettings = usePlayerSettingsValue()
@@ -36,75 +34,6 @@ export const useXgPlayer = (url: string) => {
     url,
     playerSettings.enableTraditionalToSimplified,
   ]) as CommentsModel | undefined
-
-  const initializePlayerEvent = useCallback(async () => {
-    if (!player) {
-      return
-    }
-    !isDev && player.getCssFullscreen()
-
-    const anime = await db.history.get(hash)
-    const enablePositioningProgress = !!anime?.progress
-    if (enablePositioningProgress) {
-      player.currentTime = anime?.progress || 0
-    }
-
-    player?.on(
-      Events.TIME_UPDATE,
-      throttle((data) => {
-        db.history.update(hash, {
-          progress: data?.currentTime,
-          duration: data?.duration,
-        })
-      }, 2000),
-    )
-
-    player.on(Events.LOADED_METADATA, (data) => {
-      db.history.update(hash, {
-        duration: data?.duration,
-      })
-    })
-
-    player.on(Events.ENDED, async () => {
-      const latestAnime = await db.history.get(hash)
-      await db.history.update(hash, {
-        progress: latestAnime?.duration,
-      })
-    })
-
-    if (!isWeb) {
-      player.on(Events.DESTROY, async () => {
-        const latestAnime = await db.history.get(hash)
-        const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
-        const isEnd = latestAnime?.progress === latestAnime?.duration
-        if (!animePath) {
-          return
-        }
-        const base64Image = await tipcClient?.grabFrame({
-          path: animePath,
-          time: isEnd
-            ? ((latestAnime?.progress ?? 3) - 3).toString()
-            : latestAnime?.progress.toString() || '0',
-        })
-        await db.history.update(hash, {
-          thumbnail: base64Image,
-        })
-      })
-    }
-
-    if (isLoadDanmaku) {
-      toast({
-        title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
-        description: (
-          <div>
-            <p>共加载 {danmuData?.count} 条弹幕</p>
-            {enablePositioningProgress && <p>已为您定位到上次观看进度</p>}
-          </div>
-        ),
-        duration: 5000,
-      })
-    }
-  }, [currentMatchedVideo.animeId, isLoadDanmaku, hash])
 
   useEffect(() => {
     if (player?.isPlaying && isLoadDanmaku) {
@@ -164,9 +93,40 @@ export const useXgPlayer = (url: string) => {
           },
         }
       }
+      const _player = new XgPlayer(xgplayerConfig)
+      setPlayer((prev) => ({ ...prev, player: _player }))
 
-      setPlayer((prev) => ({ ...prev, player: new XgPlayer(xgplayerConfig) }))
-      initializePlayerEvent()
+      if (!isWeb) {
+        _player.on(Events.DESTROY, async () => {
+          const latestAnime = await db.history.get(hash)
+          const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
+          const isEnd = latestAnime?.progress === latestAnime?.duration
+          if (!animePath) {
+            return
+          }
+          const base64Image = await tipcClient?.grabFrame({
+            path: animePath,
+            time: isEnd
+              ? ((latestAnime?.progress ?? 3) - 3).toString()
+              : latestAnime?.progress.toString() || '0',
+          })
+          await db.history.update(hash, {
+            thumbnail: base64Image,
+          })
+        })
+      }
+
+      if (isLoadDanmaku) {
+        toast({
+          title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
+          description: (
+            <div>
+              <p>共加载 {danmuData?.count} 条弹幕</p>
+            </div>
+          ),
+          duration: 5000,
+        })
+      }
     }
     return () => {
       player?.destroy()

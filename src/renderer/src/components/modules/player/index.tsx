@@ -1,7 +1,8 @@
 import type { FC } from 'react'
 
 import { useXgPlayer } from './hooks'
-import { InitializePlayer } from './init/InitializePlayer'
+import { InitializeEvent } from './initialize/Event'
+import { InitializeSubtitle } from './initialize/Subtitle'
 import { SettingSheet } from './setting/Sheet'
 
 interface PlayerProps {
@@ -14,7 +15,8 @@ export const Player: FC<PlayerProps> = (props) => {
     <>
       <div ref={playerRef} />
       <SettingSheet />
-      <InitializePlayer />
+      <InitializeSubtitle />
+      <InitializeEvent />
     </>
   )
 }

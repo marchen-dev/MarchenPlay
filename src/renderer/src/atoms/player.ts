@@ -12,14 +12,14 @@ export const videoAtom = atomWithReset<{
   size: number
   name: string
   player?: PlayerType | null
-  subtitlesOctopus?: SubtitlesOctopus | null
+  subtitlesInstance?: SubtitlesOctopus | null
 }>({
   url: '',
   hash: '',
   size: 0,
   name: '',
   player: null,
-  subtitlesOctopus: null,
+  subtitlesInstance: null,
 })
 
 export const usePlayer = () =>
