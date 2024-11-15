@@ -1,17 +1,13 @@
-import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { currentMatchedVideoAtom, isLoadDanmakuAtom, videoAtom } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import setting from '@renderer/components/ui/xgplayer/plugins/setting/setting'
-import { db } from '@renderer/database/db'
-import { tipcClient } from '@renderer/lib/client'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
 import queryClient from '@renderer/lib/query-client'
-import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
-import XgPlayer, { Danmu, Events } from '@suemor/xgplayer'
+import XgPlayer, { Danmu } from '@suemor/xgplayer'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
@@ -23,7 +19,7 @@ export const useXgPlayer = (url: string) => {
   const playerRef = useRef<HTMLDivElement | null>(null)
   const { toast, dismiss } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
-  const { player, hash } = useAtomValue(videoAtom)
+  const { player } = useAtomValue(videoAtom)
   const setPlayer = useSetAtom(videoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const playerSettings = usePlayerSettingsValue()
@@ -52,6 +48,10 @@ export const useXgPlayer = (url: string) => {
 
   useEffect(() => {
     if (playerRef.current) {
+      if (player) {
+        player.destroy()
+      }
+
       const xgplayerConfig = {
         ...playerBaseConfig,
         el: playerRef.current,
@@ -95,27 +95,6 @@ export const useXgPlayer = (url: string) => {
       }
       const _player = new XgPlayer(xgplayerConfig)
       setPlayer((prev) => ({ ...prev, player: _player }))
-
-      if (!isWeb) {
-        _player.on(Events.DESTROY, async () => {
-          const latestAnime = await db.history.get(hash)
-          const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
-          const isEnd = latestAnime?.progress === latestAnime?.duration
-          if (!animePath) {
-            return
-          }
-          const base64Image = await tipcClient?.grabFrame({
-            path: animePath,
-            time: isEnd
-              ? ((latestAnime?.progress ?? 3) - 3).toString()
-              : latestAnime?.progress.toString() || '0',
-          })
-          await db.history.update(hash, {
-            thumbnail: base64Image,
-          })
-        })
-      }
-
       if (isLoadDanmaku) {
         toast({
           title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
@@ -127,11 +106,15 @@ export const useXgPlayer = (url: string) => {
           duration: 5000,
         })
       }
+      return () => {
+        player?.destroy()
+        _player?.destroy()
+      }
     }
     return () => {
       player?.destroy()
     }
-  }, [playerRef, danmuData, url])
+  }, [playerRef])
 
   return { playerRef, player }
 }

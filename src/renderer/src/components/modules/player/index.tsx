@@ -1,3 +1,4 @@
+import { isWeb } from '@renderer/lib/utils'
 import type { FC } from 'react'
 
 import { useXgPlayer } from './hooks'
@@ -15,7 +16,7 @@ export const Player: FC<PlayerProps> = (props) => {
     <>
       <div ref={playerRef} />
       <SettingSheet />
-      <InitializeSubtitle />
+      {!isWeb && <InitializeSubtitle />}
       <InitializeEvent />
     </>
   )

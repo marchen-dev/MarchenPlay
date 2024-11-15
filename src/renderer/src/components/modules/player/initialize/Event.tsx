@@ -1,6 +1,9 @@
+import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { currentMatchedVideoAtom, videoAtom } from '@renderer/atoms/player'
 import { db } from '@renderer/database/db'
+import { tipcClient } from '@renderer/lib/client'
 import { isDev } from '@renderer/lib/env'
+import { isWeb } from '@renderer/lib/utils'
 import { Events } from '@suemor/xgplayer'
 import { useAtomValue } from 'jotai'
 import { throttle } from 'lodash-es'
@@ -21,7 +24,6 @@ export const InitializeEvent = () => {
     if (enablePositioningProgress) {
       player.currentTime = anime?.progress || 0
     }
-
     player?.on(
       Events.TIME_UPDATE,
       throttle((data) => {
@@ -44,12 +46,33 @@ export const InitializeEvent = () => {
         progress: latestAnime?.duration,
       })
     })
-
-    return () => {}
   }, [currentMatchedVideo.animeId, hash, player])
+
+  const grabFrame = useCallback(async () => {
+    if (!isWeb) {
+      const latestAnime = await db.history.get(hash)
+      const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
+      const isEnd = latestAnime?.progress === latestAnime?.duration
+      if (!animePath) {
+        return
+      }
+      const base64Image = await tipcClient?.grabFrame({
+        path: animePath,
+        time: isEnd
+          ? ((latestAnime?.progress ?? 3) - 3).toString()
+          : latestAnime?.progress.toString() || '0',
+      })
+      await db.history.update(hash, {
+        thumbnail: base64Image,
+      })
+    }
+  }, [hash])
 
   useEffect(() => {
     initializePlayerEvent()
+    return () => {
+      grabFrame()
+    }
   }, [initializePlayerEvent])
   return null
 }

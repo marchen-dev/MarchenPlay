@@ -4,7 +4,8 @@ import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { showPlayerSettingSheet } from '@renderer/atoms/player'
 import { toast } from '@renderer/components/ui/toast'
 import { tipcClient } from '@renderer/lib/client'
-import NotoSansSC from '@renderer/styles/fonts/NotoSansSC.woff2?url'
+import SourceHanSansCN from '@renderer/styles/fonts/SourceHanSansCN.woff2?url'
+import TimesNewRoman from '@renderer/styles/fonts/TimesNewRoman.ttf?url'
 import { Plugin } from '@suemor/xgplayer'
 import SubtitlesOctopus from 'libass-wasm'
 import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
@@ -46,8 +47,8 @@ export default class setting extends Plugin {
     }
     const url = URL.createObjectURL(file)
     new SubtitlesOctopus({
-      fonts: [NotoSansSC],
-      fallbackFont: NotoSansSC,
+      fonts: [TimesNewRoman],
+      fallbackFont: SourceHanSansCN,
       video: this.player?.media as HTMLVideoElement,
       subUrl: url,
       workerUrl,
@@ -65,8 +66,8 @@ export default class setting extends Plugin {
       return
     }
     new SubtitlesOctopus({
-      fonts: [NotoSansSC],
-      fallbackFont: NotoSansSC,
+      fonts: [TimesNewRoman],
+      fallbackFont: SourceHanSansCN,
       video: this.player?.media as HTMLVideoElement,
       subUrl: `${MARCHEN_PROTOCOL_PREFIX}${subtitlePath}`,
       workerUrl,
