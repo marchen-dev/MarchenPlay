@@ -18,11 +18,14 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import SubtitlesOctopus from 'libass-wasm'
 import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
 import legacyWorkerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker-legacy.js?url'
+// import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useRef } from 'react'
+// import { useToast } from '@renderer/components/ui/toast'
 
 export const Subtitle = () => {
   const selectRef = useRef<HTMLDivElement | null>(null)
   const { subtitlesData, fetchSubtitleBody } = useSubtitle()
+  // const { toast } = useToast()
   const { hash, player } = useAtomValue(videoAtom)
   const { data: defaultValue, isFetching } = useQuery({
     queryKey: ['subtitlesDefaultValue', hash],
@@ -40,6 +43,33 @@ export const Subtitle = () => {
     }
   }, [])
 
+  // const importSubtitleFromBrowser = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
+  //   const file = changeEvent.target?.files?.[0]
+
+  //   if (!file) {
+  //     return
+  //   }
+  //   const url = URL.createObjectURL(file)
+  //   fetchSubtitleBody(url)
+  //   toast({
+  //     title: '导入字幕成功',
+  //     duration: 1500,
+  //   })
+  // }
+
+  // const importSubtitleFromClient = async () => {
+  //   const subtitlePath = await tipcClient?.importSubtitle()
+  //   if (!subtitlePath) {
+  //     return
+  //   }
+  //   fetchSubtitleBody(subtitlePath)
+  //   toast({
+  //     title: '导入字幕成功',
+  //     duration: 1500,
+  //   })
+  // }
+
   if (!defaultValue || isFetching) {
     return
   }
@@ -51,6 +81,7 @@ export const Subtitle = () => {
         </SelectTrigger>
         <SelectContent container={selectRef.current}>
           <SelectGroup>
+            <SelectItem value={'-1'}>禁用</SelectItem>
             {subtitlesData?.tags?.map((subtitle) => {
               return (
                 <SelectItem value={subtitle.id.toString()} key={subtitle.id}>
@@ -58,7 +89,7 @@ export const Subtitle = () => {
                 </SelectItem>
               )
             })}
-            <SelectLabel className="transition-colors duration-150 hover:text-primary">
+            <SelectLabel className="cursor-default select-none transition-colors duration-150 hover:text-primary">
               加载外挂字幕...
             </SelectLabel>
           </SelectGroup>
@@ -121,15 +152,24 @@ export const useSubtitle = () => {
   const fetchSubtitleBody = useCallback(
     async (id: string) => {
       const index = data?.tags?.findIndex((subtitle) => subtitle.id.toString() === id) ?? -1
+      const oldHistory = await db.history.get(hash)
+
+      // 禁用字幕
       if (index === -1) {
+        subtitlesInstance?.freeTrack()
+        db.history.update(hash, {
+          subtitles: {
+            defaultId: id,
+            tags: oldHistory?.subtitles?.tags ?? [],
+          },
+        })
         return
       }
       const existingSubtitle = (
         await db.history.where('hash').equals(hash).first()
       )?.subtitles?.tags.find((tag) => tag.id === +id)
 
-      const oldHistory = await db.history.get(hash)
-
+      // 本地已经存在字幕
       if (existingSubtitle) {
         db.history.update(hash, {
           subtitles: {
@@ -140,6 +180,7 @@ export const useSubtitle = () => {
         return setSubtitlesOctopus(existingSubtitle.path)
       }
 
+      // 从客户端获取字幕
       const subtitlePath = await tipcClient?.getSubtitlesBody({
         path: url,
         index,
