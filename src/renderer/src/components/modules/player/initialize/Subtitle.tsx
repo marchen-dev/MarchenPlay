@@ -1,13 +1,11 @@
-import { videoAtom } from '@renderer/atoms/player'
-import { useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
+import { usePlayerInstance } from '../setting/Context'
 import { useSubtitle } from '../setting/items/Subtitle'
 
 export const InitializeSubtitle = () => {
   const { initializeSubtitle, subtitlesData } = useSubtitle()
-  const { player } = useAtomValue(videoAtom)
-
+  const player = usePlayerInstance()
   useEffect(() => {
     if (!player) {
       return

@@ -1,8 +1,5 @@
-import type { PlayerType } from '@renderer/components/modules/player/hooks'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { atomWithReset, selectAtom, useResetAtom } from 'jotai/utils'
-import type SubtitlesOctopus from 'libass-wasm'
-import { useMemo } from 'react'
+import { atom, useSetAtom } from 'jotai'
+import { atomWithReset, useResetAtom } from 'jotai/utils'
 
 import * as store from './store'
 
@@ -11,19 +8,12 @@ export const videoAtom = atomWithReset<{
   hash: string
   size: number
   name: string
-  player?: PlayerType | null
-  subtitlesInstance?: SubtitlesOctopus | null
 }>({
   url: '',
   hash: '',
   size: 0,
   name: '',
-  player: null,
-  subtitlesInstance: null,
 })
-
-export const usePlayer = () =>
-  useAtomValue(useMemo(() => selectAtom(videoAtom, (atomValue) => atomValue.player), []))
 
 export enum LoadingStatus {
   IMPORT_VIDEO = 0,

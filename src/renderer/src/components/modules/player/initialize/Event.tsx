@@ -9,9 +9,12 @@ import { useAtomValue } from 'jotai'
 import { throttle } from 'lodash-es'
 import { useCallback, useEffect } from 'react'
 
+import { usePlayerInstance } from '../setting/Context'
+
 export const InitializeEvent = () => {
-  const { player, hash } = useAtomValue(videoAtom)
+  const { hash } = useAtomValue(videoAtom)
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
+  const player = usePlayerInstance()
 
   const initializePlayerEvent = useCallback(async () => {
     if (!player) {

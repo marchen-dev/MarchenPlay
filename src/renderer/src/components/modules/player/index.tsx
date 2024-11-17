@@ -4,6 +4,7 @@ import type { FC } from 'react'
 import { useXgPlayer } from './hooks'
 import { InitializeEvent } from './initialize/Event'
 import { InitializeSubtitle } from './initialize/Subtitle'
+import { PlayerProvider } from './setting/Context'
 import { SettingSheet } from './setting/Sheet'
 
 interface PlayerProps {
@@ -11,13 +12,15 @@ interface PlayerProps {
 }
 
 export const Player: FC<PlayerProps> = (props) => {
-  const { playerRef } = useXgPlayer(props.url)
+  const { playerRef, playerInstance } = useXgPlayer(props.url)
   return (
     <>
       <div ref={playerRef} />
-      <SettingSheet />
-      {!isWeb && <InitializeSubtitle />}
-      <InitializeEvent />
+      <PlayerProvider value={playerInstance}>
+        <SettingSheet />
+        {!isWeb && <InitializeSubtitle />}
+        <InitializeEvent />
+      </PlayerProvider>
     </>
   )
 }

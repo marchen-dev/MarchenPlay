@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@renderer/components/ui/select'
 import { db } from '@renderer/database/db'
+import { useBeforeMounted } from '@renderer/hooks/use-before-mounted'
 import { tipcClient } from '@renderer/lib/client'
 import SourceHanSansCN from '@renderer/styles/fonts/SourceHanSansCN.woff2?url'
 import TimesNewRoman from '@renderer/styles/fonts/TimesNewRoman.ttf?url'
@@ -19,14 +20,17 @@ import SubtitlesOctopus from 'libass-wasm'
 import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
 import legacyWorkerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker-legacy.js?url'
 // import type { ChangeEvent } from 'react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
+
+import { usePlayerInstance, useSubtitleInstance } from '../Context'
 // import { useToast } from '@renderer/components/ui/toast'
 
 export const Subtitle = () => {
   const selectRef = useRef<HTMLDivElement | null>(null)
+  const player = usePlayerInstance()
   const { subtitlesData, fetchSubtitleBody } = useSubtitle()
   // const { toast } = useToast()
-  const { hash, player } = useAtomValue(videoAtom)
+  const { hash } = useAtomValue(videoAtom)
   const { data: defaultValue, isFetching } = useQuery({
     queryKey: ['subtitlesDefaultValue', hash],
     queryFn: async () => {
@@ -35,13 +39,14 @@ export const Subtitle = () => {
     },
     staleTime: 0,
   })
-  useEffect(() => {
+
+  useBeforeMounted(() => {
     // 确保不会误触视频暂停事件
     player?.setConfig({ closeVideoClick: true })
     return () => {
       player?.setConfig({ closeVideoClick: false })
     }
-  }, [])
+  })
 
   // const importSubtitleFromBrowser = (e: ChangeEvent<HTMLInputElement>) => {
   //   const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
@@ -100,7 +105,9 @@ export const Subtitle = () => {
 }
 
 export const useSubtitle = () => {
-  const { hash, url, player, subtitlesInstance } = useAtomValue(videoAtom)
+  const { hash, url } = useAtomValue(videoAtom)
+  const player = usePlayerInstance()
+  const [subtitlesInstance, setSubtitlesInstance] = useSubtitleInstance()
   const setVideo = useSetAtom(videoAtom)
   const { data } = useQuery({
     queryKey: ['getAllSubtitlesFromAnime', url],
@@ -129,11 +136,13 @@ export const useSubtitle = () => {
 
   const setSubtitlesOctopus = useCallback(
     (path: string) => {
+      if (!player) {
+        return
+      }
       const completePath = `${MARCHEN_PROTOCOL_PREFIX}${path}`
       if (!subtitlesInstance) {
-        return setVideo((prev) => ({
-          ...prev,
-          subtitlesInstance: new SubtitlesOctopus({
+        setSubtitlesInstance(
+          new SubtitlesOctopus({
             fonts: [TimesNewRoman],
             fallbackFont: SourceHanSansCN,
             video: player?.media as HTMLVideoElement,
@@ -141,10 +150,10 @@ export const useSubtitle = () => {
             workerUrl,
             legacyWorkerUrl,
           }),
-        }))
+        )
       }
-      subtitlesInstance.freeTrack()
-      subtitlesInstance.setTrackByUrl(completePath)
+      subtitlesInstance?.freeTrack()
+      subtitlesInstance?.setTrackByUrl(completePath)
     },
     [player?.media, setVideo, subtitlesInstance],
   )

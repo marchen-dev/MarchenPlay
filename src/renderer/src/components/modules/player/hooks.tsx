@@ -1,4 +1,4 @@
-import { currentMatchedVideoAtom, isLoadDanmakuAtom, videoAtom } from '@renderer/atoms/player'
+import { currentMatchedVideoAtom, isLoadDanmakuAtom } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import setting from '@renderer/components/ui/xgplayer/plugins/setting/setting'
@@ -8,19 +8,18 @@ import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
 import XgPlayer, { Danmu } from '@suemor/xgplayer'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { useAtomValue } from 'jotai'
+import { useEffect, useRef, useState } from 'react'
 
 export interface PlayerType extends XgPlayer {
   danmu?: Danmu
 }
 
 export const useXgPlayer = (url: string) => {
+  const [playerInstance, setPlayerInstance] = useState<PlayerType | null>(null)
   const playerRef = useRef<HTMLDivElement | null>(null)
   const { toast, dismiss } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
-  const { player } = useAtomValue(videoAtom)
-  const setPlayer = useSetAtom(videoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const playerSettings = usePlayerSettingsValue()
   const { danmakuDuration, danmakuFontSize, danmakuEndArea } = playerSettings
@@ -32,10 +31,10 @@ export const useXgPlayer = (url: string) => {
   ]) as CommentsModel | undefined
 
   useEffect(() => {
-    if (player?.isPlaying && isLoadDanmaku) {
-      player.danmu?.setFontSize(+danmakuFontSize, 24)
-      player.danmu?.setAllDuration('all', +danmakuDuration)
-      player.danmu?.setArea({
+    if (playerInstance?.isPlaying && isLoadDanmaku) {
+      playerInstance.danmu?.setFontSize(+danmakuFontSize, 24)
+      playerInstance.danmu?.setAllDuration('all', +danmakuDuration)
+      playerInstance.danmu?.setArea({
         start: 0,
         end: +danmakuEndArea,
       })
@@ -48,10 +47,6 @@ export const useXgPlayer = (url: string) => {
 
   useEffect(() => {
     if (playerRef.current) {
-      if (player) {
-        player.destroy()
-      }
-
       const xgplayerConfig = {
         ...playerBaseConfig,
         el: playerRef.current,
@@ -93,8 +88,9 @@ export const useXgPlayer = (url: string) => {
           },
         }
       }
-      const _player = new XgPlayer(xgplayerConfig)
-      setPlayer((prev) => ({ ...prev, player: _player }))
+      if (!playerInstance) {
+        setPlayerInstance(new XgPlayer(xgplayerConfig))
+      }
       if (isLoadDanmaku) {
         toast({
           title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
@@ -106,17 +102,13 @@ export const useXgPlayer = (url: string) => {
           duration: 5000,
         })
       }
-      return () => {
-        player?.destroy()
-        _player?.destroy()
-      }
     }
     return () => {
-      player?.destroy()
+      playerInstance?.destroy()
     }
   }, [playerRef])
 
-  return { playerRef, player }
+  return { playerRef, playerInstance }
 }
 
 const playerBaseConfig = {
