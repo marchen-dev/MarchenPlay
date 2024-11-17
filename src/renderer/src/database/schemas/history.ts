@@ -17,13 +17,13 @@ export interface DB_History {
 }
 
 interface Subtitles {
-  defaultId: string
+  defaultId: number
 
   tags: Array<{
     id: number
     path: string
-    index: number
+    index?: number
     title: string
-    language: string
+    language?: string
   }>
 }

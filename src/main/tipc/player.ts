@@ -76,7 +76,10 @@ export const playerRoute = {
       return
     }
     if (extName === 'ass' || extName === 'ssa') {
-      return filePath
+      return {
+        fileName: path.basename(filePath),
+        filePath,
+      }
     }
 
     const ffmepg = new FFmpeg(filePath)

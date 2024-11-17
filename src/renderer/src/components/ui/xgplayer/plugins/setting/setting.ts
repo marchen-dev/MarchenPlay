@@ -1,16 +1,7 @@
 import './index.css'
 
-import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { showPlayerSettingSheet } from '@renderer/atoms/player'
-import { toast } from '@renderer/components/ui/toast'
-import { tipcClient } from '@renderer/lib/client'
-import SourceHanSansCN from '@renderer/styles/fonts/SourceHanSansCN.woff2?url'
-import TimesNewRoman from '@renderer/styles/fonts/TimesNewRoman.ttf?url'
 import { Plugin } from '@suemor/xgplayer'
-import SubtitlesOctopus from 'libass-wasm'
-import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
-import legacyWorkerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker-legacy.js?url'
-import type { ChangeEvent } from 'react'
 
 export default class setting extends Plugin {
   static readonly pluginName = 'setting'
@@ -37,46 +28,6 @@ export default class setting extends Plugin {
 
   afterCreate() {
     this.icon?.addEventListener('click', this.toggleButtonClickListener)
-  }
-
-  importSubtitleFromBrowser(e: ChangeEvent<HTMLInputElement>) {
-    const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
-    const file = changeEvent.target?.files?.[0]
-    if (!file) {
-      return
-    }
-    const url = URL.createObjectURL(file)
-    new SubtitlesOctopus({
-      fonts: [TimesNewRoman],
-      fallbackFont: SourceHanSansCN,
-      video: this.player?.media as HTMLVideoElement,
-      subUrl: url,
-      workerUrl,
-      legacyWorkerUrl,
-    })
-    toast({
-      title: '导入字幕成功',
-      duration: 1500,
-    })
-  }
-
-  async importSubtitleFromClient() {
-    const subtitlePath = await tipcClient?.importSubtitle()
-    if (!subtitlePath) {
-      return
-    }
-    new SubtitlesOctopus({
-      fonts: [TimesNewRoman],
-      fallbackFont: SourceHanSansCN,
-      video: this.player?.media as HTMLVideoElement,
-      subUrl: `${MARCHEN_PROTOCOL_PREFIX}${subtitlePath}`,
-      workerUrl,
-      legacyWorkerUrl,
-    })
-    toast({
-      title: '导入字幕成功',
-      duration: 1500,
-    })
   }
 
   private toggleButtonClickFunction() {

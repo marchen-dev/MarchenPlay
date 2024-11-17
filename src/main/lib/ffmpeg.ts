@@ -47,7 +47,7 @@ export default class FFmpeg {
     })
   }
 
-  coverToAssSubtitle = (): Promise<string> => {
+  coverToAssSubtitle = (): Promise<{ fileName: string; filePath: string }> => {
     const fileName = `${Date.now()}-${nanoid(10)}.ass`
     const outPutPath = path.join(subtitlesPath(), fileName)
     return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ export default class FFmpeg {
         .outputOptions('-c:s ass')
         .save(outPutPath)
         .on('end', () => {
-          resolve(outPutPath)
+          resolve({ filePath: outPutPath, fileName })
         })
         .on('error', (err) => {
           reject(err)

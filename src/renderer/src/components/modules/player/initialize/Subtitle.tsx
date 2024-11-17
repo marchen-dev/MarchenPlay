@@ -10,6 +10,7 @@ export const InitializeSubtitle = () => {
     if (!player) {
       return
     }
+
     initializeSubtitle()
   }, [subtitlesData, player])
   return null

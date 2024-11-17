@@ -15,6 +15,8 @@ export interface PlayerType extends XgPlayer {
   danmu?: Danmu
 }
 
+let _playerInstance: PlayerType | null = null
+
 export const useXgPlayer = (url: string) => {
   const [playerInstance, setPlayerInstance] = useState<PlayerType | null>(null)
   const playerRef = useRef<HTMLDivElement | null>(null)
@@ -46,7 +48,7 @@ export const useXgPlayer = (url: string) => {
   }, [playerSettings])
 
   useEffect(() => {
-    if (playerRef.current) {
+    if (playerRef.current && !playerInstance) {
       const xgplayerConfig = {
         ...playerBaseConfig,
         el: playerRef.current,
@@ -88,9 +90,8 @@ export const useXgPlayer = (url: string) => {
           },
         }
       }
-      if (!playerInstance) {
-        setPlayerInstance(new XgPlayer(xgplayerConfig))
-      }
+      _playerInstance = new XgPlayer(xgplayerConfig)
+      setPlayerInstance(_playerInstance)
       if (isLoadDanmaku) {
         toast({
           title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
@@ -104,6 +105,7 @@ export const useXgPlayer = (url: string) => {
       }
     }
     return () => {
+      _playerInstance?.destroy()
       playerInstance?.destroy()
     }
   }, [playerRef])

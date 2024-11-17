@@ -11,8 +11,10 @@ import { reactRouter } from './router'
 initializeApp()
 
 ReactDOM.createRoot(document.querySelector('#root') as HTMLElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <>
     <RouterProvider router={reactRouter} />
     <ClickToComponent />
-  </React.StrictMode>,
+  </>,
+  // </React.StrictMode>,
 )

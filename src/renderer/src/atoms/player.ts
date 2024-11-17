@@ -1,7 +1,8 @@
 import { atom, useSetAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 
-import * as store from './store'
+import { jotaiStore } from './store'
+
 
 export const videoAtom = atomWithReset<{
   url: string
@@ -52,4 +53,4 @@ export const useClearPlayingVideo = () => {
   }
 }
 
-export const showPlayerSettingSheet = () => store.jotaiStore.set(playerSettingSheetAtom, true)
+export const showPlayerSettingSheet = () => jotaiStore.set(playerSettingSheetAtom, true)
