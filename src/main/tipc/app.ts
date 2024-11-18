@@ -1,3 +1,4 @@
+import { getMainWindow } from '@main/windows/main'
 import { BrowserWindow, dialog } from 'electron'
 
 import { appUpdater } from '../lib/update'
@@ -41,5 +42,9 @@ export const appRoute = {
       buttons: ['取消', '确认'],
     })
     return !!result.response
+  }),
+  restart: t.procedure.action(async () => {
+    getMainWindow()?.reload()
+    return
   }),
 }

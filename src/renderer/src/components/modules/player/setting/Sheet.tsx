@@ -24,6 +24,7 @@ export const SettingSheet = () => {
       <SheetContent
         container={document.querySelector(`.xgplayer`)}
         classNames={{ sheetOverlay: 'bg-black/20' }}
+        aria-describedby='播放器设置'
       >
         <SheetHeader>
           <SheetTitle>设置</SheetTitle>

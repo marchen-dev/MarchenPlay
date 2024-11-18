@@ -1,5 +1,5 @@
 import App from '@renderer/App'
-import NotFound from '@renderer/components/common/NotFound'
+import ErrorView from '@renderer/components/common/ErrorView'
 import History from '@renderer/page/history'
 import VideoPlayer from '@renderer/page/player'
 import type { NonIndexRouteObject, RouteObject } from 'react-router-dom'
@@ -21,6 +21,7 @@ export const siderbarRoutes = [
       icon: 'icon-[mingcute--video-camera-line]',
       title: '视频播放',
     },
+    errorElement: <ErrorView />,
     element: <VideoPlayer />,
   },
   // {
@@ -37,6 +38,7 @@ export const siderbarRoutes = [
       icon: 'icon-[mingcute--history-line]',
       title: '播放记录',
     },
+    errorElement: <ErrorView />,
     element: <History />,
   },
 ] satisfies SidebarRouteObject[]
@@ -45,7 +47,7 @@ export const router = [
   {
     path: '/',
     element: <App />,
-    errorElement: <NotFound />,
+    errorElement: <ErrorView />,
     children: [
       {
         path: '/',
