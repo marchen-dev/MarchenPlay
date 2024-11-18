@@ -14,7 +14,7 @@ import { saveToHistory, useDanmuData, useLoadingHistoricalAnime, useMatchAnimeDa
 export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
   useLoadingHistoricalAnime()
   const { clearPlayingVideo, matchData } = useMatchAnimeData()
-  const { url, hash } = useAtomValue(videoAtom)
+  const { url, hash, name } = useAtomValue(videoAtom)
   const { startPlaying } = useDanmuData()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
   const [loadingProgress, setLoadingProgress] = useAtom(loadingDanmuProgressAtom)
@@ -32,6 +32,7 @@ export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
                 path: url,
                 progress: 0,
                 duration: 0,
+                animeTitle: name,
               })
               return setLoadingProgress(LoadingStatus.START_PLAY)
             }

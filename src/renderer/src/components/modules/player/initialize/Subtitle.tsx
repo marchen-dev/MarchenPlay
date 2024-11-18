@@ -1,3 +1,4 @@
+import { isWeb } from '@renderer/lib/utils'
 import { useEffect } from 'react'
 
 import { usePlayerInstance } from '../setting/Context'
@@ -8,7 +9,7 @@ export const InitializeSubtitle = () => {
   const player = usePlayerInstance()
 
   useEffect(() => {
-    if (!player || isFetching) {
+    if (!player || isFetching || isWeb) {
       return
     }
     initializeSubtitle()

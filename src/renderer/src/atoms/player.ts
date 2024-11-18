@@ -3,7 +3,6 @@ import { atomWithReset, useResetAtom } from 'jotai/utils'
 
 import { jotaiStore } from './store'
 
-
 export const videoAtom = atomWithReset<{
   url: string
   hash: string

@@ -93,7 +93,7 @@ export const Subtitle = () => {
         </SelectTrigger>
         <SelectContent container={selectRef.current}>
           <SelectGroup>
-            <SelectItem value={'-1'}>禁用</SelectItem>
+            <SelectItem value={'-1'}>默认</SelectItem>
             {subtitlesData?.tags?.map((subtitle) => {
               return (
                 <SelectItem value={subtitle.id.toString()} key={subtitle.id}>
@@ -164,8 +164,8 @@ export const useSubtitle = () => {
     staleTime: 0,
   })
   const setSubtitlesOctopus = useCallback(
-    (path: string) => {
-      if (!player) {
+    (path?: string) => {
+      if (!player || !path) {
         return
       }
       const completePath = isWeb ? path : `${MARCHEN_PROTOCOL_PREFIX}${path}`
@@ -191,6 +191,12 @@ export const useSubtitle = () => {
   const fetchSubtitleBody = useCallback(
     async (params: FetchSubtitleBodyParams) => {
       const { id, path } = params
+
+      // Web 端直接设置字幕路径, 不进行 indexdb 记录
+      if (isWeb) {
+        return setSubtitlesOctopus(path)
+      }
+
       const oldHistory = await db.history.get(hash)
 
       // 手动导入字幕
@@ -285,7 +291,7 @@ export const useSubtitle = () => {
     setSubtitlesOctopus,
     initializeSubtitle,
     subtitlesInstance,
-    isFetching
+    isFetching,
   }
 }
 

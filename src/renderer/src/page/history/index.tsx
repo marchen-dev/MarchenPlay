@@ -35,7 +35,7 @@ export default function History() {
             )}
           >
             {historyData?.map((item) => (
-              <HistoryItem {...item} showPoster={showPoster || isWeb} key={item.episodeId} />
+              <HistoryItem {...item} showPoster={showPoster || isWeb} key={item.hash} />
             ))}
           </ul>
         ) : (
@@ -119,7 +119,7 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
           className="flex items-center justify-between text-xs text-zinc-500"
           title={episodeTitle}
         >
-          <span className="truncate">{episodeTitle}</span>
+          <span className="truncate">{episodeTitle || '暂无弹幕库'}</span>
           <div className="shrink-0 ">
             <Badge variant={'outline'}>{relativeTimeToNow(updatedAt)}</Badge>
           </div>
