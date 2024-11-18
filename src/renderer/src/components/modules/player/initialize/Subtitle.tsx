@@ -4,13 +4,18 @@ import { usePlayerInstance } from '../setting/Context'
 import { useSubtitle } from '../setting/items/Subtitle'
 
 export const InitializeSubtitle = () => {
-  const { initializeSubtitle, subtitlesData } = useSubtitle()
+  const { initializeSubtitle, subtitlesInstance, isFetching } = useSubtitle()
   const player = usePlayerInstance()
+
   useEffect(() => {
-    if (!player) {
+    if (!player || isFetching) {
       return
     }
     initializeSubtitle()
-  }, [subtitlesData, player])
+
+    return () => {
+      subtitlesInstance?.freeTrack()
+    }
+  }, [player, isFetching])
   return null
 }

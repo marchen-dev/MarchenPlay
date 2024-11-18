@@ -133,7 +133,7 @@ export const useSubtitle = () => {
   const player = usePlayerInstance()
   const [subtitlesInstance, setSubtitlesInstance] = useSubtitleInstance()
   const setVideo = useSetAtom(videoAtom)
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ['getAllSubtitlesFromAnime', url],
     queryFn: async () => {
       const subtitleDetails = await tipcClient?.getSubtitlesIntroFromAnime({ path: url })
@@ -163,7 +163,6 @@ export const useSubtitle = () => {
     enabled: !!url,
     staleTime: 0,
   })
-
   const setSubtitlesOctopus = useCallback(
     (path: string) => {
       if (!player) {
@@ -286,6 +285,7 @@ export const useSubtitle = () => {
     setSubtitlesOctopus,
     initializeSubtitle,
     subtitlesInstance,
+    isFetching
   }
 }
 
