@@ -1,5 +1,6 @@
 import { cn } from '@renderer/lib/utils'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
+import { forwardRef } from 'react'
 
 export const SettingViewContainer: FC<PropsWithChildren> = ({ children }) => {
   return <div className="space-y-4 p-5">{children}</div>
@@ -13,7 +14,7 @@ export const FieldsCardLayout: FC<FieldsCardLayoutProps> = ({ children, title, c
   return (
     <section
       className={cn(
-        'min-h-28 space-y-3 rounded-lg border  bg-zinc-50 p-3 dark:bg-zinc-900',
+        'min-h-28 space-y-3 rounded-lg border bg-zinc-50 p-3 dark:bg-zinc-900',
         className,
       )}
     >
@@ -27,11 +28,13 @@ interface FieldLayoutProps extends PropsWithChildren {
   title?: ReactNode
 }
 
-export const FieldLayout: FC<FieldLayoutProps> = ({ children, title }) => {
-  return (
-    <div className="flex items-center justify-between ">
-      <span className="font-medium">{title}</span>
-      {children}
-    </div>
-  )
-}
+export const FieldLayout = forwardRef<HTMLDivElement, FieldLayoutProps>(
+  ({ children, title }, ref) => {
+    return (
+      <div className="flex items-center justify-between " ref={ref}>
+        <span className="font-medium">{title}</span>
+        {children}
+      </div>
+    )
+  },
+)

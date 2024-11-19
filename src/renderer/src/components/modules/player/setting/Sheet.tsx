@@ -8,9 +8,9 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
 import { useAtom } from 'jotai'
 
-import { Audio } from './items/Audio'
-import { Danmaku } from './items/Danmaku'
-import { Subtitle } from './items/Subtitle'
+import { Audio } from './items/audio/Audio'
+import { Danmaku } from './items/damaku/Danmaku'
+import { Subtitle } from './items/subtitle/Subtitle'
 
 export const SettingSheet = () => {
   const [show, setShow] = useAtom(playerSettingSheetAtom)
@@ -24,7 +24,7 @@ export const SettingSheet = () => {
       <SheetContent
         container={document.querySelector(`.xgplayer`)}
         classNames={{ sheetOverlay: 'bg-black/20' }}
-        aria-describedby='播放器设置'
+        aria-describedby="播放器设置"
       >
         <SheetHeader>
           <SheetTitle>设置</SheetTitle>
@@ -34,29 +34,35 @@ export const SettingSheet = () => {
             className="w-full"
             defaultValue={['danmaku', 'subtitle', 'audio']}
           >
-            <AccordionItem value="danmaku">
-              <AccordionTrigger>弹幕设置</AccordionTrigger>
-              <AccordionContent>
-                <Danmaku />
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="subtitle">
-              <AccordionTrigger>字幕设置</AccordionTrigger>
-              <AccordionContent>
-                <Subtitle />
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="audio">
-              <AccordionTrigger>音频设置</AccordionTrigger>
-              <AccordionContent>
-                <Audio />
-              </AccordionContent>
-            </AccordionItem>
+            {settingSheetList.map((item) => (
+              <AccordionItem key={item.value} value={item.value}>
+                <AccordionTrigger className='font-semibold'>{item.title}</AccordionTrigger>
+                <AccordionContent className="px-1 pt-1">
+                  <item.component />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
         </SheetHeader>
       </SheetContent>
     </Sheet>
   )
 }
+
+const settingSheetList = [
+  {
+    title: '弹幕设置',
+    value: 'danmaku',
+    component: Danmaku,
+  },
+  {
+    title: '字幕设置',
+    value: 'subtitle',
+    component: Subtitle,
+  },
+  {
+    title: '音频设置',
+    value: 'audio',
+    component: Audio,
+  },
+]
