@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { RootLayout } from './components/layout/RootLayout'
-import { Sidebar } from './components/modules/sidebar'
+import { RootLayout } from './components/layout/root/RootLayout'
+import { Sidebar } from './components/layout/sidebar'
 import { Titlebar } from './components/modules/windows/Titlebar'
 import AnimatedOutlet from './components/ui/animate/AnimatedOutlet'
 import { appLog } from './lib/log'

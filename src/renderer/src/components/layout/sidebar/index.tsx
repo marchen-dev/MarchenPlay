@@ -10,7 +10,7 @@ import { AlertCircle } from 'lucide-react'
 import type { FC } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
-import { useSettingModal } from '../settings/hooks'
+import { useSettingModal } from '../../modules/settings/hooks'
 
 export const Sidebar = () => {
   const showModal = useSettingModal()

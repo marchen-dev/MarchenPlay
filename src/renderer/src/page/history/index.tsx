@@ -1,10 +1,7 @@
 import { useAppSettings, useAppSettingsValue } from '@renderer/atoms/settings/app'
-import {
-  FunctionAreaButton,
-  FunctionAreaToggle,
-} from '@renderer/components/layout/header/FunctionAreaButton'
-import { RouterLayout } from '@renderer/components/layout/RouterLayout'
+import { RouterLayout } from '@renderer/components/layout/root/RouterLayout'
 import { Badge } from '@renderer/components/ui/badge'
+import { FunctionAreaButton, FunctionAreaToggle } from '@renderer/components/ui/button'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
