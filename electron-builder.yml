@@ -54,6 +54,9 @@ publish:
   provider: github
   owner: marchen-dev
   repo: MarchenPlay
+# publish:
+#   provider: generic
+#   url: http://localhost:3000
 releaseInfo:
   releaseNotes: |
     本次更新:

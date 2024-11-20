@@ -1,3 +1,6 @@
+# provider: generic
+# url: http://localhost:3000
+# updaterCacheDirName: marchen-player-updater
 provider: github
 owner: marchen-dev
 repo: MarchenPlay

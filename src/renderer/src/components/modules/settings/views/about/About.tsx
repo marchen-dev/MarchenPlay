@@ -1,6 +1,7 @@
 import { version } from '@pkg'
 import { Logo } from '@renderer/components/icons/Logo'
 import { Button } from '@renderer/components/ui/button'
+import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
 
 import { FieldsCardLayout, SettingViewContainer } from '../Layout'
@@ -20,7 +21,15 @@ export const AboutView = () => {
               </div>
             </div>
           </div>
-          {!isWeb && <Button>检查更新</Button>}
+          {!isWeb && (
+            <Button
+              onClick={() => {
+                tipcClient?.checkUpdate()
+              }}
+            >
+              检查更新
+            </Button>
+          )}
         </div>
       </FieldsCardLayout>
     </SettingViewContainer>
