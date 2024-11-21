@@ -20,10 +20,23 @@ $ pnpm dev
 
 ## 截图
 
-![home](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/marchen-play-1.png)
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.38.37%402x.png)
 
-![player](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/marchen-play-player.png)
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.41.34%402x.png)
 
+
+
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.40.33%402x.png)
+
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.39.05%402x.png)
+
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.39.09%402x.png)
+
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.39.44%402x.png)
+
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.40.59%402x.png)
+
+![](https://fastly.jsdelivr.net/gh/suemor233/static@main/img/CleanShot%202024-11-21%20at%2019.39.19%402x.png)
 ## 致谢 & 许可
 
 - [弹弹play](https://www.dandanplay.com)
