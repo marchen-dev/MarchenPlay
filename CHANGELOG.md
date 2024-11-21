@@ -1,40 +1,5 @@
 # CHANGELOG
 
-## [0.0.1-alpha.5](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.4...v0.0.1-alpha.5) (2024-11-21)
-
-
-### Bug Fixes
-
-* add strict mode ([915acb1](https://github.com/suemor233/MarchenPlay/commit/915acb11770cbce13b74a051e80f65e6701ecaff))
-* ci ([abb2b26](https://github.com/suemor233/MarchenPlay/commit/abb2b267ccdbf8698a3b1b735e8c920a873b2712))
-* ci ([d5ce3b7](https://github.com/suemor233/MarchenPlay/commit/d5ce3b7ddc7927b5027fbbbba150b75de809661c))
-* display issue with selecting subtitles interface ([73cb224](https://github.com/suemor233/MarchenPlay/commit/73cb2241c03fa3bfe228f9ebdf1f47e5b88d9f84))
-* libass font file import issue ([f3d65bf](https://github.com/suemor233/MarchenPlay/commit/f3d65bfaaef53e5e0fb58bdbf94435108cfeea52))
-* multiple subtitle issues ([b4378a1](https://github.com/suemor233/MarchenPlay/commit/b4378a14089798ff6d4522e07e8433d6ef8dc264))
-* subtitle can't import ([2e50458](https://github.com/suemor233/MarchenPlay/commit/2e50458f755ffd4beab44054d875ddf97cd6e321))
-* subtitle import problem ([99c337e](https://github.com/suemor233/MarchenPlay/commit/99c337e08d257f95277065f3a94af77302dcd390))
-* subtitle overlap ([0dbc76b](https://github.com/suemor233/MarchenPlay/commit/0dbc76b9b817deca783d501f533b5bd8919a2153))
-* subtitles cannot be displayed during initialization ([5bc3a66](https://github.com/suemor233/MarchenPlay/commit/5bc3a66d74c760387650bf26157ce4f622b0e9e4))
-
-
-### Features
-
-* add import subtitle UI ([bb8ed4b](https://github.com/suemor233/MarchenPlay/commit/bb8ed4b8d5b2146a86966d3368b24767e7f00e88))
-* app signature ([f49007a](https://github.com/suemor233/MarchenPlay/commit/f49007a3def92e10c96c0fda6143679f682ad1b7))
-* auto updater config ([36ed7d8](https://github.com/suemor233/MarchenPlay/commit/36ed7d8673fd6807b9e1b6b37ac7d6c9100210f4))
-* error handling page ([65d3bd1](https://github.com/suemor233/MarchenPlay/commit/65d3bd15a3e92170699a3314aa2c59dd03df824f))
-* extract subtitles from mkv ([529c8ad](https://github.com/suemor233/MarchenPlay/commit/529c8ad9c25f0a1fce019846bff0b7ddf88a3429))
-* optimize select hover effect ([08e0153](https://github.com/suemor233/MarchenPlay/commit/08e0153f58ddca4a05f7fa9026e272ce2f841259))
-* player setting sheet ([99e939d](https://github.com/suemor233/MarchenPlay/commit/99e939d93cd4fb0a67283bb70707833103f63f67))
-* set damaku when the animation is playing ([e3ad012](https://github.com/suemor233/MarchenPlay/commit/e3ad012ea92ae204b9736b658a8427e7b81345f6))
-* split player settings accordion ([4a9ccc9](https://github.com/suemor233/MarchenPlay/commit/4a9ccc99ee51cd145db3816f1bef32c0976c7346))
-* Support automatic recognition of embedded subtitles for playback ([4c185fd](https://github.com/suemor233/MarchenPlay/commit/4c185fd79ba67865ed4985b0f10c3b3f30f84cf1))
-* support importing embedded subtitles in videos ([ebb8cc6](https://github.com/suemor233/MarchenPlay/commit/ebb8cc6225a7089293b56855ae5e27cb34833c95))
-* support manual subtitle import ([a4bf6b5](https://github.com/suemor233/MarchenPlay/commit/a4bf6b5cb5fbdd7863da9062269ec4aee6887202))
-* use showMessage Box sync ([6286e15](https://github.com/suemor233/MarchenPlay/commit/6286e1540138e667f3b3eab781dffaefa942b68f))
-
-
-
 ## [0.0.1-alpha.4](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.3...v0.0.1-alpha.4) (2024-11-05)
 
 
