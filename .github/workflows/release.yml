@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [20.x]
+        node-version: [22.x]
 
     steps:
       - name: Checkout code
@@ -36,14 +36,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Install snapcraft
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo snap install snapcraft --classic
-
-      - name: Build for Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: pnpm run build:linux
-
       - name: Build for macOS
         if: matrix.os == 'macos-latest'
         run: pnpm run build:mac
@@ -53,7 +45,3 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{secrets.APPLE_APP_SPECIFIC_PASSWORD}}
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-
-      - name: Build for Windows
-        if: matrix.os == 'windows-latest'
-        run: pnpm run build:win
