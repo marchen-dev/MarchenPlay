@@ -8,7 +8,6 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
 import { useAtom } from 'jotai'
 
-import { Audio } from './items/audio/Audio'
 import { Danmaku } from './items/damaku/Danmaku'
 import { Subtitle } from './items/subtitle/Subtitle'
 
@@ -60,9 +59,9 @@ const settingSheetList = [
     value: 'subtitle',
     component: Subtitle,
   },
-  {
-    title: '音频设置',
-    value: 'audio',
-    component: Audio,
-  },
+  // {
+  //   title: '音频设置',
+  //   value: 'audio',
+  //   component: Audio,
+  // },
 ]

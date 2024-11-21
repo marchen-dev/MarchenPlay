@@ -14,12 +14,12 @@ asarUnpack:
 win:
   executableName: Marchen
 nsis:
-  oneClick: false
-  allowToChangeInstallationDirectory: true
   artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  allowToChangeInstallationDirectory: true
+  oneClick: false
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -57,9 +57,10 @@ publish:
 # publish:
 #   provider: generic
 #   url: http://localhost:3000
+afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
     本次更新:
-      新增设置界面
-      新增弹幕搜索功能
-      支持不加载弹幕,直接播放视频
+      可以切换动漫内嵌字幕和手动导入字幕
+      新增视频播放器设置功能
+      可以对历史记录动漫进行删除和从新识别弹幕库

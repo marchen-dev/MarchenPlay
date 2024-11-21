@@ -6,9 +6,12 @@ import { debounce } from 'lodash-es'
 import type { ChangeEvent } from 'react'
 import { useCallback, useState } from 'react'
 
-export const showMatchAnimeDialogAtom = atomWithReset(false)
+export const showMatchAnimeDialogAtom = atomWithReset<{ open: boolean; hash?: string }>({
+  open: false,
+})
 
-export const showMatchAnimeDialog = () => jotaiStore.set(showMatchAnimeDialogAtom, true)
+export const showMatchAnimeDialog = (open: boolean, hash?: string) =>
+  jotaiStore.set(showMatchAnimeDialogAtom, { open, hash })
 
 export const useSearchAnime = () => {
   const [searchText, setSearchText] = useState('')

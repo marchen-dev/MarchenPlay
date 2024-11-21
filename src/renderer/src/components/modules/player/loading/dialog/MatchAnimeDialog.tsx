@@ -11,11 +11,11 @@ import { Input } from '@renderer/components/ui/input'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
 import type { MatchResponseV2, MatchResultV2 } from '@renderer/request/models/match'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import type { FC } from 'react'
 import { useEffect, useMemo } from 'react'
 
-import { showMatchAnimeDialogAtom, useSearchAnime } from './hooks'
+import { showMatchAnimeDialog, showMatchAnimeDialogAtom, useSearchAnime } from './hooks'
 
 interface MatchAnimeDialogProps {
   matchData?: MatchResponseV2
@@ -26,15 +26,15 @@ interface MatchAnimeDialogProps {
 export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
   const { handleSearchAnime, searchData } = useSearchAnime()
   const { matchData, onSelected, onClosed } = props
-  const [showMatchAnimeDialog, setShowMatchAnimeDialog] = useAtom(showMatchAnimeDialogAtom)
   const { toast } = useToast()
+  const { open } = useAtomValue(showMatchAnimeDialogAtom)
 
   useEffect(() => {
     if (matchData && !matchData.isMatched) {
-      setShowMatchAnimeDialog(true)
+      showMatchAnimeDialog(true)
     }
-    return () => setShowMatchAnimeDialog(false)
-  }, [matchData, setShowMatchAnimeDialog])
+    return () => showMatchAnimeDialog(false)
+  }, [matchData])
 
   const accordionData = useMemo(() => {
     if (searchData) {
@@ -64,7 +64,7 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
     return Object.values(groupMatches)
   }, [matchData, searchData])
   return (
-    <Dialog open={showMatchAnimeDialog} onOpenChange={(open) => setShowMatchAnimeDialog(open)}>
+    <Dialog open={open} onOpenChange={(open) => showMatchAnimeDialog(open)}>
       <DialogContent
         className="max-h-[80vh] min-h-[700px] sm:max-w-[725px]"
         onClosed={onClosed}
@@ -105,7 +105,7 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
                                   animeTitle: item.animeTitle || '',
                                   episodeTitle: item.episodeTitle || '',
                                 })
-                              setShowMatchAnimeDialog(false)
+                              showMatchAnimeDialog(false)
                               toast({
                                 title: '已选择弹幕库',
                                 description: `已选择 ${animeTitle} ${item.episodeTitle}`,
@@ -127,10 +127,13 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
             <Button
               variant={'secondary'}
               className="mt-5 flex items-center text-sm"
-              onClick={() => onSelected && onSelected()}
+              onClick={() => {
+                showMatchAnimeDialog(false)
+                onSelected && onSelected()
+              }}
             >
               <i className="icon-[mingcute--xls-line] mr-1 text-lg" />
-              <span>不加载弹幕，直接播放</span>
+              <span>不加载弹幕</span>
             </Button>
           </div>
         </div>

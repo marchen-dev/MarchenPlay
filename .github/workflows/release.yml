@@ -47,6 +47,12 @@ jobs:
       - name: Build for macOS
         if: matrix.os == 'macos-latest'
         run: pnpm run build:mac
+        env:
+          APPLE_APP_BUNDLE_ID: ${{secrets.APPLE_APP_BUNDLE_ID}},
+          APPLE_ID: ${{secrets.APPLE_ID}},
+          APPLE_ID_PASSWORD: ${{secrets.APPLE_ID_PASSWORD}},
+          APPLE_ASC_PROVIDER: ${{secrets.APPLE_ASC_PROVIDER}},
+          APPLE_TEAM_ID: ${{secrets.APPLE_TEAM_ID}},
 
       - name: Build for Windows
         if: matrix.os == 'windows-latest'

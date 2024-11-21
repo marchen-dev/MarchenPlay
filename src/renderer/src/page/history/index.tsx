@@ -2,6 +2,13 @@ import { useAppSettings, useAppSettingsValue } from '@renderer/atoms/settings/ap
 import { RouterLayout } from '@renderer/components/layout/root/RouterLayout'
 import { Badge } from '@renderer/components/ui/badge'
 import { FunctionAreaButton, FunctionAreaToggle } from '@renderer/components/ui/button'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@renderer/components/ui/menu'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
@@ -42,6 +49,7 @@ export default function History() {
           </div>
         )}
       </ScrollArea>
+      {/* <Dialog /> */}
     </RouterLayout>
   )
 }
@@ -50,7 +58,7 @@ interface HistoryItemProps extends DB_History {
   showPoster: boolean
 }
 
-const HistoryItem: FC<HistoryItemProps> = (props) => {
+const HistoryItem: FC<HistoryItemProps> = memo((props) => {
   const {
     cover,
     animeTitle,
@@ -72,59 +80,75 @@ const HistoryItem: FC<HistoryItemProps> = (props) => {
       ? Math.round(percentage * 100)
       : 0
   }, [progress, duration])
+
+  const playAnime = () => {
+    if (isWeb) {
+      return toast({
+        title: '请使用客户端播放',
+        description: 'WEB 版本暂时不支持续播功能',
+        duration: 5000,
+      })
+    }
+    return navigation(RouteName.PLAYER, { state: { episodeId, hash } })
+  }
   return (
-    <li
-      className={cn('flex cursor-default select-none flex-col items-center', !isWeb && 'group')}
-      onClick={() => {
-        if (isWeb) {
-          return toast({
-            title: '请使用客户端播放',
-            description: 'WEB 版本暂时不支持续播功能',
-            duration: 5000,
-          })
-        }
-        return navigation(RouteName.PLAYER, { state: { episodeId, hash } })
-      }}
-    >
-      <div className={cn('relative w-full overflow-hidden rounded-md', showPoster && 'h-72')}>
-        <img
-          src={showPoster ? cover : (thumbnail ?? cover)}
-          className={cn(
-            'pointer-events-none aspect-video size-full object-cover transition-all duration-100 group-hover:opacity-85',
-            showPoster && 'aspect-auto',
-          )}
-        />
-        {!isWeb && (
-          <i
-            className={cn(
-              'icon-[mingcute--play-circle-line]',
-              'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-100',
-              'size-16 text-white opacity-0 shadow-md group-hover:opacity-100',
-            )}
-          />
-        )}
-        <div
-          className={cn('absolute bottom-0 left-0 h-1 rounded-md bg-warning')}
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-      <div className="mt-1 w-full px-0.5">
-        <p className="truncate text-sm" title={animeTitle}>
-          {animeTitle}
-        </p>
-        <div
-          className="flex items-center justify-between text-xs text-zinc-500"
-          title={episodeTitle}
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <li
+          className={cn('flex cursor-default select-none flex-col items-center', !isWeb && 'group')}
+          onClick={playAnime}
         >
-          <span className="truncate">{episodeTitle || '暂无弹幕库'}</span>
-          <div className="shrink-0 ">
-            <Badge variant={'outline'}>{relativeTimeToNow(updatedAt)}</Badge>
+          <div className={cn('relative w-full overflow-hidden rounded-md', showPoster && 'h-72')}>
+            <img
+              src={showPoster ? cover : (thumbnail ?? cover)}
+              className={cn(
+                'pointer-events-none aspect-video size-full object-cover transition-all duration-100 group-hover:opacity-85',
+                showPoster && 'aspect-auto',
+              )}
+            />
+            {!isWeb && (
+              <i
+                className={cn(
+                  'icon-[mingcute--play-circle-line]',
+                  'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-100',
+                  'size-16 text-white opacity-0 shadow-md group-hover:opacity-100',
+                )}
+              />
+            )}
+            <div
+              className={cn('absolute bottom-0 left-0 h-1 rounded-md bg-warning')}
+              style={{ width: `${percentage}%` }}
+            />
           </div>
-        </div>
-      </div>
-    </li>
+          <div className="mt-1 w-full px-0.5">
+            <p className="truncate text-sm" title={animeTitle}>
+              {animeTitle}
+            </p>
+            <div
+              className="flex items-center justify-between text-xs text-zinc-500"
+              title={episodeTitle}
+            >
+              <span className="truncate">{episodeTitle || '暂无弹幕库'}</span>
+              <div className="shrink-0 ">
+                <Badge variant={'outline'}>{relativeTimeToNow(updatedAt)}</Badge>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={playAnime}>继续观看</ContextMenuItem>
+        {/* <ContextMenuItem onClick={() => showMatchAnimeDialog(true, hash)}>
+          重新匹配弹幕库
+        </ContextMenuItem> */}
+        <ContextMenuSeparator />
+        <ContextMenuItem className="!text-secondary" onClick={() => db.history.delete(hash)}>
+          删除
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
-}
+})
 
 const FunctionArea = memo(() => {
   const [appSettings, setAppSettings] = useAppSettings()
@@ -155,3 +179,36 @@ const FunctionArea = memo(() => {
     </div>
   )
 })
+
+// const Dialog = () => {
+//   const { hash } = useAtomValue(showMatchAnimeDialogAtom)
+
+//   const handleUpdateHistory = async (params?: MatchedVideoType) => {
+//     const old = await db.history.get({ hash })
+//     if (!old || !hash) {
+//       return
+//     }
+
+//     const { duration, path, progress, subtitles, animeTitle } = old
+
+//     // if (!params) {
+//     //   saveToHistory({
+//     //     hash,
+//     //     path,
+//     //     progress,
+//     //     duration,
+//     //     animeTitle,
+//     //   })
+//     // }
+
+//     saveToHistory({
+//       duration,
+//       path,
+//       progress,
+//       subtitles,
+//       hash,
+//       ...params,
+//     })
+//   }
+//   return <MatchAnimeDialog onSelected={handleUpdateHistory} />
+// }
