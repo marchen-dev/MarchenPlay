@@ -94,7 +94,7 @@
     "daisyui": "^4.12.10",
     "dotenv": "^16.4.5",
     "electron": "^32.0.0",
-    "electron-builder": "^24.9.1",
+    "electron-builder": "^25.0.0",
     "electron-vite": "^2.3.0",
     "eslint": "^9.13.0",
     "eslint-config-hyoban": "^3.1.11",
