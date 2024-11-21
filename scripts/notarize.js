@@ -1,4 +1,7 @@
 import { notarize } from '@electron/notarize'
+// import { config } from 'dotenv'
+
+// config()
 
 export default async function notarizing(context) {
   if (context.electronPlatformName !== 'darwin') {
@@ -10,8 +13,6 @@ export default async function notarizing(context) {
   const appleIdPassword = process.env.APPLE_ID_PASSWORD
   const ascProvider = process.env.APPLE_ASC_PROVIDER
   const teamId = process.env.APPLE_TEAM_ID
-  // eslint-disable-next-line no-console
-  console.log(appBundleId, '=======')
   if (!appBundleId || !appleId || !appleIdPassword || !ascProvider || !teamId) {
     return
   }
