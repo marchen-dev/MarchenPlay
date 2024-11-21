@@ -6,6 +6,7 @@
 ### Bug Fixes
 
 * add strict mode ([915acb1](https://github.com/suemor233/MarchenPlay/commit/915acb11770cbce13b74a051e80f65e6701ecaff))
+* ci ([4a1adc5](https://github.com/suemor233/MarchenPlay/commit/4a1adc50d0b5f6abaf0558591641efd5d9c0b75a))
 * ci ([89f993b](https://github.com/suemor233/MarchenPlay/commit/89f993be1356538b1ce912588a92dbc6958f1287))
 * ci ([5bc0abe](https://github.com/suemor233/MarchenPlay/commit/5bc0abe15295e1f7b6a75ced6036def4a6950604))
 * ci ([5492f11](https://github.com/suemor233/MarchenPlay/commit/5492f11d5293e6c7efa1d4b45e58f5c1050dd747))
