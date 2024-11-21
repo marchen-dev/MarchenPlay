@@ -1,7 +1,7 @@
 import { notarize } from '@electron/notarize'
-// import { config } from 'dotenv'
+import { config } from 'dotenv'
 
-// config()
+config()
 
 export default async function notarizing(context) {
   if (context.electronPlatformName !== 'darwin') {
@@ -10,10 +10,11 @@ export default async function notarizing(context) {
 
   const appBundleId = process.env.APPLE_APP_BUNDLE_ID
   const appleId = process.env.APPLE_ID
-  const appleIdPassword = process.env.APPLE_ID_PASSWORD
-  const ascProvider = process.env.APPLE_ASC_PROVIDER
+  const appleIdPassword = process.env.APPLE_APP_SPECIFIC_PASSWORD
   const teamId = process.env.APPLE_TEAM_ID
-  if (!appBundleId || !appleId || !appleIdPassword || !ascProvider || !teamId) {
+  // eslint-disable-next-line prefer-template, no-console
+  console.log(appBundleId + '======', appBundleId[2], '=======')
+  if (!appBundleId || !appleId || !appleIdPassword || !teamId) {
     return
   }
 
@@ -23,12 +24,10 @@ export default async function notarizing(context) {
   console.log('Notarizing app:', appPath)
 
   await notarize({
-    appBundleId,
     appPath,
+    appBundleId,
     appleId,
     appleIdPassword,
-    ascProvider,
-    tool: 'notarytool',
     teamId,
   })
 }
