@@ -53,8 +53,8 @@ jobs:
           APPLE_ID_PASSWORD: ${{secrets.APPLE_ID_PASSWORD}},
           APPLE_ASC_PROVIDER: ${{secrets.APPLE_ASC_PROVIDER}},
           APPLE_TEAM_ID: ${{secrets.APPLE_TEAM_ID}},
-          BUILD_CERTIFICATE_BASE64: ${{secrets.BUILD_CERTIFICATE_BASE64}},
-          P12_PASSWORD: ${{secrets.P12_PASSWORD}}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
 
       - name: Build for Windows
         if: matrix.os == 'windows-latest'
