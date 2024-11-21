@@ -65,21 +65,3 @@ jobs:
         run: npx @suemor/changelogithub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Create Release
-      #   uses: softprops/action-gh-release@v2
-      #   with:
-      #     draft: false
-      #     prerelease: true
-      #     files: |
-      #       dist/*.exe
-      #       dist/*.zip
-      #       dist/*.dmg
-      #       dist/*.AppImage
-      #       dist/*.snap
-      #       dist/*.deb
-      #       dist/*.rpm
-      #       dist/*.tar.gz
-      #       dist/latest*.yml
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
