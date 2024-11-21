@@ -1,7 +1,4 @@
 import { notarize } from '@electron/notarize'
-import { config } from 'dotenv'
-
-config()
 
 export default async function notarizing(context) {
   if (context.electronPlatformName !== 'darwin') {
