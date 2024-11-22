@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [0.0.1-alpha.6](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.5...v0.0.1-alpha.6) (2024-11-22)
+
+
+### Bug Fixes
+
+*  install deps when using windows ([bb49953](https://github.com/suemor233/MarchenPlay/commit/bb49953111227c97d25428b7ac18f51a991e31ac))
+* deps download ([2ac3727](https://github.com/suemor233/MarchenPlay/commit/2ac372786cd69e608ef534c468e14ff2f392eaff))
+* deps install ([b7478ad](https://github.com/suemor233/MarchenPlay/commit/b7478adabca1fdeb9c6b99e458456c1ddb8e0b61))
+
+
+### Features
+
+* clear unused ffmpeg dependencies during build ([47e8f8c](https://github.com/suemor233/MarchenPlay/commit/47e8f8c304b22f13fb24b0a8fb1f37bf19697a2c))
+
+
+
 ## [0.0.1-alpha.5](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.4...v0.0.1-alpha.5) (2024-11-21)
 
 
