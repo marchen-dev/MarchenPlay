@@ -16,7 +16,7 @@
   "scripts": {
     "build": "npm run typecheck && electron-vite build",
     "build:linux": "electron-vite build && electron-builder --linux --publish never",
-    "build:mac": "electron-vite build && electron-builder --mac --publish never",
+    "build:mac": "node scripts/install-darwin-deps.js && electron-vite build && electron-builder --mac --publish never",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:web": "rm -rf out/web && vite build",
     "build:win": "npm run build && electron-builder --win --publish never",
@@ -69,10 +69,6 @@
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@electron/notarize": "^2.5.0",
-    "@ffmpeg-installer/darwin-arm64": "^4.1.5",
-    "@ffmpeg-installer/darwin-x64": "^4.1.0",
-    "@ffprobe-installer/darwin-arm64": "^5.0.1",
-    "@ffprobe-installer/darwin-x64": "^5.1.0",
     "@hrgui/libass-wasm-ts": "^1.0.3",
     "@iconify-json/mingcute": "^1.1.19",
     "@iconify/tailwind": "^1.1.2",
