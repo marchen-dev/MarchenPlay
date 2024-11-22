@@ -8,7 +8,7 @@ if (platform === 'darwin') {
   console.log('Detected macOS, installing optional dependencies...')
   // 为了在 macos arm64 架构下进行打包 x64 架构的 APP, 所以需要同时安装 x64 arm64 架构的 ffmpeg 和 ffprobe
   exec(
-    'pnpm add @ffmpeg-installer/darwin-x64@^4.1.0 @ffprobe-installer/darwin-x64@^5.1.0 @ffmpeg-installer/darwin-arm64@^4.1.5 @ffprobe-installer/darwin-arm64@^5.0.1 --force',
+    'pnpm i @ffmpeg-installer/darwin-x64@^4.1.0 @ffprobe-installer/darwin-x64@^5.1.0 @ffmpeg-installer/darwin-arm64@^4.1.5 @ffprobe-installer/darwin-arm64@^5.0.1 --force',
     (err, stdout, stderr) => {
       if (err) {
         console.error(`Error installing optional dependencies: ${stderr}`)

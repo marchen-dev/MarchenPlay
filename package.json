@@ -26,7 +26,7 @@
     "format": "prettier --write .",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "postinstall": "node scripts/install-optional-deps.js && electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "prepare": "pnpm exec simple-git-hooks && shx cp .env.example .env",
     "start": "electron-vite preview",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
@@ -66,15 +66,13 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7"
   },
-  "optionalDependencies": {
-    "@ffmpeg-installer/darwin-arm64": "^4.1.5",
-    "@ffmpeg-installer/darwin-x64": "^4.1.0",
-    "@ffprobe-installer/darwin-arm64": "^5.0.1",
-    "@ffprobe-installer/darwin-x64": "^5.1.0"
-  },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@electron/notarize": "^2.5.0",
+    "@ffmpeg-installer/darwin-arm64": "^4.1.5",
+    "@ffmpeg-installer/darwin-x64": "^4.1.0",
+    "@ffprobe-installer/darwin-arm64": "^5.0.1",
+    "@ffprobe-installer/darwin-x64": "^5.1.0",
     "@hrgui/libass-wasm-ts": "^1.0.3",
     "@iconify-json/mingcute": "^1.1.19",
     "@iconify/tailwind": "^1.1.2",
