@@ -101,6 +101,19 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.15)
+    optionalDependencies:
+      '@ffmpeg-installer/darwin-arm64':
+        specifier: ^4.1.5
+        version: 4.1.5
+      '@ffmpeg-installer/darwin-x64':
+        specifier: ^4.1.0
+        version: 4.1.0
+      '@ffprobe-installer/darwin-arm64':
+        specifier: ^5.0.1
+        version: 5.0.1
+      '@ffprobe-installer/darwin-x64':
+        specifier: ^5.1.0
+        version: 5.1.0
     devDependencies:
       '@electron-toolkit/tsconfig':
         specifier: ^1.0.1
@@ -108,12 +121,6 @@ importers:
       '@electron/notarize':
         specifier: ^2.5.0
         version: 2.5.0
-      '@ffmpeg-installer/darwin-x64':
-        specifier: ^4.1.0
-        version: 4.1.0
-      '@ffprobe-installer/darwin-x64':
-        specifier: ^5.1.0
-        version: 5.1.0
       '@hrgui/libass-wasm-ts':
         specifier: ^1.0.3
         version: 1.0.3
@@ -960,6 +967,7 @@ packages:
 
   '@ffmpeg-installer/darwin-x64@4.1.0':
     resolution: {integrity: sha512-Z4EyG3cIFjdhlY8wI9aLUXuH8nVt7E9SlMVZtWvSPnm2sm37/yC2CwjUzyCQbJbySnef1tQwGG2Sx+uWhd9IAw==}
+    cpu: [x64]
     os: [darwin]
 
   '@ffmpeg-installer/ffmpeg@1.1.0':
@@ -5737,7 +5745,8 @@ snapshots:
   '@ffmpeg-installer/darwin-arm64@4.1.5':
     optional: true
 
-  '@ffmpeg-installer/darwin-x64@4.1.0': {}
+  '@ffmpeg-installer/darwin-x64@4.1.0':
+    optional: true
 
   '@ffmpeg-installer/ffmpeg@1.1.0':
     optionalDependencies:
@@ -5771,7 +5780,8 @@ snapshots:
   '@ffprobe-installer/darwin-arm64@5.0.1':
     optional: true
 
-  '@ffprobe-installer/darwin-x64@5.1.0': {}
+  '@ffprobe-installer/darwin-x64@5.1.0':
+    optional: true
 
   '@ffprobe-installer/ffprobe@2.1.2':
     optionalDependencies:
