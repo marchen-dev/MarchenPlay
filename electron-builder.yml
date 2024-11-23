@@ -57,7 +57,7 @@ publish:
 # publish:
 #   provider: generic
 #   url: http://localhost:3000
-afterPack: scripts/clean-deps.js
+afterPack: scripts/cleaned-unused-arch-deps.js
 afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |

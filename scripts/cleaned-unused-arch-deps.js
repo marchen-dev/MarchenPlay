@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -50,4 +51,5 @@ export default async function cleanDeps(context) {
     removeUnusedArch(ffmpegPath, 'x64')
     removeUnusedArch(ffprobePath, 'x64')
   }
+  console.log('Cleaned unused arch dependencies.')
 }
