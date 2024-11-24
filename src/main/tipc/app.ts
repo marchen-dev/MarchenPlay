@@ -1,7 +1,7 @@
 import { getMainWindow } from '@main/windows/main'
 import { BrowserWindow, dialog } from 'electron'
+import updater from 'electron-updater'
 
-import { appUpdater } from '../lib/update'
 import { t } from './_instance'
 
 export const appRoute = {
@@ -33,7 +33,7 @@ export const appRoute = {
       }
     }),
   checkUpdate: t.procedure.action(async () => {
-    appUpdater.instance.checkForUpdates()
+    updater.autoUpdater.checkForUpdates()
   }),
   clearHistoryDialog: t.procedure.input<{ title: string }>().action(async ({ input }) => {
     const result = await dialog.showMessageBox({

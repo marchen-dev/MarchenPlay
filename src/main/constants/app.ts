@@ -7,6 +7,7 @@ export const savePath = () => path.resolve(app.getPath('appData'), app.getName()
 
 export const screenshotsPath = () => path.resolve(savePath(), 'screenshots')
 export const subtitlesPath = () => path.resolve(savePath(), 'subtitles')
+export const logPath = () => path.resolve(savePath(), 'log')
 
 export const createStorageFolder = () => {
   if (!fs.existsSync(screenshotsPath())) {

@@ -1,82 +1,67 @@
-import { dialog } from 'electron'
+import { name } from '@pkg'
+import { app, dialog } from 'electron'
 import logger from 'electron-log'
-import type { AppUpdater as _AppUpdater, UpdateInfo } from 'electron-updater'
-import electronUpdater from 'electron-updater'
+import updater from 'electron-updater'
 
-const { autoUpdater } = electronUpdater
-export class Update {
-  private readonly _update: _AppUpdater
+const { autoUpdater } = updater
+export async function autoUpdateInit() {
+  //每次启动自动更新检查 更新版本
+  autoUpdater.checkForUpdates()
 
-  constructor() {
-    logger.transports.file.level = 'debug'
-    autoUpdater.logger = logger
-    autoUpdater.forceDevUpdateConfig = true
-    autoUpdater.autoDownload = true
+  autoUpdater.logger = logger
+  autoUpdater.disableWebInstaller = false
+  autoUpdater.autoDownload = false //这个必须写成false，写成true时，我这会报没权限更新，也没清楚什么原因
+  autoUpdater.forceDevUpdateConfig = true
+  autoUpdater.on('error', (error) => {
+    logger.error(['检查更新失败', error])
+  })
+  //当有可用更新的时候触发。 更新将自动下载。
+  autoUpdater.on('update-available', (info) => {
+    logger.info('检查到有更新，开始下载新版本')
+    logger.info(info)
+    const { version } = info
+    askUpdate(version)
+  })
+  //当没有可用更新的时候触发。
+  autoUpdater.on('update-not-available', () => {
+    logger.info('没有可用更新')
+  })
+  // 在应用程序启动时设置差分下载逻辑
+  autoUpdater.on('download-progress', async (progress) => {
+    logger.info(progress)
+  })
+  //在更新下载完成的时候触发。
+  autoUpdater.on('update-downloaded', (res) => {
+    logger.info('下载完毕！提示安装更新')
+    logger.info(res)
+    //dialog 想要使用，必须在BrowserWindow创建之后
+    dialog
+      .showMessageBox({
+        title: '升级提示！',
+        message: '已为您下载最新应用，点击确定马上替换为最新版本！',
+      })
+      .then(() => {
+        logger.info('退出应用，安装开始！')
+        //重启应用并在下载后安装更新。 它只应在发出 update-downloaded 后方可被调用。
+        autoUpdater.quitAndInstall()
+      })
+  })
+}
 
-    this._update = autoUpdater
-
-  }
-  autoUpdate() {
-    // 检测下载错误
-    autoUpdater.on('error', (error) => {
-      logger.error('更新异常', error)
-    })
-
-    autoUpdater.on('update-available', (releaseInfo: UpdateInfo) => {
-      autoUpdater.logger?.info('检测到新版本，确认是否下载')
-      const { releaseNotes } = releaseInfo
-      let releaseContent = ''
-      if (releaseNotes) {
-        if (typeof releaseNotes === 'string') {
-          releaseContent = releaseNotes as string
-        } else if (Array.isArray(releaseNotes)) {
-          releaseNotes.forEach((releaseNote) => {
-            releaseContent += `${releaseNote}\n`
-          })
-        }
-      } else {
-        releaseContent = '暂无更新说明'
-      }
-
-      // 弹框确认是否下载更新（releaseContent是更新日志）
-      dialog
-        .showMessageBox({
-          type: 'info',
-          title: '应用有新的更新',
-          detail: releaseContent,
-          message: '发现新版本，是否现在更新？',
-          buttons: ['下次再说', '更新'],
-        })
-        .then(({ response }) => {
-          if (response === 1) {
-            logger.info('用户选择更新，准备下载更新')
-            autoUpdater.downloadUpdate()
-          }
-        })
-    })
-
-    // 更新下载进度
-    autoUpdater.on('download-progress', (progress) => {
-      logger.info('下载进度', progress)
-    })
-
-    // 当需要更新的内容下载完成后
-    autoUpdater.on('update-downloaded', () => {
-      logger.info('下载完成，准备更新')
-      dialog
-        .showMessageBox({
-          title: '安装更新',
-          message: '更新下载完毕，应用将重启并进行安装',
-        })
-        .then(() => {
-          setImmediate(() => autoUpdater.quitAndInstall())
-        })
-    })
-  }
-  get instance() {
-    return this._update
+async function askUpdate(version: string) {
+  logger.info(`最新版本 ${version}`)
+  const { response } = await dialog.showMessageBox({
+    type: 'info',
+    buttons: ['关闭', '安装更新'],
+    title: '软件更新提醒',
+    message: `${name} 最新版本是 ${version}，您现在的版本是 ${app.getVersion()}，现在要下载更新吗？`,
+    defaultId: 1,
+    cancelId: -1,
+    textWidth: 300,
+  })
+  if (response === 1) {
+    autoUpdater.downloadUpdate()
+  } else {
+    logger.info(['更新操作', '关闭更新提醒'])
   }
 }
-const appUpdater = new Update()
-
-export { appUpdater }

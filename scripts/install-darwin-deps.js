@@ -19,5 +19,5 @@ if (platform === 'darwin') {
     },
   )
 } else {
-  console.log('Non-macOS platform detected, skipping optional dependencies installation.')
+  console.log('Non-macOS platform detected, skipping optional darwin installation.')
 }

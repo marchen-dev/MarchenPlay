@@ -7,13 +7,13 @@ import { initializeApp } from './init'
 import { isDev } from './lib/env'
 import { getIconPath } from './lib/icon'
 import { getFilePathFromProtocolURL, handleCustomProtocol } from './lib/protocols'
-import { appUpdater } from './lib/update'
+import { autoUpdateInit } from './lib/update'
 import createWindow from './windows/main'
 
 function bootstrap() {
   initializeApp()
   app.whenReady().then(() => {
-    appUpdater.autoUpdate()
+    autoUpdateInit()
     electronApp.setAppUserModelId(`re.${name}`)
 
     app.on('browser-window-created', (_, window) => {

@@ -6,12 +6,14 @@ import { app, protocol } from 'electron'
 import { createStorageFolder } from './constants/app'
 import { MARCHEN_PROTOCOL } from './constants/protocol'
 import { isDev } from './lib/env'
+import { registerLog } from './lib/log'
 import { registerAppMenu } from './menu'
 import { router } from './tipc'
 
 export const initializeApp = () => {
   registerIpcMain(router)
   registerAppMenu()
+  registerLog()
 
   protocol.registerSchemesAsPrivileged([
     {
@@ -19,7 +21,7 @@ export const initializeApp = () => {
       privileges: {
         bypassCSP: true,
         stream: true,
-        standard: true
+        standard: true,
       },
     },
   ])
