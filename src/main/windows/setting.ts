@@ -40,3 +40,11 @@ export const clearData = async () => {
 
   return clearAllData()
 }
+
+export const updateProgress = (params: {
+  progress: number
+  status: 'downloading' | 'installing'
+}) => {
+  const handlers = getRendererHandlers()
+  handlers?.updateProgress.send({ progress: params.progress, status: params.status })
+}

@@ -35,6 +35,9 @@ export const appRoute = {
   checkUpdate: t.procedure.action(async () => {
     updater.autoUpdater.checkForUpdates()
   }),
+  installUpdate: t.procedure.action(async () => {
+    updater.autoUpdater.quitAndInstall()
+  }),
   clearHistoryDialog: t.procedure.input<{ title: string }>().action(async ({ input }) => {
     const result = await dialog.showMessageBox({
       type: 'warning',

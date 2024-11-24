@@ -22,3 +22,8 @@ export const subscribeNetWorkStatus = () => {
     window.removeEventListener('offline', handleOffline)
   }
 }
+
+export const updateProgressAtom = atom<{
+  progress: number
+  status: 'downloading' | 'installing'
+} | null>(null)

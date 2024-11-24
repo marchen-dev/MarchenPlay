@@ -1,11 +1,15 @@
-import { useNetworkStatus } from '@renderer/atoms/network'
+import { updateProgressAtom, useNetworkStatus } from '@renderer/atoms/network'
 import Show from '@renderer/components/common/Show'
 import { Logo } from '@renderer/components/icons/Logo'
 import { Alert, AlertDescription, AlertTitle } from '@renderer/components/ui/alert'
+import { Button } from '@renderer/components/ui/button'
+import { Progress } from '@renderer/components/ui/progress'
 import { PROJECT_NAME } from '@renderer/constants'
+import { tipcClient } from '@renderer/lib/client'
 import { cn, isMac } from '@renderer/lib/utils'
 import type { SidebarRouteObject } from '@renderer/router'
 import { RouteName, siderbarRoutes } from '@renderer/router'
+import { useAtomValue } from 'jotai'
 import { AlertCircle } from 'lucide-react'
 import type { FC } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -42,6 +46,7 @@ export const Sidebar = () => {
       </div>
       <div className="mb-3">
         <NetWorkCheck />
+        <UpdateProgress />
       </div>
     </div>
   )
@@ -78,5 +83,30 @@ export const NetWorkCheck = () => {
       <AlertTitle>网络异常</AlertTitle>
       <AlertDescription>部分功能使用受限</AlertDescription>
     </Alert>
+  )
+}
+
+export const UpdateProgress = () => {
+  const update = useAtomValue(updateProgressAtom)
+  if (!update) {
+    return
+  }
+
+  if (update.status === 'downloading') {
+    return (
+      <div className="space-y-1.5 text-zinc-700">
+        <p className="text-sm">发现新版本，正在进行更新....</p>
+        <Progress className="h-2" value={update?.progress || 0} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="text-center">
+      <Button variant="outline" onClick={() => tipcClient?.installUpdate()}>
+        <i className="icon-[mingcute--entrance-line] text-lg" />
+        <span className="ml-1">安装新版本</span>
+      </Button>
+    </div>
   )
 }

@@ -1,3 +1,5 @@
+import { updateProgressAtom } from '@renderer/atoms/network'
+import { jotaiStore } from '@renderer/atoms/store'
 import { useVideo } from '@renderer/components/modules/player/loading/hooks'
 import { useSettingModal } from '@renderer/components/modules/settings/hooks'
 import { settingTabs } from '@renderer/components/modules/settings/tabs'
@@ -29,6 +31,9 @@ export const TipcListener = () => {
       handlers?.importAnime.listen(() => {
         navigation(RouteName.PLAYER)
         importAnimeViaIPC()
+      }),
+      handlers?.updateProgress.listen((params) => {
+        jotaiStore.set(updateProgressAtom, { progress: params.progress, status: params.status })
       }),
     ]
 
