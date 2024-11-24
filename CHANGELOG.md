@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [0.0.1-alpha.7](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.6...v0.0.1-alpha.7) (2024-11-24)
+
+
+### Bug Fixes
+
+* unable to update automatically ([b0f40c5](https://github.com/suemor233/MarchenPlay/commit/b0f40c5a2277f0b2538e796457f2797dabc21d0d))
+
+
+### Features
+
+* release notes ([665c938](https://github.com/suemor233/MarchenPlay/commit/665c93880f8dc55f866d5c76b29e50e1a8637991))
+* support manual update retrieval ([439ed65](https://github.com/suemor233/MarchenPlay/commit/439ed6593bca18b4fdb93d934c1965989a96aca3))
+* update progress ([7e9de12](https://github.com/suemor233/MarchenPlay/commit/7e9de12ba21cda0e0d4970724da46d16fc4df4f1))
+
+
+
 ## [0.0.1-alpha.6](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.5...v0.0.1-alpha.6) (2024-11-22)
 
 
