@@ -95,7 +95,7 @@ export const UpdateProgress = () => {
   if (update.status === 'downloading') {
     return (
       <div className="space-y-1.5 text-zinc-700">
-        <p className="text-sm">发现新版本，正在进行更新....</p>
+        <p className="text-sm">发现新版本，正在下载更新...</p>
         <Progress className="h-2" value={update?.progress || 0} />
       </div>
     )
