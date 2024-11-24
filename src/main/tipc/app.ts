@@ -1,4 +1,5 @@
 import { getMainWindow } from '@main/windows/main'
+import { version } from '@pkg'
 import { BrowserWindow, dialog } from 'electron'
 import updater from 'electron-updater'
 
@@ -33,7 +34,34 @@ export const appRoute = {
       }
     }),
   checkUpdate: t.procedure.action(async () => {
-    updater.autoUpdater.checkForUpdates()
+    const updateCheckResult = await updater.autoUpdater.checkForUpdates()
+    if (updateCheckResult?.updateInfo.version === version) {
+      dialog.showMessageBox({
+        type: 'info',
+        message: '当前已是最新版本',
+      })
+    }
+
+    const releaseNotes = updateCheckResult?.updateInfo.releaseNotes
+    let releaseContent = ''
+
+    if (releaseNotes) {
+      if (typeof releaseNotes === 'string') {
+        releaseContent = releaseNotes
+      } else if (Array.isArray(releaseNotes)) {
+        releaseNotes.forEach((releaseNote) => {
+          releaseContent += `${releaseNote}\n`
+        })
+      }
+    } else {
+      releaseContent = '暂无更新说明'
+    }
+
+    dialog.showMessageBox({
+      type: 'info',
+      detail: releaseContent,
+      message: '发现新版本，正在下载更新...',
+    })
   }),
   installUpdate: t.procedure.action(async () => {
     updater.autoUpdater.quitAndInstall()

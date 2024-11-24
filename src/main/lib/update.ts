@@ -2,11 +2,13 @@ import { updateProgress } from '@main/windows/setting'
 import logger from 'electron-log'
 import updater from 'electron-updater'
 
+import { sleep } from './utils'
+
 const { autoUpdater } = updater
 export async function autoUpdateInit() {
+  await sleep(2500)
   //每次启动自动更新检查 更新版本
   autoUpdater.checkForUpdates()
-
   autoUpdater.logger = logger
   autoUpdater.disableWebInstaller = false
   autoUpdater.autoDownload = false //这个必须写成false，写成true时，我这会报没权限更新，也没清楚什么原因

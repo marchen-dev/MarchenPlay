@@ -3,10 +3,12 @@ import { Logo } from '@renderer/components/icons/Logo'
 import { Button } from '@renderer/components/ui/button'
 import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
+import { useState } from 'react'
 
 import { FieldsCardLayout, SettingViewContainer } from '../Layout'
 
 export const AboutView = () => {
+  const [checkingUpdate, setCheckingUpdate] = useState(false)
   return (
     <SettingViewContainer>
       <FieldsCardLayout className="bg-zinc-50 dark:bg-zinc-900">
@@ -23,9 +25,12 @@ export const AboutView = () => {
           </div>
           {!isWeb && (
             <Button
-              onClick={() => {
-                tipcClient?.checkUpdate()
+              onClick={async () => {
+                setCheckingUpdate(true)
+                await tipcClient?.checkUpdate()
+                setCheckingUpdate(false)
               }}
+              disabled={checkingUpdate}
             >
               检查更新
             </Button>
