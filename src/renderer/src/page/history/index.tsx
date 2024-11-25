@@ -19,7 +19,7 @@ import { cn, isWeb } from '@renderer/lib/utils'
 import { RouteName } from '@renderer/router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import type { FC } from 'react'
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function History() {
@@ -95,23 +95,25 @@ const HistoryItem: FC<HistoryItemProps> = memo((props) => {
     <ContextMenu>
       <ContextMenuTrigger>
         <li
-          className={cn('flex cursor-default select-none flex-col items-center', !isWeb && 'group')}
+          className={cn(
+            'flex size-full cursor-default select-none flex-col items-center',
+            !isWeb && 'group',
+          )}
           onClick={playAnime}
         >
-          <div className={cn('relative w-full overflow-hidden rounded-md', showPoster && 'h-72')}>
-            <img
-              src={showPoster ? cover : (thumbnail ?? cover)}
-              className={cn(
-                'pointer-events-none aspect-video size-full object-cover transition-all duration-100 group-hover:opacity-85',
-                showPoster && 'aspect-auto',
-              )}
-            />
+          <div
+            className={cn(
+              'relative aspect-video size-full overflow-hidden rounded-md ',
+              showPoster && 'aspect-auto h-72',
+            )}
+          >
+            <HistoryImage src={showPoster ? cover : (thumbnail ?? cover)} />
             {!isWeb && (
               <i
                 className={cn(
                   'icon-[mingcute--play-circle-line]',
                   'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-100',
-                  'size-16 text-white opacity-0 shadow-md group-hover:opacity-100',
+                  'size-16 text-zinc-200 opacity-0 shadow-md group-hover:opacity-100',
                 )}
               />
             )}
@@ -185,6 +187,33 @@ const FunctionArea = memo(() => {
   )
 })
 
+interface HistoryImageProps {
+  src?: string
+}
+
+const HistoryImage: FC<HistoryImageProps> = (props) => {
+  const { src } = props
+  const [imgError, setImgError] = useState(false)
+  return (
+    <div className="group size-full border ">
+      {!src || imgError ? (
+        <div className="flex size-full items-center justify-center text-zinc-500">
+          <span className="icon-[mingcute--pic-line] size-10" />
+        </div>
+      ) : (
+        <img
+          src={src}
+          className={cn(
+            'pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85 ',
+          )}
+          onError={() => {
+            setImgError(true)
+          }}
+        />
+      )}
+    </div>
+  )
+}
 // const Dialog = () => {
 //   const { hash } = useAtomValue(showMatchAnimeDialogAtom)
 
