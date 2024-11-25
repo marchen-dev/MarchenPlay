@@ -5,7 +5,7 @@ import { dialog } from 'electron'
 import type { RendererHandlers } from '../tipc/renderer-handlers'
 import { getMainWindow } from './main'
 
-const getRendererHandlers = () => {
+export const getRendererHandlers = () => {
   const mainWindow = getMainWindow()
   if (!mainWindow) {
     return

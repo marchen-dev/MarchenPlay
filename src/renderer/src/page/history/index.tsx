@@ -159,7 +159,12 @@ const FunctionArea = memo(() => {
       {!isWeb && (
         <FunctionAreaToggle
           pressed={appSettings.showPoster}
-          onPressedChange={(value) => setAppSettings({ showPoster: value })}
+          onPressedChange={(value) =>
+            setAppSettings((old) => ({
+              ...old,
+              showPoster: value,
+            }))
+          }
         >
           <i className="icon-[mingcute--pic-line]" />
         </FunctionAreaToggle>

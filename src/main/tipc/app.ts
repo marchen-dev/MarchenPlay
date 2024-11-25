@@ -1,3 +1,4 @@
+import { parseReleaseNotes } from '@main/lib/utils'
 import { getMainWindow } from '@main/windows/main'
 import { version } from '@pkg'
 import { BrowserWindow, dialog } from 'electron'
@@ -36,32 +37,22 @@ export const appRoute = {
   checkUpdate: t.procedure.action(async () => {
     const updateCheckResult = await updater.autoUpdater.checkForUpdates()
     if (updateCheckResult?.updateInfo.version === version) {
-      dialog.showMessageBox({
+      return dialog.showMessageBox({
         type: 'info',
         message: '当前已是最新版本',
       })
     }
 
     const releaseNotes = updateCheckResult?.updateInfo.releaseNotes
-    let releaseContent = ''
 
-    if (releaseNotes) {
-      if (typeof releaseNotes === 'string') {
-        releaseContent = releaseNotes
-      } else if (Array.isArray(releaseNotes)) {
-        releaseNotes.forEach((releaseNote) => {
-          releaseContent += `${releaseNote}\n`
-        })
-      }
-    } else {
-      releaseContent = '暂无更新说明'
-    }
+    const releaseContent = parseReleaseNotes(releaseNotes)
 
     dialog.showMessageBox({
       type: 'info',
       detail: releaseContent,
       message: '发现新版本，正在下载更新...',
     })
+    return releaseContent
   }),
   installUpdate: t.procedure.action(async () => {
     updater.autoUpdater.quitAndInstall()

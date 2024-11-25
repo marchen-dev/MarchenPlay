@@ -1,8 +1,9 @@
-import { updateProgress } from '@main/windows/setting'
+import { getRendererHandlers, updateProgress } from '@main/windows/setting'
+import { version } from '@pkg'
 import logger from 'electron-log'
 import updater from 'electron-updater'
 
-import { sleep } from './utils'
+import { parseReleaseNotes, sleep } from './utils'
 
 const { autoUpdater } = updater
 export async function autoUpdateInit() {
@@ -23,7 +24,13 @@ export async function autoUpdateInit() {
     autoUpdater.downloadUpdate()
   })
   //当没有可用更新的时候触发。
-  autoUpdater.on('update-not-available', () => {
+  autoUpdater.on('update-not-available', (info) => {
+    const releaseContent = parseReleaseNotes(info.releaseNotes)
+    logger.info(info.version, version,info.version === version,'============');
+    if (info.version === version) {
+      getRendererHandlers()?.getReleaseNotes.send(releaseContent)
+    }
+
     logger.info('没有可用更新')
   })
   // 在应用程序启动时设置差分下载逻辑

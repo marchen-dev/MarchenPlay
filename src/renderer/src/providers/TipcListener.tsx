@@ -1,9 +1,13 @@
 import { updateProgressAtom } from '@renderer/atoms/network'
+import type { useAppSettingsValue } from '@renderer/atoms/settings/app'
+import { appSettingAtom } from '@renderer/atoms/settings/app'
 import { jotaiStore } from '@renderer/atoms/store'
 import { useVideo } from '@renderer/components/modules/player/loading/hooks'
 import { useSettingModal } from '@renderer/components/modules/settings/hooks'
 import { settingTabs } from '@renderer/components/modules/settings/tabs'
+import { toast } from '@renderer/components/ui/toast/use-toast'
 import { handlers } from '@renderer/lib/client'
+import { getStorageNS } from '@renderer/lib/ns'
 import { RouteName } from '@renderer/router'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -34,6 +38,22 @@ export const TipcListener = () => {
       }),
       handlers?.updateProgress.listen((params) => {
         jotaiStore.set(updateProgressAtom, { progress: params.progress, status: params.status })
+      }),
+      handlers?.getReleaseNotes.listen((text) => {
+        try {
+          const appData = JSON.parse(localStorage.getItem(getStorageNS('app')) ?? '') as ReturnType<
+            typeof useAppSettingsValue
+          >
+          if (appData?.showUpdateNote) {
+            toast({
+              title: '更新成功 🎉',
+              description: text,
+            })
+            jotaiStore.set(appSettingAtom, { ...appData, showUpdateNote: false })
+          }
+        } catch (error) {
+          console.error(error)
+        }
       }),
     ]
 

@@ -5,10 +5,11 @@ import { createSettingATom } from './helper'
 const createAppDefaultSettings = () => {
   return {
     showPoster: false,
+    showUpdateNote: false,
   }
 }
 
-const atom = createSettingATom('app', createAppDefaultSettings)
+export const appSettingAtom = createSettingATom('app', createAppDefaultSettings)
 
-export const useAppSettings = () => useAtom(atom)
-export const useAppSettingsValue = () => useAtomValue(atom)
+export const useAppSettings = () => useAtom(appSettingAtom)
+export const useAppSettingsValue = () => useAtomValue(appSettingAtom)

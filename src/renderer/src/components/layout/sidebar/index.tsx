@@ -1,4 +1,5 @@
 import { updateProgressAtom, useNetworkStatus } from '@renderer/atoms/network'
+import { useAppSettingsValue } from '@renderer/atoms/settings/app'
 import Show from '@renderer/components/common/Show'
 import { Logo } from '@renderer/components/icons/Logo'
 import { Alert, AlertDescription, AlertTitle } from '@renderer/components/ui/alert'
@@ -6,6 +7,7 @@ import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
 import { PROJECT_NAME } from '@renderer/constants'
 import { tipcClient } from '@renderer/lib/client'
+import { getStorageNS } from '@renderer/lib/ns'
 import { cn, isMac } from '@renderer/lib/utils'
 import type { SidebarRouteObject } from '@renderer/router'
 import { RouteName, siderbarRoutes } from '@renderer/router'
@@ -88,6 +90,7 @@ export const NetWorkCheck = () => {
 
 export const UpdateProgress = () => {
   const update = useAtomValue(updateProgressAtom)
+  const appSettingsValue = useAppSettingsValue()
   if (!update) {
     return
   }
@@ -103,7 +106,17 @@ export const UpdateProgress = () => {
 
   return (
     <div className="text-center">
-      <Button variant="outline" onClick={() => tipcClient?.installUpdate()}>
+      <Button
+        variant="outline"
+        onClick={() => {
+          // 这里执行 tipcClient?.installUpdate() 会立即退出程序安装更新，所以更新 localStorage 只能用 localStorage.setItem, 用 atom 更新不及时
+          localStorage.setItem(
+            getStorageNS('app'),
+            JSON.stringify({ ...appSettingsValue, showUpdateNote: true }),
+          )
+          tipcClient?.installUpdate()
+        }}
+      >
         <i className="icon-[mingcute--entrance-line] text-lg" />
         <span className="ml-1">安装新版本</span>
       </Button>
