@@ -31,6 +31,7 @@ export const AboutView = () => {
                 setCheckingUpdate(false)
               }}
               disabled={checkingUpdate}
+              variant='outline'
             >
               检查更新
             </Button>

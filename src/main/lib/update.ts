@@ -7,7 +7,7 @@ import { parseReleaseNotes, sleep } from './utils'
 
 const { autoUpdater } = updater
 export async function autoUpdateInit() {
-  await sleep(2500)
+  await sleep(1000)
   //每次启动自动更新检查 更新版本
   autoUpdater.checkForUpdates()
   autoUpdater.logger = logger
@@ -26,7 +26,6 @@ export async function autoUpdateInit() {
   //当没有可用更新的时候触发。
   autoUpdater.on('update-not-available', (info) => {
     const releaseContent = parseReleaseNotes(info.releaseNotes)
-    logger.info(info.version, version,info.version === version,'============');
     if (info.version === version) {
       getRendererHandlers()?.getReleaseNotes.send(releaseContent)
     }

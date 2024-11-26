@@ -1,5 +1,12 @@
+import type { MatchedVideoType } from '@renderer/atoms/player'
 import { useAppSettings, useAppSettingsValue } from '@renderer/atoms/settings/app'
 import { RouterLayout } from '@renderer/components/layout/root/RouterLayout'
+import {
+  showMatchAnimeDialog,
+  showMatchAnimeDialogAtom,
+} from '@renderer/components/modules/player/loading/dialog/hooks'
+import { MatchAnimeDialog } from '@renderer/components/modules/player/loading/dialog/MatchAnimeDialog'
+import { saveToHistory } from '@renderer/components/modules/player/loading/hooks'
 import { Badge } from '@renderer/components/ui/badge'
 import { FunctionAreaButton, FunctionAreaToggle } from '@renderer/components/ui/button'
 import {
@@ -16,8 +23,11 @@ import type { DB_History } from '@renderer/database/schemas/history'
 import { useDialog } from '@renderer/hooks/use-dialog'
 import { relativeTimeToNow } from '@renderer/lib/date'
 import { cn, isWeb } from '@renderer/lib/utils'
+import { apiClient } from '@renderer/request'
 import { RouteName } from '@renderer/router'
+import { useQueryClient } from '@tanstack/react-query'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useAtomValue } from 'jotai'
 import type { FC } from 'react'
 import { memo, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -49,7 +59,7 @@ export default function History() {
           </div>
         )}
       </ScrollArea>
-      {/* <Dialog /> */}
+      <Dialog />
     </RouterLayout>
   )
 }
@@ -113,7 +123,7 @@ const HistoryItem: FC<HistoryItemProps> = memo((props) => {
                 className={cn(
                   'icon-[mingcute--play-circle-line]',
                   'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-100',
-                  'size-16 text-zinc-200 opacity-0 shadow-md group-hover:opacity-100',
+                  'size-16 text-zinc-100 opacity-0 shadow-md group-hover:opacity-100',
                 )}
               />
             )}
@@ -140,9 +150,9 @@ const HistoryItem: FC<HistoryItemProps> = memo((props) => {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={playAnime}>继续观看</ContextMenuItem>
-        {/* <ContextMenuItem onClick={() => showMatchAnimeDialog(true, hash)}>
+        <ContextMenuItem onClick={() => showMatchAnimeDialog(true, hash)}>
           重新匹配弹幕库
-        </ContextMenuItem> */}
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem className="!text-secondary" onClick={() => db.history.delete(hash)}>
           删除
@@ -195,10 +205,10 @@ const HistoryImage: FC<HistoryImageProps> = (props) => {
   const { src } = props
   const [imgError, setImgError] = useState(false)
   return (
-    <div className="group size-full border ">
+    <div className=" size-full border ">
       {!src || imgError ? (
-        <div className="flex size-full items-center justify-center text-zinc-500">
-          <span className="icon-[mingcute--pic-line] size-10" />
+        <div className="flex size-full items-center justify-center bg-gray-200 text-zinc-500 dark:bg-zinc-300">
+          <span className="icon-[mingcute--pic-line] size-10 group-hover:hidden" />
         </div>
       ) : (
         <img
@@ -214,35 +224,35 @@ const HistoryImage: FC<HistoryImageProps> = (props) => {
     </div>
   )
 }
-// const Dialog = () => {
-//   const { hash } = useAtomValue(showMatchAnimeDialogAtom)
+const Dialog = () => {
+  const { hash } = useAtomValue(showMatchAnimeDialogAtom)
+  const queryClient = useQueryClient()
 
-//   const handleUpdateHistory = async (params?: MatchedVideoType) => {
-//     const old = await db.history.get({ hash })
-//     if (!old || !hash) {
-//       return
-//     }
+  const handleUpdateHistory = async (params?: MatchedVideoType) => {
+    const old = await db.history.get({ hash })
+    if (!old || !hash) {
+      return
+    }
 
-//     const { duration, path, progress, subtitles, animeTitle } = old
+    const { duration, path, progress, subtitles } = old
+    if (!params) {
+      return
+    }
+    const { episodeId, episodeTitle, animeId, animeTitle } = params
+    saveToHistory({
+      duration,
+      path,
+      progress,
+      subtitles,
+      hash,
+      ...params,
+    })
 
-//     // if (!params) {
-//     //   saveToHistory({
-//     //     hash,
-//     //     path,
-//     //     progress,
-//     //     duration,
-//     //     animeTitle,
-//     //   })
-//     // }
-
-//     saveToHistory({
-//       duration,
-//       path,
-//       progress,
-//       subtitles,
-//       hash,
-//       ...params,
-//     })
-//   }
-//   return <MatchAnimeDialog onSelected={handleUpdateHistory} />
-// }
+    // 如果之前之前播放过动漫，就更新匹配数据
+    queryClient.setQueryData([apiClient.match.Matchkeys.postVideoEpisodeId, path], {
+      isMatched: true,
+      matches: [{ episodeTitle, episodeId, animeId, animeTitle }],
+    })
+  }
+  return <MatchAnimeDialog onSelected={handleUpdateHistory} />
+}

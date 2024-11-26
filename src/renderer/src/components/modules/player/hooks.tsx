@@ -30,6 +30,7 @@ export const useXgPlayer = (url: string) => {
     apiClient.comment.Commentkeys.getDanmu,
     url,
     playerSettings.enableTraditionalToSimplified,
+    currentMatchedVideo.episodeId
   ]) as CommentsModel | undefined
 
   useEffect(() => {

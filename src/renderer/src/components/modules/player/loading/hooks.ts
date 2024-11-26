@@ -15,6 +15,7 @@ import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
+import type { MatchResponseV2 } from '@renderer/request/models/match'
 import { RouteName } from '@renderer/router'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -101,8 +102,18 @@ export const useMatchAnimeData = () => {
   const resetCurrentMatchedVideo = useResetAtom(currentMatchedVideoAtom)
   const { data: matchData, isError } = useQuery({
     queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, url],
-    queryFn: () =>
-      apiClient.match.postVideoEpisodeId({ fileSize: size, fileHash: hash, fileName: name }),
+    queryFn: async () => {
+      const historyData = await db.history.get(hash)
+      // 如果历史记录中有匹配的数据，直接返回
+      if (historyData?.episodeId && historyData?.animeId) {
+        const { episodeId, episodeTitle, animeId, animeTitle } = historyData
+        return {
+          isMatched: true,
+          matches: [{ episodeTitle, episodeId, animeId, animeTitle }],
+        } satisfies MatchResponseV2
+      }
+      return apiClient.match.postVideoEpisodeId({ fileSize: size, fileHash: hash, fileName: name })
+    },
     enabled: !!hash,
   })
 
@@ -146,7 +157,12 @@ export const useDanmuData = () => {
   const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
   const { showFailedToast } = usePlayAnimeFailedToast()
   const { data: danmuData, isError } = useQuery({
-    queryKey: [apiClient.comment.Commentkeys.getDanmu, url, enableTraditionalToSimplified],
+    queryKey: [
+      apiClient.comment.Commentkeys.getDanmu,
+      url,
+      enableTraditionalToSimplified,
+      currentMatchedVideo.episodeId
+    ],
     queryFn: () => {
       return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
         chConvert: enableTraditionalToSimplified ? 1 : 0,
