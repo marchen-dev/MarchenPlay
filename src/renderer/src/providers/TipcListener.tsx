@@ -41,13 +41,16 @@ export const TipcListener = () => {
       }),
       handlers?.getReleaseNotes.listen((text) => {
         try {
-          const appData = JSON.parse(localStorage.getItem(getStorageNS('app')) ?? '') as ReturnType<
+          const appDataString = localStorage.getItem(getStorageNS('app'));
+          const appData = appDataString ? JSON.parse(appDataString) as ReturnType<
             typeof useAppSettingsValue
-          >
+          > : null;
+          
           if (appData?.showUpdateNote) {
             toast({
               title: '更新成功 🎉',
               description: text,
+              duration: 8000,
             })
             jotaiStore.set(appSettingAtom, { ...appData, showUpdateNote: false })
           }
