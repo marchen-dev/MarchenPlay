@@ -15,7 +15,13 @@ export const PlayerView = () => {
   )
 }
 
-export const DanmakuSetting: FC<{ classNames?: { cardLayout?: string } }> = ({ classNames }) => {
+interface DanmakuSettingProps {
+  classNames?: { cardLayout?: string }
+  onTraditionalToSimplifiedChange?: (value: boolean) => void
+}
+
+export const DanmakuSetting: FC<DanmakuSettingProps> = (props) => {
+  const { classNames, onTraditionalToSimplifiedChange } = props
   const [playerSetting, setPlayerSetting] = usePlayerSettings()
   const CardLayout = useMemo(() => {
     return ({ children }) =>
@@ -31,9 +37,10 @@ export const DanmakuSetting: FC<{ classNames?: { cardLayout?: string } }> = ({ c
       <FieldLayout title="繁体转简体">
         <SettingSwitch
           value={playerSetting.enableTraditionalToSimplified}
-          onCheckedChange={(value) =>
+          onCheckedChange={(value) => {
             setPlayerSetting((prev) => ({ ...prev, enableTraditionalToSimplified: value }))
-          }
+            onTraditionalToSimplifiedChange?.(value)
+          }}
         />
       </FieldLayout>
       <FieldLayout title="字体大小">

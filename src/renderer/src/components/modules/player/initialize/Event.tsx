@@ -49,6 +49,9 @@ export const InitializeEvent = () => {
         progress: latestAnime?.duration,
       })
     })
+
+
+
   }, [currentMatchedVideo.animeId, hash, player])
 
   const grabFrame = useCallback(async () => {

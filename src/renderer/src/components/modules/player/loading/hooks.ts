@@ -160,7 +160,6 @@ export const useDanmuData = () => {
     queryKey: [
       apiClient.comment.Commentkeys.getDanmu,
       url,
-      enableTraditionalToSimplified,
       currentMatchedVideo.episodeId
     ],
     queryFn: () => {
