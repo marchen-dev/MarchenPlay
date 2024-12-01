@@ -66,12 +66,13 @@ export const useVideo = () => {
     }
   }
 
-  const importAnimeViaIPC = useCallback(async () => {
-    const path = await tipcClient?.importAnime()
+  const importAnimeViaIPC = useCallback(async (params?: { path: string }) => {
+    const path = params?.path ?? (await tipcClient?.importAnime())
     clearPlayingVideo()
     if (!path) {
       return
     }
+    const playList = (await tipcClient?.getAnimeInSamePath({ path })) ?? []
     const url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
     const animeData = await tipcClient?.getAnimeDetailByPath({ path: url })
     if (!animeData?.ok) {
@@ -83,7 +84,7 @@ export const useVideo = () => {
       showFailedToast({ title: '播放失败', description: '无法读取视频' })
       return
     }
-    setVideo((prev) => ({ ...prev, url, hash: fileHash, size: fileSize, name: fileName }))
+    setVideo((prev) => ({ ...prev, url, hash: fileHash, size: fileSize, name: fileName, playList }))
     setProgress(LoadingStatus.CALC_HASH)
   }, [])
   return {
@@ -157,11 +158,7 @@ export const useDanmuData = () => {
   const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
   const { showFailedToast } = usePlayAnimeFailedToast()
   const { data: danmuData, isError } = useQuery({
-    queryKey: [
-      apiClient.comment.Commentkeys.getDanmu,
-      url,
-      currentMatchedVideo.episodeId
-    ],
+    queryKey: [apiClient.comment.Commentkeys.getDanmu, url, currentMatchedVideo.episodeId],
     queryFn: () => {
       return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
         chConvert: enableTraditionalToSimplified ? 1 : 0,
@@ -293,11 +290,14 @@ export const useLoadingHistoricalAnime = () => {
       handleDeleteHistory(anime.hash)
       return
     }
+
+    const playList = (await tipcClient?.getAnimeInSamePath({ path: anime.path })) ?? []
     setVideo({
       hash: fileHash,
       name: fileName,
       size: fileSize,
       url: anime.path,
+      playList,
     })
     setProgress(LoadingStatus.CALC_HASH)
   }, [episodeId, hash])

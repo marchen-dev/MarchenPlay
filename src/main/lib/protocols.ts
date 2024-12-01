@@ -126,5 +126,5 @@ export const getFilePathFromProtocolURL = (protocolUrl: string) => {
       filePath = `${filePath.charAt(0).toUpperCase()}:${filePath.slice(1)}`
     }
   }
-  return filePath
+  return path.normalize(filePath)
 }

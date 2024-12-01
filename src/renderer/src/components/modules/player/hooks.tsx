@@ -1,9 +1,12 @@
-import { currentMatchedVideoAtom, isLoadDanmakuAtom } from '@renderer/atoms/player'
+import { currentMatchedVideoAtom, isLoadDanmakuAtom, videoAtom } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
-import setting from '@renderer/components/ui/xgplayer/plugins/setting/setting'
+import NextEpisode from '@renderer/components/ui/xgplayer/plugins/nextEpisode'
+import PreviousEpisode from '@renderer/components/ui/xgplayer/plugins/previousEpisode'
+import Setting from '@renderer/components/ui/xgplayer/plugins/setting'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
 import queryClient from '@renderer/lib/query-client'
+import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import type { CommentsModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
@@ -23,6 +26,7 @@ export const useXgPlayer = (url: string) => {
   const { toast, dismiss } = useToast()
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
+  const video = useAtomValue(videoAtom)
   const playerSettings = usePlayerSettingsValue()
   const { danmakuDuration, danmakuFontSize, danmakuEndArea } = playerSettings
   const { setResponsiveDanmakuConfig, parseDanmakuData } = useXgPlayerUtils()
@@ -57,6 +61,17 @@ export const useXgPlayer = (url: string) => {
             start: 0,
             end: +danmakuEndArea,
           },
+        }
+      }
+
+      if (!isWeb) {
+        xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), NextEpisode, PreviousEpisode]
+        xgplayerConfig.nextEpisode = {
+          urlList: video.playList?.map((item) => item.urlWithPrefix) ?? [],
+        }
+
+        xgplayerConfig.previousEpisode = {
+          urlList: video.playList?.map((item) => item.urlWithPrefix) ?? [],
         }
       }
       _playerInstance = new XgPlayer(xgplayerConfig)
@@ -143,7 +158,7 @@ const playerBaseConfig = {
   cssFullscreen: {
     index: 1,
   },
-  [setting.pluginName]: {
+  [Setting.pluginName]: {
     index: 2,
   },
   volume: {
@@ -156,7 +171,7 @@ const playerBaseConfig = {
   playbackRate: {
     index: 5,
   },
-  plugins: [setting],
+  plugins: [Setting],
 } satisfies IPlayerOptions
 
 const danmakuConfig = {

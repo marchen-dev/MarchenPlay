@@ -7,6 +7,7 @@ import { getFilePathFromProtocolURL } from '@main/lib/protocols'
 import { showFileSelectionDialog } from '@main/modules/showDialog'
 import { calculateFileHashByBuffer } from '@renderer/lib/calc-file-hash'
 import { dialog } from 'electron'
+import naturalCompare from 'string-natural-compare'
 
 import { t } from './_instance'
 
@@ -62,7 +63,45 @@ export const playerRoute = {
     if (result.canceled) {
       return
     }
-    return result.filePaths[0]
+
+    const selectedFilePath = result.filePaths[0]
+
+    const selectedFileExtname = path.extname(selectedFilePath)
+    if (selectedFileExtname !== '.mp4' && selectedFileExtname !== '.mkv') {
+      return
+    }
+
+    return selectedFilePath
+  }),
+  getAnimeInSamePath: t.procedure.input<{ path: string }>().action(async ({ input }) => {
+    let selectedFilePath = input.path
+    if (selectedFilePath.startsWith(MARCHEN_PROTOCOL_PREFIX)) {
+      selectedFilePath = getFilePathFromProtocolURL(selectedFilePath)
+    }
+    const selectedFileExtname = path.extname(selectedFilePath)
+    if (selectedFileExtname !== '.mp4' && selectedFileExtname !== '.mkv') {
+      return []
+    }
+
+    const selectedFileDirname = path.dirname(selectedFilePath)
+
+    // 读取路径下所有同后缀的文件
+    const fileNameWithSameSuffix = fs
+      .readdirSync(selectedFileDirname)
+      .filter((file) => path.extname(file).toLowerCase() === selectedFileExtname)
+
+    const filePathWithSameSuffix = fileNameWithSameSuffix.map((fileName) =>
+      path.join(selectedFileDirname, fileName),
+    )
+    // 按文件名自然排序
+    filePathWithSameSuffix.sort(naturalCompare)
+
+    const playList = filePathWithSameSuffix.map((filePath) => ({
+      urlWithPrefix: `${MARCHEN_PROTOCOL_PREFIX}${filePath}`,
+      name: path.basename(filePath),
+    }))
+
+    return playList
   }),
   importSubtitle: t.procedure.action(async () => {
     const filePath = await showFileSelectionDialog({

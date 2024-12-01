@@ -8,11 +8,13 @@ export const videoAtom = atomWithReset<{
   hash: string
   size: number
   name: string
+  playList: { urlWithPrefix: string; name: string }[]
 }>({
   url: '',
   hash: '',
   size: 0,
   name: '',
+  playList: [],
 })
 
 export enum LoadingStatus {

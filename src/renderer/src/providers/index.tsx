@@ -29,6 +29,6 @@ export const RootProviders: FC<PropsWithChildren> = ({ children }) => (
     {children}
 
     <Toaster />
-    {isDev && <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />}
+    {isDev && <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />}
   </ProviderComposer>
 )

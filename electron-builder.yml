@@ -62,5 +62,8 @@ afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
     本次更新:
-      支持自动更新检测
-      自动安装更新
+      优化历史记录图片显示效果
+      视频播放完毕后，支持自动续播
+      支持手动切换上一集和下一集
+      更新完毕后会显示更新内容
+      支持历史记录界面重新匹配弹幕库
