@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## [0.0.1-alpha.8](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.7...v0.0.1-alpha.8) (2024-12-01)
+
+
+### Bug Fixes
+
+* after dragging and dropping the video, it is not possible to switch episodes. ([bba47f5](https://github.com/suemor233/MarchenPlay/commit/bba47f55b42089431d151c81d6b7976c794cd288))
+* cover height is lost within the history page ([3a39962](https://github.com/suemor233/MarchenPlay/commit/3a3996283231bdb816941b68b168fd83bcd2cbd4))
+* release note error problem ([2b77515](https://github.com/suemor233/MarchenPlay/commit/2b7751513971da1ee23c008acaafb5f11e9d5c94))
+
+
+### Features
+
+* danmaku support dynamic switching between simplified and traditional Chinese ([6d92595](https://github.com/suemor233/MarchenPlay/commit/6d92595a4d4627ec85bae766702524ebf2cf5ed2))
+* display release note after the update is complete. ([71b2c90](https://github.com/suemor233/MarchenPlay/commit/71b2c9046742633ad61eacde96b7ba67a41b135d))
+* support manual rematching of historical records with danmaku ([150f5dc](https://github.com/suemor233/MarchenPlay/commit/150f5dc2dbd82ad576732051336e90f8c571d887))
+* supports automatic and manual episode switching ([56f5dd9](https://github.com/suemor233/MarchenPlay/commit/56f5dd921ffa1827b5cb3b8f563487ae39c03956))
+
+
+
 ## [0.0.1-alpha.7](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.6...v0.0.1-alpha.7) (2024-11-24)
 
 
