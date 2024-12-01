@@ -40,7 +40,7 @@ export default class PreviousEpisode extends Plugin {
 
   private isFirstEpisode() {
     const urlList = this.config.urlList as string[]
-    return urlList?.indexOf(this.player.config.url as string) === 0
+    return urlList?.indexOf(this.player.config.url as string) <= 0
   }
 
   destroy(): void {
