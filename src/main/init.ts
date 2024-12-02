@@ -6,14 +6,16 @@ import logger from 'electron-log'
 
 import { createStorageFolder } from './constants/app'
 import { MARCHEN_PROTOCOL } from './constants/protocol'
-import { isDev } from './lib/env'
+import { isDev, isWindows } from './lib/env'
 import { registerLog } from './lib/log'
+import { quickLaunchViaVideo } from './lib/utils'
 import { registerAppMenu } from './menu'
 import { router } from './tipc'
 import { getMainWindow } from './windows/main'
 import { getRendererHandlers } from './windows/setting'
 
 export const initializeApp = () => {
+  limitSingleInstance()
   registerIpcMain(router)
   registerAppMenu()
   registerLog()
@@ -46,4 +48,25 @@ export const initializeApp = () => {
     // 当主窗口未创建时，将视频文件路径添加到 process.argv 中, 等在主窗口创建后再处理
     process.argv.push(url)
   })
+
+  if (isWindows) {
+    app.on('second-instance', () => {
+      const mainWindow = getMainWindow()
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.show()
+      }
+
+      quickLaunchViaVideo()
+    })
+  }
+}
+
+const limitSingleInstance = () => {
+  const gotTheLock = app.requestSingleInstanceLock()
+
+  if (!gotTheLock) {
+    app.quit()
+    return
+  }
 }
