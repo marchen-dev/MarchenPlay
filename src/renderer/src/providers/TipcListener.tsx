@@ -32,20 +32,20 @@ export const TipcListener = () => {
         return showModal({ settingTabsModel: showTab })
       }),
 
-      handlers?.importAnime.listen(() => {
+      handlers?.importAnime.listen((params) => {
         navigation(RouteName.PLAYER)
-        importAnimeViaIPC()
+        importAnimeViaIPC({ path: params?.path })
       }),
       handlers?.updateProgress.listen((params) => {
         jotaiStore.set(updateProgressAtom, { progress: params.progress, status: params.status })
       }),
       handlers?.getReleaseNotes.listen((text) => {
         try {
-          const appDataString = localStorage.getItem(getStorageNS('app'));
-          const appData = appDataString ? JSON.parse(appDataString) as ReturnType<
-            typeof useAppSettingsValue
-          > : null;
-          
+          const appDataString = localStorage.getItem(getStorageNS('app'))
+          const appData = appDataString
+            ? (JSON.parse(appDataString) as ReturnType<typeof useAppSettingsValue>)
+            : null
+
           if (appData?.showUpdateNote) {
             toast({
               title: '更新成功 🎉',

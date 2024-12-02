@@ -72,7 +72,7 @@ export const useVideo = () => {
     }
   }
 
-  const importAnimeViaIPC = useCallback(async (params?: { path: string }) => {
+  const importAnimeViaIPC = useCallback(async (params?: { path?: string }) => {
     const path = params?.path ?? (await tipcClient?.importAnime())
     clearPlayingVideo()
     if (!path) {

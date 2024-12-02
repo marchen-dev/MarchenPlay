@@ -23,7 +23,7 @@ function bootstrap() {
     protocol.handle(MARCHEN_PROTOCOL, async (request) => {
       const filePath = getFilePathFromProtocolURL(request.url)
       return handleCustomProtocol(filePath, request)
-    })
+    })  
 
     createWindow()
 

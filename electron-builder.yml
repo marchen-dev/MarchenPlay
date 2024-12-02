@@ -13,6 +13,10 @@ asarUnpack:
   - resources/**
 win:
   executableName: Marchen
+  fileAssociations:
+    - ext: ['mp4', 'mkv']
+      name: Video Files
+      role: Editor
 nsis:
   artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -37,6 +41,10 @@ mac:
       arch:
         - arm64
         - x64
+  fileAssociations:
+    - ext: ['mp4', 'mkv']
+      name: Video Files
+      role: Editor
 dmg:
   artifactName: ${productName}-${version}-${arch}.${ext}
 linux:
@@ -61,9 +69,4 @@ afterPack: scripts/cleaned-unused-arch-deps.js
 afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
-    本次更新:
-      优化历史记录图片显示效果
-      视频播放完毕后，支持自动续播
-      支持手动切换上一集和下一集
-      更新完毕后会显示更新内容
-      支持历史记录界面重新匹配弹幕库
+    - 可以通过关联视频文件快捷播放

@@ -19,3 +19,9 @@ export const parseReleaseNotes = (releaseNotes: string | unknown[] | null | unde
 
   return releaseContent
 }
+
+export const isVideoFile = (filePath: string) => {
+  const videoExtensions = ['mp4', 'mkv']
+  const ext = filePath.split('.').pop()
+  return videoExtensions.includes(ext!)
+}

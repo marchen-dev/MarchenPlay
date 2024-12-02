@@ -1,9 +1,12 @@
 import { join } from 'node:path'
 
 import { is } from '@electron-toolkit/utils'
+import { isVideoFile } from '@main/lib/utils'
 import { BrowserWindow, shell } from 'electron'
+import logger from 'electron-log'
 
 import { getIconPath } from '../lib/icon'
+import { getRendererHandlers } from './setting'
 
 const { platform } = process
 
@@ -13,7 +16,7 @@ const windows = {
   mainWindow: null as BrowserWindow | null,
 }
 
-globalThis["windows"] = windows
+globalThis['windows'] = windows
 export default function createWindow() {
   // Create the browser window.
   const baseWindowsConfig: Electron.BrowserWindowConstructorOptions = {
@@ -60,6 +63,8 @@ export default function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     isDev ? mainWindow.showInactive() : mainWindow.show()
+
+    quickLaunchViaVideo()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -76,6 +81,19 @@ export default function createWindow() {
   }
   // mainWindow.webContents.userAgent = 'dandanplay-test/android 1.2.3'
   return mainWindow
+}
+
+// 通过视频文件快捷打开
+function quickLaunchViaVideo() {
+  const { argv } = process
+  const filePath = argv.at(-1)
+  if (!filePath) {
+    return
+  }
+  if (isVideoFile(filePath)) {
+    logger.info('[app] windows open File', filePath)
+    getRendererHandlers()?.importAnime.send({ path: filePath })
+  }
 }
 
 export const getMainWindow = () => windows.mainWindow
