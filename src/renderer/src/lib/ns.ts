@@ -1,5 +1,3 @@
-// @see https://github.com/RSSNext/follow/blob/dev/apps/renderer/src/lib/ns.ts
-
 const ns = 'marchen'
 export const getStorageNS = (key: string) => `${ns}:${key}`
 

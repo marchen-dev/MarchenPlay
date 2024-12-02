@@ -1,8 +1,8 @@
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import { Menu } from 'electron'
 
-import { isMacOS } from './lib/env'
-import { clearData, createSettingWindow, importAnime } from './windows/setting'
+import { isMacOS } from '../lib/env'
+import { clearData, createSettingWindow, importAnime } from '../windows/setting'
 
 export const registerAppMenu = () => {
   if (!isMacOS) {

@@ -49,8 +49,14 @@ export const TipcListener = () => {
           if (appData?.showUpdateNote) {
             toast({
               title: '更新成功 🎉',
-              description: text,
-              duration: 8000,
+              description: (
+                <div className="mt-2 space-y-2">
+                  {text.split('\n').map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+              ),
+              duration: 10000,
             })
             jotaiStore.set(appSettingAtom, { ...appData, showUpdateNote: false })
           }

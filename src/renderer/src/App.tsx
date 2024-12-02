@@ -17,7 +17,7 @@ function App(): JSX.Element {
       <RootLayout>
         <Sidebar />
         <Content />
-        <TipcListener />
+        {!isWeb && <TipcListener />}
       </RootLayout>
     </RootProviders>
   )

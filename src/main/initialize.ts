@@ -9,7 +9,7 @@ import { MARCHEN_PROTOCOL } from './constants/protocol'
 import { isDev, isWindows } from './lib/env'
 import { registerLog } from './lib/log'
 import { quickLaunchViaVideo } from './lib/utils'
-import { registerAppMenu } from './menu'
+import { registerAppMenu } from './modules/menu'
 import { router } from './tipc'
 import { getMainWindow } from './windows/main'
 import { getRendererHandlers } from './windows/setting'
@@ -49,6 +49,7 @@ export const initializeApp = () => {
     process.argv.push(url)
   })
 
+  // windows 当主窗口已经创建情况下, 通过视频文件快捷打开
   if (isWindows) {
     app.on('second-instance', () => {
       const mainWindow = getMainWindow()

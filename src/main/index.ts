@@ -3,7 +3,7 @@ import { name } from '@pkg'
 import { app, BrowserWindow, protocol } from 'electron'
 
 import { MARCHEN_PROTOCOL } from './constants/protocol'
-import { initializeApp } from './init'
+import { initializeApp } from './initialize'
 import { isDev } from './lib/env'
 import { getIconPath } from './lib/icon'
 import { getFilePathFromProtocolURL, handleCustomProtocol } from './lib/protocols'

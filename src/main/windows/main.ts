@@ -62,6 +62,7 @@ export default function createWindow() {
   mainWindow.on('ready-to-show', () => {
     isDev ? mainWindow.showInactive() : mainWindow.show()
 
+    // 当软件未运行时的情况下，通过视频快速启动
     quickLaunchViaVideo()
   })
 

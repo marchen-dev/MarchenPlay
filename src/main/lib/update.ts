@@ -7,6 +7,7 @@ import { parseReleaseNotes, sleep } from './utils'
 
 const { autoUpdater } = updater
 export async function autoUpdateInit() {
+  // 避免启动代码过多,更新检测延迟1s
   await sleep(1000)
   //每次启动自动更新检查 更新版本
   autoUpdater.checkForUpdates()

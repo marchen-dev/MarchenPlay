@@ -33,12 +33,14 @@ import { memo, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function History() {
-  const historyData = useLiveQuery(() => db.history.orderBy('updatedAt').reverse().toArray())
+  const historyData = useLiveQuery(() =>
+    db.history.orderBy('updatedAt').limit(30).reverse().toArray(),
+  )
   const appSettings = useAppSettingsValue()
   const showPoster = appSettings.showPoster || isWeb
   return (
     <RouterLayout FunctionArea={<FunctionArea />}>
-      <ScrollArea className="h-full px-8">
+      <ScrollArea className="h-full px-8 ">
         {historyData?.length !== 0 ? (
           <ul
             className={cn(
