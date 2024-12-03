@@ -66,3 +66,5 @@ export const registerAppMenu = () => {
   ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 }
+
+

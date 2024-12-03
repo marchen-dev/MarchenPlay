@@ -8,7 +8,15 @@ import { t } from './_instance'
 
 export const appRoute = {
   windowAction: t.procedure
-    .input<{ action: 'close' | 'minimize' | 'maximum' }>()
+    .input<{
+      action:
+        | 'close'
+        | 'minimize'
+        | 'maximum'
+        | 'enter-full-screen'
+        | 'leave-full-screen'
+        | 'switch-full-screen'
+    }>()
     .action(async ({ context, input }) => {
       const webcontent = context.sender
 
@@ -30,6 +38,22 @@ export const appRoute = {
           } else {
             window.maximize()
           }
+          break
+        }
+        case 'switch-full-screen': {
+          if (window.isFullScreen()) {
+            window.setFullScreen(false)
+          } else {
+            window.setFullScreen(true)
+          }
+          break
+        }
+        case 'enter-full-screen': {
+          window.setFullScreen(true)
+          break
+        }
+        case 'leave-full-screen': {
+          window.setFullScreen(false)
           break
         }
       }

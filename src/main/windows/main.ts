@@ -5,6 +5,7 @@ import { quickLaunchViaVideo } from '@main/lib/utils'
 import { BrowserWindow, shell } from 'electron'
 
 import { getIconPath } from '../lib/icon'
+import { getRendererHandlers } from './setting'
 
 const { platform } = process
 
@@ -64,6 +65,14 @@ export default function createWindow() {
 
     // 当软件未运行时的情况下，通过视频快速启动
     quickLaunchViaVideo()
+  })
+
+  mainWindow.on('enter-full-screen', () => {
+    getRendererHandlers()?.windowAction.send('enter-full-screen')
+  })
+
+  mainWindow.on('leave-full-screen', () => {
+    getRendererHandlers()?.windowAction.send('leave-full-screen')
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

@@ -9,6 +9,10 @@ export const settingRoute = {
     const webContents = context.sender
     return BrowserWindow.fromWebContents(webContents)?.isMaximized()
   }),
+  getWindowIsFullScreen: t.procedure.action(async ({ context }) => {
+    const webContents = context.sender
+    return BrowserWindow.fromWebContents(webContents)?.isFullScreen()
+  }),
   setTheme: t.procedure.input<AppTheme>().action(async ({ input }) => {
     if (input === 'cmyk') {
       nativeTheme.themeSource = 'light'

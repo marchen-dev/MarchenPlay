@@ -1,21 +1,94 @@
 import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
-import { currentMatchedVideoAtom, videoAtom } from '@renderer/atoms/player'
+import { videoAtom } from '@renderer/atoms/player'
 import { db } from '@renderer/database/db'
 import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
 import { Events } from '@suemor/xgplayer'
 import { useAtomValue } from 'jotai'
 import { throttle } from 'lodash-es'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
+import type { PlayerType } from '../hooks'
 import { useVideo } from '../loading/hooks'
 import { usePlayerInstance } from '../setting/Context'
 
 export const InitializeEvent = () => {
-  const { hash } = useAtomValue(videoAtom)
-  const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
   const player = usePlayerInstance()
+  const { grabFrame, initializePlayerListener, initializePlayerEvent } = usePlayerInitialize(player)
+
+  useEffect(() => {
+    if (!player) {
+      return
+    }
+    initializePlayerEvent()
+
+    const listenerClear = initializePlayerListener()
+
+    return () => {
+      grabFrame()
+      if (listenerClear) {
+        listenerClear()
+      }
+    }
+  }, [initializePlayerEvent])
+  return null
+}
+
+const usePlayerInitialize = (player: PlayerType | null | undefined) => {
+  const clickTimeout = useRef<number | null>(null)
+  const { hash } = useAtomValue(videoAtom)
   const { importAnimeViaIPC } = useVideo()
+
+  // 需要对 xgplayer 自带的全屏事件进行重写，以适配 electron 的全屏
+  const initializePlayerListener = useCallback(() => {
+    if (isWeb) {
+      return
+    }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        tipcClient?.windowAction({ action: 'leave-full-screen' })
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+
+    const videoElement = player?.media as HTMLVideoElement
+
+    const handleDoubleClick = () => {
+      if (clickTimeout.current !== null) {
+        window.clearTimeout(clickTimeout.current)
+        clickTimeout.current = null
+      }
+      tipcClient?.windowAction({ action: 'switch-full-screen' })
+    }
+
+    const handleSingleClick = () => {
+      if (clickTimeout.current !== null) {
+        window.clearTimeout(clickTimeout.current)
+      }
+
+      clickTimeout.current = window.setTimeout(() => {
+        if (videoElement?.paused) {
+          videoElement.play()
+        } else {
+          videoElement.pause()
+        }
+        clickTimeout.current = null
+      }, 200) // 使用较短的延迟以区分单击和双击
+    }
+    if (videoElement) {
+      videoElement.addEventListener('dblclick', handleDoubleClick)
+      videoElement.addEventListener('click', handleSingleClick)
+    }
+
+    // 清理函数
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      if (videoElement) {
+        videoElement.removeEventListener('dblclick', handleDoubleClick)
+        videoElement.removeEventListener('click', handleSingleClick)
+      }
+    }
+  }, [player])
 
   const initializePlayerEvent = useCallback(async () => {
     if (!player) {
@@ -73,7 +146,7 @@ export const InitializeEvent = () => {
       }
       importAnimeViaIPC({ path })
     })
-  }, [currentMatchedVideo.animeId, hash, player])
+  }, [hash, player])
 
   const grabFrame = useCallback(async () => {
     if (!isWeb) {
@@ -95,11 +168,9 @@ export const InitializeEvent = () => {
     }
   }, [hash])
 
-  useEffect(() => {
-    initializePlayerEvent()
-    return () => {
-      grabFrame()
-    }
-  }, [initializePlayerEvent])
-  return null
+  return {
+    initializePlayerListener,
+    initializePlayerEvent,
+    grabFrame,
+  }
 }

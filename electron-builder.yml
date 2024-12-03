@@ -69,4 +69,7 @@ afterPack: scripts/cleaned-unused-arch-deps.js
 afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
-    - 可以通过关联视频文件快捷播放
+    可以通过关联视频文件快捷播放
+    优化更新公告显示效果
+    客户端版本全屏效果优化
+
