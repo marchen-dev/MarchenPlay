@@ -6,7 +6,6 @@ const playerBaseConfigForClient = {
   height: '100%',
   width: '100%',
   lang: 'zh',
-  fullscreenTarget: document.body,
   autoplay: true,
   miniprogress: true,
   closeVideoDblclick: true,
@@ -45,6 +44,7 @@ const playerBaseConfigForWeb = {
   height: '100%',
   width: '100%',
   lang: 'zh',
+  fullscreenTarget: document.body,
   autoplay: true,
   miniprogress: true,
   fullscreen: {
