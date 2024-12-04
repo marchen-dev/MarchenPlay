@@ -47,10 +47,12 @@ export const useSetLoadingDanmuProgress = () => useSetAtom(loadingDanmuProgressA
 export const useClearPlayingVideo = () => {
   const resetVideo = useResetAtom(videoAtom)
   const resetProgress = useResetAtom(loadingDanmuProgressAtom)
+  const resetCurrentMatchedVideo = useResetAtom(currentMatchedVideoAtom)
 
   return () => {
     resetVideo()
     resetProgress()
+    resetCurrentMatchedVideo() 
   }
 }
 

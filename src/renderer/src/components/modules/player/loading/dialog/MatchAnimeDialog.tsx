@@ -21,19 +21,22 @@ interface MatchAnimeDialogProps {
   matchData?: MatchResponseV2
   onSelected?: (params?: MatchedVideoType) => void
   onClosed?: () => void
+  isLoading?: boolean
 }
 
 export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
   const { handleSearchAnime, searchData } = useSearchAnime()
-  const { matchData, onSelected, onClosed } = props
+  const { matchData, onSelected, onClosed, isLoading } = props
   const { toast } = useToast()
   const { open } = useAtomValue(showMatchAnimeDialogAtom)
 
   useEffect(() => {
+    if (!isLoading) {
+      return
+    }
     if (matchData && !matchData.isMatched) {
       showMatchAnimeDialog(true)
     }
-    return () => showMatchAnimeDialog(false)
   }, [matchData])
 
   const accordionData = useMemo(() => {

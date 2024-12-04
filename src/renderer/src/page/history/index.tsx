@@ -21,11 +21,12 @@ import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { useDialog } from '@renderer/hooks/use-dialog'
+import { tipcClient } from '@renderer/lib/client'
 import { relativeTimeToNow } from '@renderer/lib/date'
 import { cn, isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import { RouteName } from '@renderer/router'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useAtomValue } from 'jotai'
 import type { FC } from 'react'
@@ -152,7 +153,11 @@ const HistoryItem: FC<HistoryItemProps> = memo((props) => {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={playAnime}>继续观看</ContextMenuItem>
-        <ContextMenuItem onClick={() => showMatchAnimeDialog(true, hash)}>
+        <ContextMenuItem
+          onClick={() => {
+            showMatchAnimeDialog(true, hash)
+          }}
+        >
           重新匹配弹幕库
         </ContextMenuItem>
         <ContextMenuSeparator />
@@ -229,7 +234,26 @@ const HistoryImage: FC<HistoryImageProps> = (props) => {
 const Dialog = () => {
   const { hash } = useAtomValue(showMatchAnimeDialogAtom)
   const queryClient = useQueryClient()
+  const { data: matchData } = useQuery({
+    queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, hash],
+    queryFn: async () => {
+      const historyData = await db.history.get({ hash })
+      if (!historyData?.path) {
+        return
+      }
+      const animeDetail = await tipcClient?.getAnimeDetailByPath({ path: historyData.path })
+      if (!animeDetail || animeDetail.ok !== 1) {
+        return
+      }
+      const { fileHash, fileSize, fileName } = animeDetail
+      if (!fileHash || !fileSize || !fileName) {
+        return
+      }
 
+      return apiClient.match.postVideoEpisodeId({ fileSize, fileHash, fileName })
+    },
+    enabled: !!hash,
+  })
   const handleUpdateHistory = async (params?: MatchedVideoType) => {
     const old = await db.history.get({ hash })
     if (!old || !hash) {
@@ -251,10 +275,10 @@ const Dialog = () => {
     })
 
     // 如果之前之前播放过动漫，就更新匹配数据
-    queryClient.setQueryData([apiClient.match.Matchkeys.postVideoEpisodeId, path], {
+    queryClient.setQueryData([apiClient.match.Matchkeys.postVideoEpisodeId, hash], {
       isMatched: true,
       matches: [{ episodeTitle, episodeId, animeId, animeTitle }],
     })
   }
-  return <MatchAnimeDialog onSelected={handleUpdateHistory} />
+  return <MatchAnimeDialog matchData={matchData} onSelected={handleUpdateHistory} />
 }

@@ -19,7 +19,6 @@ import type { MatchResponseV2 } from '@renderer/request/models/match'
 import { RouteName } from '@renderer/router'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useResetAtom } from 'jotai/utils'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -29,10 +28,14 @@ export const useVideo = () => {
   const setProgress = useSetAtom(loadingDanmuProgressAtom)
   const { showFailedToast } = usePlayAnimeFailedToast()
   const clearPlayingVideo = useClearPlayingVideo()
-  const importAnimeViaBrowser = async (
+
+  // 对于浏览器环境，当通过拖拽或者点击导入视频时，会触发该函数
+  // 对于 electron 环境，通过拖拽导入时，会触发该函数
+  const importAnimeViaDragging = async (
     e: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>,
   ) => {
     e.preventDefault()
+    clearPlayingVideo()
     setProgress(LoadingStatus.IMPORT_VIDEO)
     let file: File | undefined
     if (e.type === 'drop') {
@@ -72,9 +75,10 @@ export const useVideo = () => {
     }
   }
 
+  // 只在 electron 环境生效，点击导入视频时，会触发该函数
   const importAnimeViaIPC = useCallback(async (params?: { path?: string }) => {
-    const path = params?.path ?? (await tipcClient?.importAnime())
     clearPlayingVideo()
+    const path = params?.path ?? (await tipcClient?.importAnime())
     if (!path) {
       return
     }
@@ -94,21 +98,25 @@ export const useVideo = () => {
     setProgress(LoadingStatus.CALC_HASH)
   }, [])
   return {
-    importAnimeViaBrowser,
+    importAnimeViaDragging,
     importAnimeViaIPC,
     url: video.url,
     showAddVideoTips: !video.url,
   }
 }
 
+// 匹配动漫
 export const useMatchAnimeData = () => {
   const { hash, size, name, url } = useAtomValue(videoAtom)
   const clearPlayingVideo = useClearPlayingVideo()
   const location = useLocation()
   const { showFailedToast } = usePlayAnimeFailedToast()
-  const resetCurrentMatchedVideo = useResetAtom(currentMatchedVideoAtom)
+  const setCurrentMatchedVideo = useSetAtom(currentMatchedVideoAtom)
+  const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
+
+  // 先直接通过 hash 去匹配，如果匹配失败，则弹出匹配框，让用户选择
   const { data: matchData, isError } = useQuery({
-    queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, url],
+    queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, hash],
     queryFn: async () => {
       const historyData = await db.history.get(hash)
       // 如果历史记录中有匹配的数据，直接返回
@@ -124,24 +132,27 @@ export const useMatchAnimeData = () => {
     enabled: !!hash,
   })
 
-  // const fetchAnimeSubtitles = useCallback(async (params: { path: string; hash: string }) => {
-  //   if (isWeb) {
-  //     return
-  //   }
-  //   const { path, hash } = params
-  //   const existingAnime = await db.history.get(hash)
-  //   if (existingAnime?.subtitles && existingAnime.subtitles.length > 0) {
-  //     return
-  //   }
-  //   const subtitles = await tipcClient?.extractSubtitlesFromAnime({ path })
-  //   if (subtitles) {
-  //     db.history.update(hash, { subtitles })
-  //   }
-  // }, [])
+  const matchedVideo = useMemo(() => {
+    // 确保为精准匹配
+    if (!matchData || !matchData.matches || !matchData.isMatched) {
+      return null
+    }
+    const matchedVideo = matchData?.matches[0]
+    return {
+      episodeId: matchedVideo.episodeId,
+      animeTitle: matchedVideo.animeTitle || '',
+      animeId: matchedVideo.animeId,
+      episodeTitle: matchedVideo.episodeTitle || '',
+    }
+  }, [matchData])
 
   useEffect(() => {
-    resetCurrentMatchedVideo()
-  }, [url])
+    // 如果精准匹配，就去设置 setCurrentMatchedVideo(matchedVideo)，之后就会触发 useDanmuData() 里的 useQuery 和 useEffect
+    if (matchData && matchedVideo) {
+      setCurrentMatchedVideo(matchedVideo)
+      setLoadingProgress(LoadingStatus.MATCH_ANIME)
+    }
+  }, [matchData])
 
   useEffect(() => {
     if (isError) {
@@ -159,49 +170,33 @@ export const useDanmuData = () => {
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const video = useAtomValue(videoAtom)
   const { enableTraditionalToSimplified } = usePlayerSettingsValue()
-  const { matchData, url } = useMatchAnimeData()
-  const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
+  const [currentMatchedVideo] = useAtom(currentMatchedVideoAtom)
   const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
   const { showFailedToast } = usePlayAnimeFailedToast()
+
+  // setCurrentMatchedVideo() 之后会触发该 useQuery, 获取弹幕数据
+  // 目前共两种可能性会触发该 useQuery
+  // 1. 上方 useMatchAnimeData() 为精准匹配
+  // 2. 用户通过对话框, 手动匹配了弹幕库
+  // 获取弹幕数据后，会触发下发 useEffect
   const { data: danmuData, isError } = useQuery({
-    queryKey: [apiClient.comment.Commentkeys.getDanmu, url, currentMatchedVideo.episodeId],
+    queryKey: [apiClient.comment.Commentkeys.getDanmu, video.url, currentMatchedVideo.episodeId],
     queryFn: () => {
       return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
         chConvert: enableTraditionalToSimplified ? 1 : 0,
       })
     },
-    enabled: isLoadDanmaku && !!matchData?.matches && !!currentMatchedVideo,
+    enabled: isLoadDanmaku && !!currentMatchedVideo.episodeId,
   })
-  const matchedVideo = useMemo(() => {
-    if (currentMatchedVideo && currentMatchedVideo.episodeId) {
-      return currentMatchedVideo
-    }
-    if (!matchData || !matchData.matches || !matchData.isMatched) {
-      return null
-    }
-    const matchedVideo = matchData?.matches[0]
-    return {
-      episodeId: matchedVideo.episodeId,
-      animeTitle: matchedVideo.animeTitle || '',
-      animeId: matchedVideo.animeId,
-      episodeTitle: matchedVideo.episodeTitle || '',
-    }
-  }, [matchData, currentMatchedVideo])
 
+  // 当上方 useQuery 获取弹幕成功后，会触发下方 useEffect, 保存到历史记录并开始播放
   useEffect(() => {
-    if (matchData && matchedVideo) {
-      setLoadingProgress(LoadingStatus.MATCH_ANIME)
-      setCurrentMatchedVideo(matchedVideo)
-    }
-  }, [matchData])
-
-  useEffect(() => {
-    if (danmuData && matchedVideo) {
+    if (danmuData && currentMatchedVideo) {
       saveToHistory({
-        ...matchedVideo,
+        ...currentMatchedVideo,
         hash: video.hash,
         danmaku: danmuData,
-        path: url,
+        path: video.url,
         progress: 0,
         duration: 0,
       })
@@ -212,7 +207,7 @@ export const useDanmuData = () => {
       return () => clearTimeout(timeoutId)
     }
     return () => {}
-  }, [danmuData])
+  }, [danmuData, currentMatchedVideo])
 
   useEffect(() => {
     if (isError) {
@@ -222,7 +217,6 @@ export const useDanmuData = () => {
 
   return {
     danmuData,
-    startPlaying: !!danmuData || !isLoadDanmaku,
   }
 }
 
@@ -260,6 +254,7 @@ export const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedA
 }
 
 export const useLoadingHistoricalAnime = () => {
+  const clearPlayingVideo = useClearPlayingVideo()
   const setVideo = useSetAtom(videoAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -278,6 +273,7 @@ export const useLoadingHistoricalAnime = () => {
   }, [])
 
   const loadingAnime = useCallback(async () => {
+    clearPlayingVideo()
     const anime = await db.history.get({ hash })
     if (!anime || Array.isArray(anime)) {
       showFailedToast({ title: '播放失败', description: '未找到历史记录' })

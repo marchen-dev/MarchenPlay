@@ -6,7 +6,7 @@ import type { FC } from 'react'
 import { useCallback, useMemo, useRef } from 'react'
 
 export default function VideoPlayer() {
-  const { importAnimeViaIPC, importAnimeViaBrowser, url, showAddVideoTips } = useVideo()
+  const { importAnimeViaIPC, importAnimeViaDragging, url, showAddVideoTips } = useVideo()
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -25,7 +25,7 @@ export default function VideoPlayer() {
   return (
     <VideoProvider>
       <div
-        onDrop={importAnimeViaBrowser}
+        onDrop={importAnimeViaDragging}
         onDragOver={(e) => e.preventDefault()}
         className={cn('flex size-full items-center justify-center ')}
       >
@@ -35,7 +35,7 @@ export default function VideoPlayer() {
             type="file"
             accept="video/mp4, video/x-matroska"
             ref={fileInputRef}
-            onChange={importAnimeViaBrowser}
+            onChange={importAnimeViaDragging}
             className="hidden"
           />
         )}
