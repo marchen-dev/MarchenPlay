@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [0.0.1-alpha.10](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.9...v0.0.1-alpha.10) (2024-12-04)
+
+
+### Bug Fixes
+
+* video cannot be paused ([35476c6](https://github.com/suemor233/MarchenPlay/commit/35476c6bc8f55d0222b5caa846b3e5d429ffd0f2))
+
+
+### Features
+
+* release note ([4485662](https://github.com/suemor233/MarchenPlay/commit/44856629e8690c163f6ffb111fde37e5ad1195ea))
+
+
+
 ## [0.0.1-alpha.9](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.8...v0.0.1-alpha.9) (2024-12-04)
 
 
