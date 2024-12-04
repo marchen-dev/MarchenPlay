@@ -6,7 +6,7 @@ on:
       - v*.*.*
 
 jobs:
-  build:
+  release:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -60,35 +60,9 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: pnpm run build:win
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
-
-      - name: Checkout LFS objects
-        run: git lfs checkout
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4.0.0
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install
-
       - name: Generate Changelog
         if: github.event_name == 'push'
-        run: npx @suemor/changelogithub
+        run: npx changelogithub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
