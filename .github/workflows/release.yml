@@ -60,6 +60,21 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: pnpm run build:win
 
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.zip
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.snap
+            dist/*.deb
+            dist/*.rpm
+            dist/*.tar.gz
+            dist/latest*.yml
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -86,6 +101,21 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-ubuntu-latest
+
+      - name: Download macOS Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-macos-latest
+
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-windows-latest
+
       - name: Generate Changelog
         if: github.event_name == 'push'
         run: npx @suemor/changelogithub
@@ -98,14 +128,8 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            dist/*.exe
-            dist/*.zip
-            dist/*.dmg
-            dist/*.AppImage
-            dist/*.snap
-            dist/*.deb
-            dist/*.rpm
-            dist/*.tar.gz
-            dist/latest*.yml
+            build-ubuntu-latest/*
+            build-macos-latest/*
+            build-windows-latest/*
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
