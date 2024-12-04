@@ -44,8 +44,12 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
     if (isWeb) {
       return
     }
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = async(event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        const isFull = await tipcClient?.getWindowIsFullScreen()
+        if (!isFull) {
+          player?.exitCssFullscreen()
+        }
         tipcClient?.windowAction({ action: 'leave-full-screen' })
       }
     }

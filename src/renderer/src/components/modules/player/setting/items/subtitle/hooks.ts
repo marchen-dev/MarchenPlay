@@ -36,7 +36,7 @@ export const useSubtitle = () => {
         ...(subtitleDetails?.map((subtitle, index) => ({
           id: subtitle.index,
           index,
-          title: subtitle.tags.title,
+          title: subtitle.tags.title || `未知字幕 - ${index}`,
           language: subtitle.tags.language,
         })) ?? []),
         ...(anime?.subtitles?.tags.filter((tag) => tag.id < -1) ?? []),

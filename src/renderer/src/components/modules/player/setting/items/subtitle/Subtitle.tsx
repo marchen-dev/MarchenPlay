@@ -39,6 +39,9 @@ export const Subtitle = () => {
   })
 
   useEffect(() => {
+    if (!isWeb) {
+      return
+    }
     // 确保不会误触视频暂停事件
     player?.setConfig({ closeVideoClick: true })
     return () => {
