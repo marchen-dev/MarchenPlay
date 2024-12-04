@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [0.0.1-alpha.9](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.8...v0.0.1-alpha.9) (2024-12-04)
+
+
+### Bug Fixes
+
+* ci ([3737ed9](https://github.com/suemor233/MarchenPlay/commit/3737ed903c824becd7e04b9e068a3010226dc4b2))
+* toast cannot be displayed in full screen of the web version ([117ff7b](https://github.com/suemor233/MarchenPlay/commit/117ff7b3a1b1289d338c6a333a4ae465e404f776))
+
+
+### Features
+
+* limit single instance ([dcb0728](https://github.com/suemor233/MarchenPlay/commit/dcb07280d89228453ceb20a8f015e2f6300e1fb4))
+* limit the number of history records ([71354de](https://github.com/suemor233/MarchenPlay/commit/71354de8029be9b1fd4a072363dfe534d2140251))
+* support file association ([aafa367](https://github.com/suemor233/MarchenPlay/commit/aafa3672adf7187ee40a0c0e0da2b50ec2c930be))
+* use system full screen to replace browser full screen ([ad0c639](https://github.com/suemor233/MarchenPlay/commit/ad0c639707880cb03db3c5d69829c7d6f783e038))
+
+
+
 ## [0.0.1-alpha.8](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.7...v0.0.1-alpha.8) (2024-12-01)
 
 
