@@ -4,7 +4,7 @@ import { tipcClient } from '@renderer/lib/client'
 import { Plugin } from '@suemor/xgplayer'
 
 export default class Exit extends Plugin {
-  static readonly pluginName = 'setting'
+  static readonly pluginName = 'exit'
   static readonly pluginClassName = {
     icon: `xgplayer-plugin-${Exit.pluginName}-icon`,
   }
