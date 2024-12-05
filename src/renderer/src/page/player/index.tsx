@@ -45,7 +45,7 @@ export default function VideoPlayer() {
 }
 
 const DragTips: FC<{ onClick: () => void }> = ({ onClick }) => (
-  <div className="flex flex-col items-center gap-2 p-32 text-gray-500" onClick={onClick}>
+  <div className="flex flex-col items-center gap-2 p-24 text-gray-500" onClick={onClick}>
     <i className="icon-[mingcute--video-line] text-6xl " />
     <p className="select-none text-xl">点击或拖拽动漫到此处播放</p>
   </div>

@@ -11,6 +11,8 @@ import naturalCompare from 'string-natural-compare'
 
 import { t } from './_instance'
 
+let isDialogOpen = false
+
 export const playerRoute = {
   showWarningDialog: t.procedure
     .input<{ title: string; content: string }>()
@@ -56,22 +58,34 @@ export const playerRoute = {
     return base64Image
   }),
   importAnime: t.procedure.action(async () => {
-    const result = await dialog.showOpenDialog({
-      properties: ['openFile'],
-      filters: [{ name: '视频文件', extensions: ['mp4', 'mkv'] }],
-    })
-    if (result.canceled) {
+    // 确保不重复打开对话框
+    if (isDialogOpen) {
       return
     }
 
-    const selectedFilePath = result.filePaths[0]
+    isDialogOpen = true
 
-    const selectedFileExtname = path.extname(selectedFilePath)
-    if (selectedFileExtname !== '.mp4' && selectedFileExtname !== '.mkv') {
-      return
+    try {
+      const result = await dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [{ name: '视频文件', extensions: ['mp4', 'mkv'] }],
+      })
+
+      if (result.canceled) {
+        return
+      }
+
+      const selectedFilePath = result.filePaths[0]
+      const selectedFileExtname = path.extname(selectedFilePath)
+
+      if (selectedFileExtname !== '.mp4' && selectedFileExtname !== '.mkv') {
+        return
+      }
+
+      return selectedFilePath
+    } finally {
+      isDialogOpen = false
     }
-
-    return selectedFilePath
   }),
   getAnimeInSamePath: t.procedure.input<{ path: string }>().action(async ({ input }) => {
     let selectedFilePath = input.path
