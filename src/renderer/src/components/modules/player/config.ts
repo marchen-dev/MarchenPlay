@@ -68,7 +68,7 @@ const playerBaseConfigForWeb = {
   playbackRate: {
     index: 5,
   },
-  plugins: [Setting],
+  plugins: [Setting, Exit],
 } satisfies IPlayerOptions
 
 const danmakuConfig = {

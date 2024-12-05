@@ -141,11 +141,11 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
       })
 
       const urlList = player.config.nextEpisode.urlList as string[]
-      const nextAnimalUrl = urlList?.indexOf(player.config.url as string)
-      if (nextAnimalUrl === urlList.length - 1) {
+      const nextAnimeUrl = urlList?.indexOf(player.config.url as string)
+      if (nextAnimeUrl === urlList.length - 1) {
         return
       }
-      player.emit(Events.PLAYNEXT, urlList[nextAnimalUrl + 1] ?? urlList[0])
+      player.emit(Events.PLAYNEXT, urlList[nextAnimeUrl + 1] ?? urlList[0])
     })
 
     player.on(Events.PLAYNEXT, async (url: string) => {

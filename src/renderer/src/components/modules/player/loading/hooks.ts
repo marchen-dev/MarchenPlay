@@ -83,18 +83,24 @@ export const useVideo = () => {
       return
     }
     const playList = (await tipcClient?.getAnimeInSamePath({ path })) ?? []
-    const url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
-    const animeData = await tipcClient?.getAnimeDetailByPath({ path: url })
+    const animeData = await tipcClient?.getAnimeDetailByPath({ path })
     if (!animeData?.ok) {
       showFailedToast({ title: '播放失败', description: animeData?.message || '' })
       return
     }
-    const { fileHash, fileName, fileSize } = animeData
+    const { fileHash, fileName, fileSize, filePath } = animeData
     if (!fileHash || !fileHash || !fileSize) {
       showFailedToast({ title: '播放失败', description: '无法读取视频' })
       return
     }
-    setVideo((prev) => ({ ...prev, url, hash: fileHash, size: fileSize, name: fileName, playList }))
+    setVideo((prev) => ({
+      ...prev,
+      url: filePath,
+      hash: fileHash,
+      size: fileSize,
+      name: fileName,
+      playList,
+    }))
     setProgress(LoadingStatus.CALC_HASH)
   }, [])
   return {

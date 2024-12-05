@@ -10,6 +10,7 @@ import { useAtom } from 'jotai'
 
 import { MatchDanmakuDialog } from '../../shared/MatchDanmakuDialog'
 import { Danmaku } from './items/damaku/Danmaku'
+import { PlayList } from './items/playList/PlayList'
 import { Subtitle } from './items/subtitle/Subtitle'
 
 export const SettingSheet = () => {
@@ -53,6 +54,11 @@ export const SettingSheet = () => {
 }
 
 const settingSheetList = [
+  {
+    title: '播放列表',
+    value: 'playList',
+    component: PlayList,
+  },
   {
     title: '弹幕设置',
     value: 'danmaku',

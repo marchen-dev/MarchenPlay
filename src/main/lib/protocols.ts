@@ -117,6 +117,9 @@ const nodeStreamToWeb = (resultStream: ReadStream) => {
 }
 
 export const getFilePathFromProtocolURL = (protocolUrl: string) => {
+  if (!protocolUrl?.startsWith(MARCHEN_PROTOCOL)) {
+    return path.normalize(protocolUrl)
+  }
   let filePath = decodeURIComponent(protocolUrl.slice(`${MARCHEN_PROTOCOL}:/`.length))
   if (isWindows) {
     filePath = filePath.slice(1)

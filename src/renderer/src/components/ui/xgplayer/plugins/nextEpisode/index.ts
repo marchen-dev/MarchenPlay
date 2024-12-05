@@ -37,8 +37,8 @@ export default class NextEpisode extends Plugin {
       return
     }
     const urlList = this.config.urlList as string[]
-    const nextAnimalUrl = urlList?.indexOf(this.player.config.url as string)
-    this.player.emit(Events.PLAYNEXT, urlList[nextAnimalUrl + 1] ?? urlList[0])
+    const nextAnimeUrl = urlList?.indexOf(this.player.config.url as string)
+    this.player.emit(Events.PLAYNEXT, urlList[nextAnimeUrl + 1] ?? urlList[0])
   }
 
   private isLastEpisode() {

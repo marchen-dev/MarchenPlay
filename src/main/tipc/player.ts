@@ -24,15 +24,17 @@ export const playerRoute = {
       }),
     ),
   getAnimeDetailByPath: t.procedure.input<{ path: string }>().action(async ({ input }) => {
-    const animePath = input?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
-    if (!animePath || !fs.existsSync(animePath)) {
-      return {
-        ok: 0,
-        message: '视频文件可能被移动，无法继续播放',
-      }
-    }
-
     try {
+      let animePath = input.path
+      if (animePath.startsWith(MARCHEN_PROTOCOL_PREFIX)) {
+        animePath = getFilePathFromProtocolURL(animePath)
+      }
+      if (!animePath || !fs.existsSync(animePath)) {
+        return {
+          ok: 0,
+          message: '视频文件可能被移动，无法继续播放',
+        }
+      }
       const stats = fs.statSync(animePath)
       const fileName = path.basename(animePath)
       const fileSize = stats.size
@@ -44,7 +46,7 @@ export const playerRoute = {
       fs.closeSync(fd)
 
       const fileHash = await calculateFileHashByBuffer(buffer)
-      return { ok: 1, fileSize, fileName, fileHash }
+      return { ok: 1, fileSize, fileName, fileHash, filePath: `${MARCHEN_PROTOCOL_PREFIX}${animePath}` }
     } catch {
       return {
         ok: 0,
