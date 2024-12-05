@@ -70,4 +70,5 @@ afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
     支持动漫播放过程中修改匹配弹幕
-    修复导入动漫时, 点击过快会弹出多个文件选择框
+    优化退出动漫逻辑，新增左上角退出按扭
+    修复导入动漫时, 点击过快会弹出多个文件选择框的问题

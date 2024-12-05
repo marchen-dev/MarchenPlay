@@ -191,7 +191,7 @@ export const useDanmuData = () => {
 
   // 当上方 useQuery 获取弹幕成功后，会触发下方 useEffect, 保存到历史记录并开始播放
   useEffect(() => {
-    if (danmuData && currentMatchedVideo) {
+    if (danmuData && currentMatchedVideo && video.hash) {
       saveToHistory({
         ...currentMatchedVideo,
         hash: video.hash,

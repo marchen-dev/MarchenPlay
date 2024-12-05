@@ -1,4 +1,5 @@
-import fullEntireScreen from '@renderer/components/ui/xgplayer/plugins/fullScreen'
+import Exit from '@renderer/components/ui/xgplayer/plugins/exit'
+import FullEntireScreen from '@renderer/components/ui/xgplayer/plugins/fullScreen'
 import Setting from '@renderer/components/ui/xgplayer/plugins/setting'
 import type { IPlayerOptions } from '@suemor/xgplayer'
 
@@ -10,7 +11,7 @@ const playerBaseConfigForClient = {
   miniprogress: true,
   closeVideoDblclick: true,
   closeVideoClick: true,
-  [fullEntireScreen.pluginName]: {
+  [FullEntireScreen.pluginName]: {
     index: 0,
   },
   cssFullscreen: {
@@ -37,7 +38,7 @@ const playerBaseConfigForClient = {
       },
     },
   },
-  plugins: [Setting, fullEntireScreen],
+  plugins: [Setting, FullEntireScreen, Exit],
   ignores: ['fullscreen'],
 } satisfies IPlayerOptions
 

@@ -1,5 +1,5 @@
 import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
-import { videoAtom } from '@renderer/atoms/player'
+import { useClearPlayingVideo, videoAtom } from '@renderer/atoms/player'
 import { db } from '@renderer/database/db'
 import { tipcClient } from '@renderer/lib/client'
 import { isWeb } from '@renderer/lib/utils'
@@ -38,13 +38,13 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
   const clickTimeout = useRef<number | null>(null)
   const { hash } = useAtomValue(videoAtom)
   const { importAnimeViaIPC } = useVideo()
-
+  const resetVideo = useClearPlayingVideo()
   // 需要对 xgplayer 自带的全屏事件进行重写，以适配 electron 的全屏
   const initializePlayerListener = useCallback(() => {
     if (isWeb) {
       return
     }
-    const handleKeyDown = async(event: KeyboardEvent) => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         const isFull = await tipcClient?.getWindowIsFullScreen()
         if (!isFull) {
@@ -115,6 +115,9 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
     player?.on(
       Events.TIME_UPDATE,
       throttle((data) => {
+        if (!hash) {
+          return
+        }
         db.history.update(hash, {
           progress: data?.currentTime,
           duration: data?.duration,
@@ -129,6 +132,9 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
     })
 
     player.on(Events.ENDED, async () => {
+      if (!hash) {
+        return
+      }
       const latestAnime = await db.history.get(hash)
       await db.history.update(hash, {
         progress: latestAnime?.duration,
@@ -139,7 +145,6 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
       if (nextAnimalUrl === urlList.length - 1) {
         return
       }
-
       player.emit(Events.PLAYNEXT, urlList[nextAnimalUrl + 1] ?? urlList[0])
     })
 
@@ -149,6 +154,10 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
         return
       }
       importAnimeViaIPC({ path })
+    })
+
+    player.on(Events.DESTROY, async () => {
+      resetVideo()
     })
   }, [hash, player])
 

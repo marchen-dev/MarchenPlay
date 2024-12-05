@@ -32,7 +32,7 @@ export default class NextEpisode extends Plugin {
     this.icon?.addEventListener('click', this.toggleButtonClickListener)
   }
 
-   toggleButtonClickFunction() {
+  toggleButtonClickFunction() {
     if (this.isLastEpisode()) {
       return
     }
