@@ -23,7 +23,6 @@ import { usePlayerInstance } from '../../Context'
 import { useSubtitle } from './hooks'
 
 export const Subtitle = () => {
-  const selectRef = useRef<HTMLDivElement | null>(null)
   const player = usePlayerInstance()
   const { subtitlesData, fetchSubtitleBody } = useSubtitle()
   const { toast } = useToast()
@@ -82,7 +81,7 @@ export const Subtitle = () => {
     return
   }
   return (
-    <FieldLayout title="字幕" ref={selectRef}>
+    <FieldLayout title="字幕">
       <Select
         defaultValue={defaultValue.toString()}
         onValueChange={(id) => fetchSubtitleBody({ id: +id })}
@@ -90,7 +89,7 @@ export const Subtitle = () => {
         <SelectTrigger className="w-[200px]">
           <SelectValue placeholder="选中字幕" />
         </SelectTrigger>
-        <SelectContent container={selectRef.current}>
+        <SelectContent>
           <SelectGroup>
             <SelectItem value={'-1'}>默认</SelectItem>
             {subtitlesData?.tags?.map((subtitle) => {

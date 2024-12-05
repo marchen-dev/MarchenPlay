@@ -8,43 +8,47 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
 import { useAtom } from 'jotai'
 
+import { MatchDanmakuDialog } from '../../shared/MatchDanmakuDialog'
 import { Danmaku } from './items/damaku/Danmaku'
 import { Subtitle } from './items/subtitle/Subtitle'
 
 export const SettingSheet = () => {
   const [show, setShow] = useAtom(playerSettingSheetAtom)
   return (
-    <Sheet
-      open={show}
-      onOpenChange={(open) => {
-        setShow(open)
-      }}
-    >
-      <SheetContent
-        container={document.querySelector(`.xgplayer`)}
-        classNames={{ sheetOverlay: 'bg-black/20' }}
-        aria-describedby="播放器设置"
+    <>
+      <Sheet
+        open={show}
+        onOpenChange={(open) => {
+          setShow(open)
+        }}
       >
-        <SheetHeader>
-          <SheetTitle>设置</SheetTitle>
+        <SheetContent
+          container={document.querySelector(`.xgplayer`)}
+          classNames={{ sheetOverlay: 'bg-black/20' }}
+          aria-describedby="播放器设置"
+        >
+          <SheetHeader>
+            <SheetTitle>设置</SheetTitle>
 
-          <Accordion
-            type="multiple"
-            className="w-full"
-            defaultValue={['danmaku', 'subtitle', 'audio']}
-          >
-            {settingSheetList.map((item) => (
-              <AccordionItem key={item.value} value={item.value}>
-                <AccordionTrigger className='font-semibold'>{item.title}</AccordionTrigger>
-                <AccordionContent className="px-1 pt-1">
-                  <item.component />
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
+            <Accordion
+              type="multiple"
+              className="w-full"
+              defaultValue={['danmaku', 'subtitle', 'audio']}
+            >
+              {settingSheetList.map((item) => (
+                <AccordionItem key={item.value} value={item.value}>
+                  <AccordionTrigger className="font-semibold">{item.title}</AccordionTrigger>
+                  <AccordionContent className="px-1 pt-1">
+                    <item.component />
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+      <MatchDanmakuDialog />
+    </>
   )
 }
 

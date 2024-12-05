@@ -69,7 +69,6 @@ afterPack: scripts/cleaned-unused-arch-deps.js
 afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
-    修复无法暂停播放的问题
-    优化加载弹幕逻辑
+    支持动漫播放过程中修改匹配弹幕
     
 

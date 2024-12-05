@@ -1,12 +1,7 @@
-import type { MatchedVideoType } from '@renderer/atoms/player'
 import { useAppSettings, useAppSettingsValue } from '@renderer/atoms/settings/app'
 import { RouterLayout } from '@renderer/components/layout/root/RouterLayout'
-import {
-  showMatchAnimeDialog,
-  showMatchAnimeDialogAtom,
-} from '@renderer/components/modules/player/loading/dialog/hooks'
-import { MatchAnimeDialog } from '@renderer/components/modules/player/loading/dialog/MatchAnimeDialog'
-import { saveToHistory } from '@renderer/components/modules/player/loading/hooks'
+import { showMatchAnimeDialog } from '@renderer/components/modules/player/loading/dialog/hooks'
+import { MatchDanmakuDialog } from '@renderer/components/modules/shared/MatchDanmakuDialog'
 import { Badge } from '@renderer/components/ui/badge'
 import { FunctionAreaButton, FunctionAreaToggle } from '@renderer/components/ui/button'
 import {
@@ -21,14 +16,10 @@ import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { useDialog } from '@renderer/hooks/use-dialog'
-import { tipcClient } from '@renderer/lib/client'
 import { relativeTimeToNow } from '@renderer/lib/date'
 import { cn, isWeb } from '@renderer/lib/utils'
-import { apiClient } from '@renderer/request'
 import { RouteName } from '@renderer/router'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useAtomValue } from 'jotai'
 import type { FC } from 'react'
 import { memo, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -62,7 +53,7 @@ export default function History() {
           </div>
         )}
       </ScrollArea>
-      <Dialog />
+      <MatchDanmakuDialog />
     </RouterLayout>
   )
 }
@@ -230,55 +221,4 @@ const HistoryImage: FC<HistoryImageProps> = (props) => {
       )}
     </div>
   )
-}
-const Dialog = () => {
-  const { hash } = useAtomValue(showMatchAnimeDialogAtom)
-  const queryClient = useQueryClient()
-  const { data: matchData } = useQuery({
-    queryKey: [apiClient.match.Matchkeys.postVideoEpisodeId, hash],
-    queryFn: async () => {
-      const historyData = await db.history.get({ hash })
-      if (!historyData?.path) {
-        return
-      }
-      const animeDetail = await tipcClient?.getAnimeDetailByPath({ path: historyData.path })
-      if (!animeDetail || animeDetail.ok !== 1) {
-        return
-      }
-      const { fileHash, fileSize, fileName } = animeDetail
-      if (!fileHash || !fileSize || !fileName) {
-        return
-      }
-
-      return apiClient.match.postVideoEpisodeId({ fileSize, fileHash, fileName })
-    },
-    enabled: !!hash,
-  })
-  const handleUpdateHistory = async (params?: MatchedVideoType) => {
-    const old = await db.history.get({ hash })
-    if (!old || !hash) {
-      return
-    }
-
-    const { duration, path, progress, subtitles } = old
-    if (!params) {
-      return
-    }
-    const { episodeId, episodeTitle, animeId, animeTitle } = params
-    saveToHistory({
-      duration,
-      path,
-      progress,
-      subtitles,
-      hash,
-      ...params,
-    })
-
-    // 如果之前之前播放过动漫，就更新匹配数据
-    queryClient.setQueryData([apiClient.match.Matchkeys.postVideoEpisodeId, hash], {
-      isMatched: true,
-      matches: [{ episodeTitle, episodeId, animeId, animeTitle }],
-    })
-  }
-  return <MatchAnimeDialog matchData={matchData} onSelected={handleUpdateHistory} />
 }

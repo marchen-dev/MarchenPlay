@@ -8,6 +8,7 @@ import { memo } from 'react'
 
 import { useXgPlayerUtils } from '../../../hooks'
 import { usePlayerInstance } from '../../Context'
+import { Rematch } from './Rematch'
 
 export const Danmaku = memo(() => {
   const player = usePlayerInstance()
@@ -43,7 +44,9 @@ export const Danmaku = memo(() => {
         onTraditionalToSimplifiedChange={(covert) => {
           handleDanmakuLanguageChange(covert)
         }}
-      />
+      >
+        <Rematch />
+      </DanmakuSetting>
     </>
   )
 })

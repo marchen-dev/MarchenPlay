@@ -15,6 +15,7 @@ const playerBaseConfigForClient = {
   },
   cssFullscreen: {
     index: 1,
+    target: document.body,
   },
   [Setting.pluginName]: {
     index: 2,
@@ -81,4 +82,4 @@ const danmakuConfig = {
   },
 }
 
-export { danmakuConfig,playerBaseConfigForClient, playerBaseConfigForWeb }
+export { danmakuConfig, playerBaseConfigForClient, playerBaseConfigForWeb }

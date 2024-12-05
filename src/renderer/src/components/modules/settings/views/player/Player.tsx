@@ -1,6 +1,6 @@
 import { usePlayerSettings } from '@renderer/atoms/settings/player'
-import type { FC } from 'react'
-import { useMemo } from 'react'
+import type { FC , PropsWithChildren } from 'react'
+import { useMemo  } from 'react'
 
 import { FieldLayout, FieldsCardLayout, SettingViewContainer } from '../Layout'
 import { SettingSelect } from '../Select'
@@ -15,13 +15,13 @@ export const PlayerView = () => {
   )
 }
 
-interface DanmakuSettingProps {
+interface DanmakuSettingProps extends PropsWithChildren {
   classNames?: { cardLayout?: string }
   onTraditionalToSimplifiedChange?: (value: boolean) => void
 }
 
 export const DanmakuSetting: FC<DanmakuSettingProps> = (props) => {
-  const { classNames, onTraditionalToSimplifiedChange } = props
+  const { classNames, onTraditionalToSimplifiedChange, children } = props
   const [playerSetting, setPlayerSetting] = usePlayerSettings()
   const CardLayout = useMemo(() => {
     return ({ children }) =>
@@ -73,6 +73,7 @@ export const DanmakuSetting: FC<DanmakuSettingProps> = (props) => {
           }
         />
       </FieldLayout>
+      {children}
     </CardLayout>
   )
 }
