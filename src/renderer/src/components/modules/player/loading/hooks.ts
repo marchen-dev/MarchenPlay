@@ -163,8 +163,6 @@ export const useMatchAnimeData = () => {
   useEffect(() => {
     if (isError) {
       showFailedToast({ title: '匹配失败', description: '请检查网络连接或稍后再试' })
-    }
-    return () => {
       clearPlayingVideo()
     }
   }, [location.pathname, isError])

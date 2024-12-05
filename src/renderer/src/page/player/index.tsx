@@ -7,7 +7,6 @@ import { useCallback, useMemo, useRef } from 'react'
 
 export default function VideoPlayer() {
   const { importAnimeViaIPC, importAnimeViaDragging, url, showAddVideoTips } = useVideo()
-
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const manualImport = useCallback(() => {

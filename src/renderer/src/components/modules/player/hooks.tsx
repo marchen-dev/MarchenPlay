@@ -92,6 +92,7 @@ export const useXgPlayer = (url: string) => {
     return () => {
       _playerInstance?.destroy()
       playerInstance?.destroy()
+      setPlayerInstance(null)
     }
   }, [playerRef])
 

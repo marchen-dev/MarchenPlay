@@ -99,7 +99,7 @@ export const useSubtitle = () => {
             defaultId: minimumId - 1,
             tags: [
               ...(oldHistory?.subtitles?.tags ?? []),
-              { id: minimumId - 1, path, title: `手动字幕 - ${Math.abs(minimumId)}` },
+              { id: minimumId - 1, path, title: `外部字幕 - ${Math.abs(minimumId)}` },
             ],
           },
         })
