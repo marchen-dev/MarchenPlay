@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [0.0.1-alpha.11](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.10...v0.0.1-alpha.11) (2024-12-05)
+
+
+### Bug Fixes
+
+* clicking too quickly when importing anime would pop up multiple file selection boxes ([d513152](https://github.com/suemor233/MarchenPlay/commit/d513152197dd5ab42984df1dabc297cf7176c1d9))
+* settings button is missing ([b98c61b](https://github.com/suemor233/MarchenPlay/commit/b98c61b3d0aadf239da4b46e45bdffb775537d8c))
+* unable to switch danmaku during playback ([c8fbd8f](https://github.com/suemor233/MarchenPlay/commit/c8fbd8fb790700321b873310a671f46a4345da81))
+
+
+### Features
+
+* add a new exit button in the upper left corner ([d56514d](https://github.com/suemor233/MarchenPlay/commit/d56514d3b7c4e8d3c2d01f32d09c8b004a2a3de5))
+* add playlist ([758b55f](https://github.com/suemor233/MarchenPlay/commit/758b55f25714426300072439cc1a3b7e4ca5b952))
+* support rematch danmaku when playing anime ([3f23532](https://github.com/suemor233/MarchenPlay/commit/3f23532e055f72b9fdcf02ecf210abd4ce095be0))
+
+
+
 ## [0.0.1-alpha.10](https://github.com/suemor233/MarchenPlay/compare/v0.0.1-alpha.9...v0.0.1-alpha.10) (2024-12-04)
 
 
