@@ -156,7 +156,10 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
       importAnimeViaIPC({ path })
     })
 
-    player.on(Events.DESTROY, async () => {
+    // 点击左上角关闭按钮
+    player.on('exit', async () => {
+      player.destroy()
+      tipcClient?.windowAction({ action: 'leave-full-screen' })
       resetVideo()
     })
   }, [hash, player])

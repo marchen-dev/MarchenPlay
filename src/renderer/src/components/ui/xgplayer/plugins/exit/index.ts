@@ -1,6 +1,5 @@
 import './index.css'
 
-import { tipcClient } from '@renderer/lib/client'
 import { Plugin } from '@suemor/xgplayer'
 
 export default class Exit extends Plugin {
@@ -31,8 +30,7 @@ export default class Exit extends Plugin {
   }
 
   private toggleButtonClickFunction() {
-    this.player.destroy()
-    tipcClient?.windowAction({ action: 'leave-full-screen' })
+    this.player.emit('exit')
   }
 
   destroy(): void {
