@@ -20,6 +20,7 @@ export const InitializeEvent = () => {
     if (!player) {
       return
     }
+
     initializePlayerEvent()
 
     const listenerClear = initializePlayerListener()

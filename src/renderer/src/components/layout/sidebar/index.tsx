@@ -14,7 +14,7 @@ import { RouteName, siderbarRoutes } from '@renderer/router'
 import { useAtomValue } from 'jotai'
 import { AlertCircle } from 'lucide-react'
 import type { FC } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router'
 
 import { useSettingModal } from '../../modules/settings/hooks'
 

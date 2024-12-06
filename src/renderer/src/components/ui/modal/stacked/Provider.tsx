@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'
 import { useCallback, useEffect, useId, useRef } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 import { MODAL_STACK_Z_INDEX } from './constants'
 import { modalIdToPropsMap, modalStackAtom } from './Context'

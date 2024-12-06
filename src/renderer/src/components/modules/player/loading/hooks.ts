@@ -21,7 +21,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 
 export const useVideo = () => {
   const [video, setVideo] = useAtom(videoAtom)

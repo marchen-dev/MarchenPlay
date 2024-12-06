@@ -1,5 +1,5 @@
 import { tipcClient } from '@renderer/lib/client'
-import { useRouteError } from 'react-router-dom'
+import { useRouteError } from 'react-router'
 
 import { Button } from '../ui/button'
 

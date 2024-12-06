@@ -2,7 +2,7 @@ import './styles/main.css'
 
 import { ClickToComponent } from 'click-to-react-component'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
+import { RouterProvider } from 'react-router'
 
 import { initializeApp } from './lib/init'
 import { reactRouter } from './router'

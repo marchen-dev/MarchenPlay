@@ -28,7 +28,6 @@ export default function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
-      // webSecurity: false, // 禁用 webSecurity 以允许加载本地文件资源
     },
   }
   switch (platform) {

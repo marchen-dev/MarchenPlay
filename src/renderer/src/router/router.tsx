@@ -2,8 +2,8 @@ import App from '@renderer/App'
 import ErrorView from '@renderer/components/common/ErrorView'
 import History from '@renderer/page/history'
 import VideoPlayer from '@renderer/page/player'
-import type { NonIndexRouteObject, RouteObject } from 'react-router-dom'
-import { createHashRouter, Navigate, useLocation } from 'react-router-dom'
+import type { NonIndexRouteObject, RouteObject } from 'react-router'
+import { createHashRouter, Navigate, useLocation } from 'react-router'
 
 import { RouteName } from '.'
 

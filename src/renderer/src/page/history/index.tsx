@@ -22,7 +22,7 @@ import { RouteName } from '@renderer/router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import type { FC } from 'react'
 import { memo, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 export default function History() {
   const historyData = useLiveQuery(() =>
