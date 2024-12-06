@@ -1,3 +1,4 @@
+import type { JSX} from 'react';
 import { useEffect } from 'react'
 
 import { RootLayout } from './components/layout/root/RootLayout'

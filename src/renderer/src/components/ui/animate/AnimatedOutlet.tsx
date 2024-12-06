@@ -8,7 +8,11 @@ const AnimatedOutlet = (): React.JSX.Element => {
 
   return (
     <AnimatePresence mode="wait" initial={true}>
-      {element && React.createElement(element.type, { ...element.props, key: location.pathname })}
+      {element &&
+        React.createElement(element.type, {
+          ...(typeof element.props === 'object' ? element.props : {}),
+          key: location.pathname,
+        })}
     </AnimatePresence>
   )
 }

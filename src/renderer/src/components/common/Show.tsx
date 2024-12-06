@@ -1,3 +1,5 @@
+import type { JSX } from "react"
+
 type RequiredParameter<T> = T extends () => unknown ? never : T
 
 function Show<T, TRenderFunction extends (item: T) => JSX.Element>(props: {
