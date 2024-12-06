@@ -1,4 +1,5 @@
 import type { MatchedVideoType } from '@renderer/atoms/player'
+import Show from '@renderer/components/common/Show'
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@renderer/comp
 import { Input } from '@renderer/components/ui/input'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { useToast } from '@renderer/components/ui/toast'
+import { cn } from '@renderer/lib/utils'
 import type { MatchResponseV2, MatchResultV2 } from '@renderer/request/models/match'
 import { useAtomValue } from 'jotai'
 import type { FC } from 'react'
@@ -82,7 +84,12 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
         </DialogHeader>
         <div>
           <Input placeholder="匹配的不正确? 手动输入动漫匹配弹幕库" onChange={handleSearchAnime} />
-          <ScrollArea className="relative mt-3 h-[450px] rounded-md border px-4">
+          <ScrollArea
+            className={cn(
+              'relative mt-3 h-[450px] rounded-md border px-4',
+              !isLoading && 'h-[550px]',
+            )}
+          >
             <Accordion type="single" collapsible className="w-full">
               {accordionData?.length === 0 && (
                 <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -126,19 +133,21 @@ export const MatchAnimeDialog: FC<MatchAnimeDialogProps> = (props) => {
               })}
             </Accordion>
           </ScrollArea>
-          <div className="flex justify-end">
-            <Button
-              variant={'secondary'}
-              className="mt-5 flex items-center text-sm"
-              onClick={() => {
-                showMatchAnimeDialog(false)
-                onSelected && onSelected()
-              }}
-            >
-              <i className="icon-[mingcute--xls-line] mr-1 text-lg" />
-              <span>不加载弹幕</span>
-            </Button>
-          </div>
+          <Show when={isLoading}>
+            <div className="flex justify-end">
+              <Button
+                variant={'secondary'}
+                className={cn('mt-5 flex items-center text-sm')}
+                onClick={() => {
+                  showMatchAnimeDialog(false)
+                  onSelected && onSelected()
+                }}
+              >
+                <i className="icon-[mingcute--xls-line] mr-1 text-lg" />
+                <span>不加载弹幕</span>
+              </Button>
+            </div>
+          </Show>
         </div>
       </DialogContent>
     </Dialog>

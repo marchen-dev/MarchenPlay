@@ -23,7 +23,7 @@ export const PlayList = () => {
               key={name}
               className={cn(
                 'flex items-center transition-colors duration-100 hover:text-primary',
-                playingVideo && '!text-secondary',
+                playingVideo && 'text-primary',
               )}
               onClick={() => {
                 if (playingVideo) {

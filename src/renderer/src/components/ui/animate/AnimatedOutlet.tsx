@@ -7,7 +7,7 @@ const AnimatedOutlet = (): React.JSX.Element => {
   const element = useOutlet()
 
   return (
-    <AnimatePresence mode="wait" initial={true}>
+    <AnimatePresence>
       {element &&
         React.createElement(element.type, {
           ...(typeof element.props === 'object' ? element.props : {}),

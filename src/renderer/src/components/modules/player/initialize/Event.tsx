@@ -156,12 +156,19 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
       }
       importAnimeViaIPC({ path })
     })
-
     // 点击左上角关闭按钮
     player.on('exit', async () => {
-      player.destroy()
-      tipcClient?.windowAction({ action: 'leave-full-screen' })
+      const isFull = await tipcClient?.getWindowIsFullScreen()
+      isFull && tipcClient?.windowAction({ action: 'leave-full-screen' })
       resetVideo()
+      // 如果是 css 全屏，需要延迟销毁，否则会导致退出动画无法正常播放
+      // 全屏模式不执行动画，否者会卡顿
+      if (player.cssfullscreen && !isFull) {
+        return setTimeout(() => {
+          player.destroy()
+        }, 300)
+      }
+      return player.destroy()
     })
   }, [hash, player])
 

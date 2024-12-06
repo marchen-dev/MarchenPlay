@@ -20,6 +20,8 @@ import { relativeTimeToNow } from '@renderer/lib/date'
 import { cn, isWeb } from '@renderer/lib/utils'
 import { RouteName } from '@renderer/router'
 import { useLiveQuery } from 'dexie-react-hooks'
+import type { Variants } from 'framer-motion'
+import { m } from 'framer-motion'
 import type { FC } from 'react'
 import { memo, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -60,6 +62,16 @@ export default function History() {
 
 interface HistoryItemProps extends DB_History {
   showPoster: boolean
+}
+
+const hoverVariant: Variants = {
+  icon: {
+    opacity: 1,
+  },
+  img: {
+    opacity: 0.8,
+    scale: 1.05,
+  },
 }
 
 const HistoryItem: FC<HistoryItemProps> = memo((props) => {
@@ -105,27 +117,29 @@ const HistoryItem: FC<HistoryItemProps> = memo((props) => {
           )}
           onClick={playAnime}
         >
-          <div
+          <m.div
             className={cn(
               'relative aspect-video size-full overflow-hidden rounded-md ',
               showPoster && 'aspect-auto h-72',
             )}
+            whileHover={['icon', 'img']}
           >
             <HistoryImage src={showPoster ? cover : (thumbnail ?? cover)} />
             {!isWeb && (
-              <i
+              <m.i
                 className={cn(
                   'icon-[mingcute--play-circle-line]',
                   'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-100',
-                  'size-16 text-zinc-100 opacity-0 shadow-md group-hover:opacity-100',
+                  'size-16 text-zinc-100 opacity-0 shadow-md',
                 )}
+                variants={{ icon: hoverVariant.icon }}
               />
             )}
             <div
               className={cn('absolute bottom-0 left-0 h-1 rounded-md bg-warning')}
               style={{ width: `${percentage}%` }}
             />
-          </div>
+          </m.div>
           <div className="mt-1 w-full px-0.5">
             <p className="truncate text-sm" title={animeTitle}>
               {animeTitle}
@@ -203,7 +217,7 @@ const HistoryImage: FC<HistoryImageProps> = (props) => {
   const { src } = props
   const [imgError, setImgError] = useState(false)
   return (
-    <div className=" size-full border ">
+    <m.div className=" size-full border " variants={{ img: hoverVariant.img }}>
       {!src || imgError ? (
         <div className="flex size-full items-center justify-center bg-gray-200 text-zinc-500 dark:bg-zinc-300">
           <span className="icon-[mingcute--pic-line] size-10 group-hover:hidden" />
@@ -212,13 +226,13 @@ const HistoryImage: FC<HistoryImageProps> = (props) => {
         <img
           src={src}
           className={cn(
-            'pointer-events-none size-full object-cover transition-all duration-100 group-hover:opacity-85 ',
+            'pointer-events-none size-full object-cover opacity-100 transition-all duration-100',
           )}
           onError={() => {
             setImgError(true)
           }}
         />
       )}
-    </div>
+    </m.div>
   )
 }

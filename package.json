@@ -7,9 +7,9 @@
   "description": "Marchen player",
   "author": "Suemor",
   "license": "GPL-3.0",
-  "homepage": "https://github.com/marchen-dev/MarchenPlay",
+  "homepage": "https://github.com/marchen-dev/marchen-player",
   "repository": {
-    "url": "https://github.com/marchen-dev/MarchenPlay",
+    "url": "https://github.com/marchen-dev/marchen-player",
     "type": "git"
   },
   "main": "./out/main/index.js",

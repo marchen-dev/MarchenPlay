@@ -1,4 +1,5 @@
 import { isWeb } from '@renderer/lib/utils'
+import { m } from 'framer-motion'
 import type { FC } from 'react'
 
 import { useXgPlayer } from './hooks'
@@ -15,7 +16,13 @@ export const Player: FC<PlayerProps> = (props) => {
   const { playerRef, playerInstance } = useXgPlayer(props.url)
   return (
     <>
-      <div ref={playerRef} />
+      <m.div
+        ref={playerRef}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      />
       <PlayerProvider value={playerInstance}>
         <SettingSheet />
         {!isWeb && <InitializeSubtitle />}

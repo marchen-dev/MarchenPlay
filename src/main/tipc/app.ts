@@ -16,6 +16,9 @@ export const appRoute = {
         | 'enter-full-screen'
         | 'leave-full-screen'
         | 'switch-full-screen'
+        | 'hidden-title-bar'
+        | 'show-title-bar'
+        | 'hidden-title-bar'
     }>()
     .action(async ({ context, input }) => {
       const webcontent = context.sender
@@ -54,6 +57,14 @@ export const appRoute = {
         }
         case 'leave-full-screen': {
           window.setFullScreen(false)
+          break
+        }
+        case 'hidden-title-bar': {
+          window?.setWindowButtonVisibility(false)
+          break
+        }
+        case 'show-title-bar': {
+          window?.setWindowButtonVisibility(true)
           break
         }
       }

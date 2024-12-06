@@ -2,6 +2,7 @@ import { Player } from '@renderer/components/modules/player'
 import { useVideo } from '@renderer/components/modules/player/loading/hooks'
 import { VideoProvider } from '@renderer/components/modules/player/loading/PlayerProvider'
 import { cn, isWeb } from '@renderer/lib/utils'
+import { AnimatePresence } from 'framer-motion'
 import type { FC } from 'react'
 import { useCallback, useMemo, useRef } from 'react'
 
@@ -17,10 +18,9 @@ export default function VideoPlayer() {
   }, [importAnimeViaIPC])
 
   const content = useMemo(
-    () => (url ? <Player url={url} /> : <DragTips onClick={manualImport} />),
+    () => (url ? <Player url={url} key={url} /> : <DragTips key={url} onClick={manualImport} />),
     [url, manualImport],
   )
-
   return (
     <VideoProvider>
       <div
@@ -28,7 +28,7 @@ export default function VideoPlayer() {
         onDragOver={(e) => e.preventDefault()}
         className={cn('flex size-full items-center justify-center ')}
       >
-        {content}
+        <AnimatePresence>{content}</AnimatePresence>
         {showAddVideoTips && (
           <input
             type="file"

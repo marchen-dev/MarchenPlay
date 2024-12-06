@@ -61,7 +61,7 @@ npmRebuild: false
 publish:
   provider: github
   owner: marchen-dev
-  repo: MarchenPlay
+  repo: marchen-player
 # publish:
 #   provider: generic
 #   url: http://localhost:3000
