@@ -70,3 +70,5 @@ afterSign: scripts/notarize.js
 releaseInfo:
   releaseNotes: |
     修复继续播放时弹幕偏移问题
+    修复播放过程中退出后,无法捕获缩略图
+    集成了 sentry 错误监控

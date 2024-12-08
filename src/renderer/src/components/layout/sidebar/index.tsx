@@ -1,4 +1,3 @@
-import { updateProgressAtom, useNetworkStatus } from '@renderer/atoms/network'
 import { useAppSettingsValue } from '@renderer/atoms/settings/app'
 import Show from '@renderer/components/common/Show'
 import { Logo } from '@renderer/components/icons/Logo'
@@ -6,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@renderer/components/ui/ale
 import { Button } from '@renderer/components/ui/button'
 import { Progress } from '@renderer/components/ui/progress'
 import { PROJECT_NAME } from '@renderer/constants'
+import { updateProgressAtom, useNetworkStatus } from '@renderer/initialize/network'
 import { tipcClient } from '@renderer/lib/client'
 import { getStorageNS } from '@renderer/lib/ns'
 import { cn, isMac } from '@renderer/lib/utils'

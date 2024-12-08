@@ -1,4 +1,3 @@
-import { MARCHEN_PROTOCOL_PREFIX } from '@main/constants/protocol'
 import { useClearPlayingVideo, videoAtom } from '@renderer/atoms/player'
 import { db } from '@renderer/database/db'
 import { tipcClient } from '@renderer/lib/client'
@@ -116,6 +115,10 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
     )
 
     player.on(Events.LOADED_METADATA, (data) => {
+      if (!isWeb) {
+        const { duration } = data
+        grabFrame((duration / 2).toString())
+      }
       db.history.update(hash, {
         duration: data?.duration,
       })
@@ -161,25 +164,33 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
     })
   }, [hash, player])
 
-  const grabFrame = useCallback(async () => {
-    if (!isWeb) {
-      const latestAnime = await db.history.get(hash)
-      const animePath = latestAnime?.path.replace(MARCHEN_PROTOCOL_PREFIX, '')
-      const isEnd = latestAnime?.progress === latestAnime?.duration
-      if (!animePath) {
-        return
+  const grabFrame = useCallback(
+    async (time?: string) => {
+      if (!isWeb) {
+        const latestAnime = await db.history.get(hash)
+        const isEnd = latestAnime?.progress === latestAnime?.duration
+        if (!latestAnime) {
+          return
+        }
+        // 如果没有传入时间，则默认截取当前播放时间
+        let grabTime = time
+        if (!grabTime) {
+          // 如果是播放结束，则截取倒数第三秒
+          grabTime = isEnd
+            ? ((latestAnime?.progress ?? 3) - 3).toString()
+            : latestAnime?.progress.toString() || '0'
+        }
+        const base64Image = await tipcClient?.grabFrame({
+          path: latestAnime?.path,
+          time: grabTime,
+        })
+        await db.history.update(hash, {
+          thumbnail: base64Image,
+        })
       }
-      const base64Image = await tipcClient?.grabFrame({
-        path: animePath,
-        time: isEnd
-          ? ((latestAnime?.progress ?? 3) - 3).toString()
-          : latestAnime?.progress.toString() || '0',
-      })
-      await db.history.update(hash, {
-        thumbnail: base64Image,
-      })
-    }
-  }, [hash])
+    },
+    [hash],
+  )
 
   return {
     initializePlayerListener,

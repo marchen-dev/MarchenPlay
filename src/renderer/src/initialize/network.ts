@@ -1,6 +1,6 @@
+import { jotaiStore } from '@renderer/atoms/store'
 import { atom, useAtomValue } from 'jotai'
 
-import { jotaiStore } from './store'
 
 export enum NetworkStatus {
   OFFLINE,

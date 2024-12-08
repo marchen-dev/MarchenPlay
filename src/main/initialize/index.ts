@@ -4,18 +4,20 @@ import { registerIpcMain } from '@egoist/tipc/main'
 import { app, protocol } from 'electron'
 import logger from 'electron-log'
 
-import { createStorageFolder } from './constants/app'
-import { MARCHEN_PROTOCOL } from './constants/protocol'
-import { isDev, isWindows } from './lib/env'
-import { registerLog } from './lib/log'
-import { quickLaunchViaVideo } from './lib/utils'
-import { registerAppMenu } from './modules/menu'
-import { router } from './tipc'
-import { getMainWindow } from './windows/main'
-import { getRendererHandlers } from './windows/setting'
+import { createStorageFolder } from '../constants/app'
+import { MARCHEN_PROTOCOL } from '../constants/protocol'
+import { isDev, isWindows } from '../lib/env'
+import { quickLaunchViaVideo } from '../lib/utils'
+import { router } from '../tipc'
+import { getMainWindow } from '../windows/main'
+import { getRendererHandlers } from '../windows/setting'
+import { registerLog } from './log'
+import { registerAppMenu } from './menu'
+import { registerSentry } from './sentry'
 
 export const initializeApp = () => {
   limitSingleInstance()
+  registerSentry()
   registerIpcMain(router)
   registerAppMenu()
   registerLog()

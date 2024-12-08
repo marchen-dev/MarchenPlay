@@ -46,7 +46,13 @@ export const playerRoute = {
       fs.closeSync(fd)
 
       const fileHash = await calculateFileHashByBuffer(buffer)
-      return { ok: 1, fileSize, fileName, fileHash, filePath: `${MARCHEN_PROTOCOL_PREFIX}${animePath}` }
+      return {
+        ok: 1,
+        fileSize,
+        fileName,
+        fileHash,
+        filePath: `${MARCHEN_PROTOCOL_PREFIX}${animePath}`,
+      }
     } catch {
       return {
         ok: 0,
@@ -55,7 +61,11 @@ export const playerRoute = {
     }
   }),
   grabFrame: t.procedure.input<{ path: string; time: string }>().action(async ({ input }) => {
-    const ffmpeg = new FFmpeg(input.path)
+    let filePath = input.path
+    if (filePath.startsWith(MARCHEN_PROTOCOL_PREFIX)) {
+      filePath = getFilePathFromProtocolURL(filePath)
+    }
+    const ffmpeg = new FFmpeg(filePath)
     const base64Image = (await ffmpeg.grabFrame(input.time)) as string
     return base64Image
   }),
