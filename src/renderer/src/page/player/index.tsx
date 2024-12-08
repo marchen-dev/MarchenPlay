@@ -7,9 +7,9 @@ import type { FC } from 'react'
 import { useCallback, useMemo, useRef } from 'react'
 
 export default function VideoPlayer() {
-  const { importAnimeViaIPC, importAnimeViaDragging, url, showAddVideoTips } = useVideo()
+  const { importAnimeViaIPC, importAnimeViaDragging, video } = useVideo()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-
+  const { url } = video
   const manualImport = useCallback(() => {
     if (isWeb) {
       return fileInputRef.current?.click()
@@ -29,7 +29,7 @@ export default function VideoPlayer() {
         className={cn('flex size-full items-center justify-center ')}
       >
         <AnimatePresence>{content}</AnimatePresence>
-        {showAddVideoTips && (
+        {!url && (
           <input
             type="file"
             accept="video/mp4, video/x-matroska"

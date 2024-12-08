@@ -8,9 +8,9 @@ import { useAtomValue } from 'jotai'
 import { throttle } from 'lodash-es'
 import { useCallback, useEffect, useRef } from 'react'
 
-import type { PlayerType } from '../hooks'
 import { useVideo } from '../loading/hooks'
 import { usePlayerInstance } from '../setting/Context'
+import type { PlayerType } from './hooks'
 
 export const InitializeEvent = () => {
   const player = usePlayerInstance()
@@ -100,17 +100,6 @@ const usePlayerInitialize = (player: PlayerType | null | undefined) => {
       return
     }
     player.getCssFullscreen()
-
-    const anime = await db.history.get(hash)
-    const enablePositioningProgress = !!anime?.progress
-    if (enablePositioningProgress) {
-      const playbackCompleted = anime?.progress === anime?.duration
-      if (playbackCompleted) {
-        player.currentTime = 0
-      } else {
-        player.currentTime = anime?.progress || 0
-      }
-    }
 
     // 保存视频进度
     player?.on(

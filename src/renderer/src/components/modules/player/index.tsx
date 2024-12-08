@@ -2,8 +2,8 @@ import { isWeb } from '@renderer/lib/utils'
 import { m } from 'framer-motion'
 import type { FC } from 'react'
 
-import { useXgPlayer } from './hooks'
 import { InitializeEvent } from './initialize/Event'
+import { useXgPlayer } from './initialize/hooks'
 import { InitializeSubtitle } from './initialize/Subtitle'
 import { PlayerProvider } from './setting/Context'
 import { SettingSheet } from './setting/Sheet'
@@ -21,7 +21,7 @@ export const Player: FC<PlayerProps> = (props) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.2 }}
       />
       <PlayerProvider value={playerInstance}>
         <SettingSheet />

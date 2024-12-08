@@ -1,18 +1,21 @@
-import { currentMatchedVideoAtom, playerSettingSheetAtom, videoAtom } from '@renderer/atoms/player'
+import { currentMatchedVideoAtom, playerSettingSheetAtom } from '@renderer/atoms/player'
 import { jotaiStore } from '@renderer/atoms/store'
 import { cn, isWeb } from '@renderer/lib/utils'
 import { useAtomValue } from 'jotai'
 
 import { useVideo } from '../../../loading/hooks'
 
-export const PlayList = () => {
-  const video = useAtomValue(videoAtom)
+const PlayList = () => {
   const { animeTitle, episodeTitle } = useAtomValue(currentMatchedVideoAtom)
-  const { importAnimeViaIPC } = useVideo()
+  const { importAnimeViaIPC, video } = useVideo()
   return (
     <ul className="space-y-3">
       {isWeb ? (
-        <li className={cn('flex items-center text-secondary transition-colors duration-100 hover:text-primary')}>
+        <li
+          className={cn(
+            'flex items-center text-secondary transition-colors duration-100 hover:text-primary',
+          )}
+        >
           {video?.name}
         </li>
       ) : (
@@ -41,3 +44,5 @@ export const PlayList = () => {
     </ul>
   )
 }
+
+export default PlayList

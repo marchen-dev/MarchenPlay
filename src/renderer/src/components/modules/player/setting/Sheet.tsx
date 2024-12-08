@@ -8,10 +8,10 @@ import {
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
 import { useAtom } from 'jotai'
+import * as React from 'react'
 
 import { MatchDanmakuDialog } from '../../shared/MatchDanmakuDialog'
 import { Danmaku } from './items/damaku/Danmaku'
-import { PlayList } from './items/playList/PlayList'
 import { Subtitle } from './items/subtitle/Subtitle'
 
 export const SettingSheet = () => {
@@ -60,7 +60,7 @@ const settingSheetList = [
   {
     title: '播放列表',
     value: 'playList',
-    component: PlayList,
+    component: React.lazy(() => import('./items/playList/PlayList')),
   },
   {
     title: '弹幕设置',

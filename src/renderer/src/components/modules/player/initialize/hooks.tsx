@@ -3,6 +3,7 @@ import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { useToast } from '@renderer/components/ui/toast'
 import NextEpisode from '@renderer/components/ui/xgplayer/plugins/nextEpisode'
 import PreviousEpisode from '@renderer/components/ui/xgplayer/plugins/previousEpisode'
+import { db } from '@renderer/database/db'
 import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
 import queryClient from '@renderer/lib/query-client'
 import { isWeb } from '@renderer/lib/utils'
@@ -45,50 +46,66 @@ export const useXgPlayer = (url: string) => {
   }, [playerSettings])
 
   useEffect(() => {
-    if (playerRef.current && !playerInstance) {
-      const xgplayerConfig = {
-        ...(isWeb ? playerBaseConfigForWeb : playerBaseConfigForClient),
-        el: playerRef.current,
-        url,
-      } as IPlayerOptions
-
-      if (isLoadDanmaku) {
-        xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), Danmu]
-        xgplayerConfig.danmu = {
-          ...danmakuConfig,
-          comments: parseDanmakuData({ danmuData, duration: +danmakuDuration }),
-          fontSize: +danmakuFontSize,
-          area: {
-            start: 0,
-            end: +danmakuEndArea,
-          },
-        }
-      }
-
-      if (!isWeb) {
-        xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), NextEpisode, PreviousEpisode]
-        xgplayerConfig.nextEpisode = {
-          urlList: video.playList?.map((item) => item.urlWithPrefix) ?? [],
+    const handleInitalizePlayer = async () => {
+      if (playerRef.current && !playerInstance) {
+        const anime = await db.history.get(video.hash)
+        const enablePositioningProgress = !!anime?.progress
+        let startTime = 0
+        if (enablePositioningProgress) {
+          const playbackCompleted = anime?.progress === anime?.duration
+          if (playbackCompleted) {
+            startTime = 0
+          } else {
+            startTime = anime?.progress || 0
+          }
         }
 
-        xgplayerConfig.previousEpisode = {
-          urlList: video.playList?.map((item) => item.urlWithPrefix) ?? [],
+        const xgplayerConfig = {
+          ...(isWeb ? playerBaseConfigForWeb : playerBaseConfigForClient),
+          el: playerRef.current,
+          url,
+          startTime,
+        } as IPlayerOptions
+
+        if (isLoadDanmaku) {
+          xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), Danmu]
+          xgplayerConfig.danmu = {
+            ...danmakuConfig,
+            comments: parseDanmakuData({ danmuData, duration: +danmakuDuration }),
+            fontSize: +danmakuFontSize,
+            area: {
+              start: 0,
+              end: +danmakuEndArea,
+            },
+          }
         }
-      }
-      _playerInstance = new XgPlayer(xgplayerConfig)
-      setPlayerInstance(_playerInstance)
-      if (isLoadDanmaku) {
-        toast({
-          title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
-          description: (
-            <div>
-              <p>共加载 {danmuData?.count} 条弹幕</p>
-            </div>
-          ),
-          duration: 5000,
-        })
+
+        if (!isWeb) {
+          xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), NextEpisode, PreviousEpisode]
+          xgplayerConfig.nextEpisode = {
+            urlList: video.playList?.map((item) => item.urlWithPrefix) ?? [],
+          }
+
+          xgplayerConfig.previousEpisode = {
+            urlList: video.playList?.map((item) => item.urlWithPrefix) ?? [],
+          }
+        }
+        _playerInstance = new XgPlayer(xgplayerConfig)
+        setPlayerInstance(_playerInstance)
+        if (isLoadDanmaku) {
+          toast({
+            title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
+            description: (
+              <div>
+                <p>共加载 {danmuData?.count} 条弹幕</p>
+              </div>
+            ),
+            duration: 5000,
+          })
+        }
       }
     }
+    handleInitalizePlayer()
     return () => {
       _playerInstance?.destroy()
       playerInstance?.destroy()

@@ -6,7 +6,7 @@ import { apiClient } from '@renderer/request'
 import { useAtomValue } from 'jotai'
 import { memo } from 'react'
 
-import { useXgPlayerUtils } from '../../../hooks'
+import { useXgPlayerUtils } from '../../../initialize/hooks'
 import { usePlayerInstance } from '../../Context'
 import { Rematch } from './Rematch'
 

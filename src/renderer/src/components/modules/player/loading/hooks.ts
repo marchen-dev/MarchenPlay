@@ -106,8 +106,7 @@ export const useVideo = () => {
   return {
     importAnimeViaDragging,
     importAnimeViaIPC,
-    url: video.url,
-    showAddVideoTips: !video.url,
+    video,
   }
 }
 

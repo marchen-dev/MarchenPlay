@@ -14,7 +14,7 @@ export const ModalOverlay: FC<ModalOverlayProps> = forwardRef(
       <RootPortal>
         <m.div
           id="modal-overlay"
-          className="pointer-events-none fixed inset-0 z-[119999] bg-zinc-50/80 dark:bg-neutral-900/80"
+          className="pointer-events-none fixed inset-0 z-[9999] bg-zinc-50/80 dark:bg-neutral-900/80"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
