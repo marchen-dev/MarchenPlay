@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [0.0.1-beta.0](https://github.com/marchen-dev/marchen-player/compare/v0.0.1-alpha.11...v0.0.1-beta.0) (2024-12-08)
+
+
+### Bug Fixes
+
+* danmaku offset when continuing to play ([6ba001c](https://github.com/marchen-dev/marchen-player/commit/6ba001cb0368d1298caa6cdc486aa110c8ce0e23))
+* player settings content is too long to display ([81ba16c](https://github.com/marchen-dev/marchen-player/commit/81ba16ccd530975134fbc8342cd59d81dc5079aa))
+
+
+### Features
+
+* adapt to react router v7 ([649d4f5](https://github.com/marchen-dev/marchen-player/commit/649d4f532e9d4e7d43004914b0c271f8b9aa5e4f))
+* adapt to react19 ([6346694](https://github.com/marchen-dev/marchen-player/commit/63466949b66bf207e17ab92b174dc7087a901a60))
+* add loading and exiting video animation ([6a1eb38](https://github.com/marchen-dev/marchen-player/commit/6a1eb382da83efbd09f2230fed04afeaa3cca706))
+* Integrate sentry ([7faf61b](https://github.com/marchen-dev/marchen-player/commit/7faf61b0bf36585c6d5f81d60047c6c73b0a9603))
+
+
+
 ## [0.0.1-alpha.11](https://github.com/marchen-dev/marchen-player/compare/v0.0.1-alpha.10...v0.0.1-alpha.11) (2024-12-05)
 
 
