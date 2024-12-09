@@ -35,12 +35,12 @@ mac:
   target:
     - target: dmg
       arch:
-        - arm64
         - x64
+        - arm64
     - target: zip
       arch:
-        - arm64
         - x64
+        - arm64
   fileAssociations:
     - ext: ['mp4', 'mkv']
       name: Video Files
@@ -65,6 +65,7 @@ publish:
 # publish:
 #   provider: generic
 #   url: http://localhost:3000
+beforePack: scripts/install-darwin-deps.js
 afterPack: scripts/cleaned-unused-arch-deps.js
 afterSign: scripts/notarize.js
 releaseInfo:
@@ -72,3 +73,5 @@ releaseInfo:
     修复继续播放时弹幕偏移问题
     修复播放过程中退出后,无法捕获缩略图
     集成了 sentry 错误监控
+    修复设置界面选择框无法显示的问题
+    减少包体积
