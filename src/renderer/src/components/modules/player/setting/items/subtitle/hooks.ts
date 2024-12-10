@@ -12,7 +12,7 @@ import workerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker.js?url'
 import legacyWorkerUrl from 'libass-wasm/dist/js/subtitles-octopus-worker-legacy.js?url'
 import { useCallback } from 'react'
 
-import { usePlayerInstance, useSubtitleInstance } from '../../Context'
+import { usePlayerInstance, useSubtitleInstance } from '../../../Context'
 
 export const useSubtitle = () => {
   const { hash, url } = useAtomValue(videoAtom)
@@ -47,14 +47,15 @@ export const useSubtitle = () => {
       }
     },
     enabled: !!url,
-    staleTime: 0,
+    gcTime: 0,
   })
   const setSubtitlesOctopus = useCallback(
-    (path?: string) => {
+    async (path?: string) => {
       if (!player || !path) {
         return
       }
       const completePath = isWeb ? path : `${MARCHEN_PROTOCOL_PREFIX}${path}`
+      const history = await db.history.get(hash)
       if (!subtitlesInstance) {
         setSubtitlesInstance(
           new SubtitlesOctopus({
@@ -62,6 +63,7 @@ export const useSubtitle = () => {
             fallbackFont: SourceHanSansCN,
             video: player?.media as HTMLVideoElement,
             subUrl: completePath,
+            timeOffset: history?.subtitles?.timeOffset ?? 0,
             workerUrl,
             legacyWorkerUrl,
           }),
@@ -96,6 +98,7 @@ export const useSubtitle = () => {
 
         db.history.update(hash, {
           subtitles: {
+            timeOffset: oldHistory?.subtitles?.timeOffset ?? 0,
             defaultId: minimumId - 1,
             tags: [
               ...(oldHistory?.subtitles?.tags ?? []),
@@ -128,6 +131,7 @@ export const useSubtitle = () => {
       if (existingSubtitle) {
         db.history.update(hash, {
           subtitles: {
+            timeOffset: oldHistory?.subtitles?.timeOffset ?? 0,
             defaultId: id,
             tags: oldHistory?.subtitles?.tags ?? [],
           },

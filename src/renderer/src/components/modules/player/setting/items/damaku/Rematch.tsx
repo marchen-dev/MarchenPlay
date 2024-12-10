@@ -13,8 +13,8 @@ import {
 import { useAtomValue } from 'jotai'
 import { memo, useMemo } from 'react'
 
+import { usePlayerInstance } from '../../../Context'
 import { showMatchAnimeDialog } from '../../../loading/dialog/hooks'
-import { usePlayerInstance } from '../../Context'
 
 export const Rematch = memo(() => {
   const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)

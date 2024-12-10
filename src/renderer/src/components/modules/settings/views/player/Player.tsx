@@ -1,10 +1,10 @@
 import { usePlayerSettings } from '@renderer/atoms/settings/player'
-import type { FC , PropsWithChildren } from 'react'
-import { useMemo  } from 'react'
+import { SettingSelect } from '@renderer/components/modules/shared/setting/SettingSelect'
+import { SettingSwitch } from '@renderer/components/modules/shared/setting/SettingSwitch'
+import type { FC, PropsWithChildren } from 'react'
+import { useMemo } from 'react'
 
 import { FieldLayout, FieldsCardLayout, SettingViewContainer } from '../Layout'
-import { SettingSelect } from '../Select'
-import { SettingSwitch } from '../Switch'
 import { danmakuDurationList, danmakuEndAreaList, danmakuFontSizeList } from './list'
 
 export const PlayerView = () => {

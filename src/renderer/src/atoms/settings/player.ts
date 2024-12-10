@@ -3,7 +3,7 @@ import {
   danmakuEndAreaList,
   danmakuFontSizeList,
 } from '@renderer/components/modules/settings/views/player/list'
-import type { SelectGroup } from '@renderer/components/modules/settings/views/Select'
+import type { SelectGroup } from '@renderer/components/modules/shared/setting/SettingSelect'
 import { useAtom, useAtomValue } from 'jotai'
 
 import { createSettingATom } from './helper'

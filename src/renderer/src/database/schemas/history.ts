@@ -18,6 +18,7 @@ export interface DB_History {
 
 interface Subtitles {
   defaultId: number
+  timeOffset?: number
 
   tags: Array<{
     id: number

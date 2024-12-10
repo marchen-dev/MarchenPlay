@@ -2,8 +2,7 @@ import type SubtitlesOctopus from 'libass-wasm'
 import type { FC, PropsWithChildren } from 'react'
 import { createContext, useContext, useMemo, useState } from 'react'
 
-import type { PlayerType } from '../initialize/hooks'
-
+import type { PlayerType } from './initialize/hooks'
 
 interface PlayerContextProps {
   subtitlesInstance: [
@@ -25,7 +24,7 @@ export const PlayerProvider: FC<PropsWithChildren<{ value: PlayerType | null }>>
     return { playerInstance: value, subtitlesInstance }
   }, [value, subtitlesInstance])
 
-  return <PlayerContext.Provider value={contextValue}>{children}</PlayerContext.Provider>
+  return <PlayerContext value={contextValue}>{children}</PlayerContext>
 }
 
 export const usePlayerInstance = () => {

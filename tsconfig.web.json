@@ -13,8 +13,9 @@
     "src/main/types/**/*",
     "src/main/constants",
     "types/**/*.d.ts",
-    "src/env.ts"
-, "src/main/types/ffmpeg-custom.d.ts"  ],
+    "src/env.ts",
+    "src/main/types/ffmpeg-custom.d.ts"
+  ],
   "compilerOptions": {
     "composite": true,
     "jsx": "react-jsx",

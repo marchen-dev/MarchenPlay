@@ -1,4 +1,4 @@
-import type { SelectGroup } from '../Select'
+import type { SelectGroup } from "@renderer/components/modules/shared/setting/SettingSelect"
 
 export const danmakuFontSizeList = [
   {

@@ -7,8 +7,8 @@ import { useAtomValue } from 'jotai'
 import { throttle } from 'lodash-es'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { usePlayerInstance } from '../Context'
 import { useVideo } from '../loading/hooks'
-import { usePlayerInstance } from '../setting/Context'
 import type { PlayerType } from './hooks'
 
 export const InitializeEvent = () => {

@@ -2,10 +2,10 @@ import { isWeb } from '@renderer/lib/utils'
 import { m } from 'framer-motion'
 import type { FC } from 'react'
 
+import { PlayerProvider } from './Context'
 import { InitializeEvent } from './initialize/Event'
 import { useXgPlayer } from './initialize/hooks'
 import { InitializeSubtitle } from './initialize/Subtitle'
-import { PlayerProvider } from './setting/Context'
 import { SettingSheet } from './setting/Sheet'
 
 interface PlayerProps {

@@ -12,7 +12,7 @@ export const initializeApp = () => {
 
   if (isDev) {
     scan({
-      enabled: true,
+      enabled: false,
       log: true, // logs render info to console (default: false)
       showToolbar: false,
     })

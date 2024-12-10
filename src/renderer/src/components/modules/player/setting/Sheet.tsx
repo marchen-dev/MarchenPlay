@@ -1,4 +1,4 @@
-import { playerSettingSheetAtom } from '@renderer/atoms/player'
+import { playerSettingSheetAtom, videoAtom } from '@renderer/atoms/player'
 import {
   Accordion,
   AccordionContent,
@@ -7,8 +7,12 @@ import {
 } from '@renderer/components/ui/accordion'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
-import { useAtom } from 'jotai'
+import { db } from '@renderer/database/db'
+import type { DB_History } from '@renderer/database/schemas/history'
+import { useQuery } from '@tanstack/react-query'
+import { useAtom, useAtomValue } from 'jotai'
 import * as React from 'react'
+import { createContext, useContext } from 'react'
 
 import { MatchDanmakuDialog } from '../../shared/MatchDanmakuDialog'
 import { Danmaku } from './items/damaku/Danmaku'
@@ -33,20 +37,22 @@ export const SettingSheet = () => {
           <ScrollArea className="h-full p-6">
             <SheetHeader>
               <SheetTitle>设置</SheetTitle>
-              <Accordion
-                type="multiple"
-                className="w-full"
-                defaultValue={['danmaku', 'subtitle', 'audio']}
-              >
-                {settingSheetList.map((item) => (
-                  <AccordionItem key={item.value} value={item.value}>
-                    <AccordionTrigger className="font-semibold">{item.title}</AccordionTrigger>
-                    <AccordionContent className="px-1 pt-1">
-                      <item.component />
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+              <SettingProvider>
+                <Accordion
+                  type="multiple"
+                  className="w-full"
+                  defaultValue={['danmaku', 'subtitle', 'audio']}
+                >
+                  {settingSheetList.map((item) => (
+                    <AccordionItem key={item.value} value={item.value}>
+                      <AccordionTrigger className="font-semibold">{item.title}</AccordionTrigger>
+                      <AccordionContent className="px-1 pt-1">
+                        <item.component />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </SettingProvider>
             </SheetHeader>
           </ScrollArea>
         </SheetContent>
@@ -78,3 +84,29 @@ const settingSheetList = [
   //   component: Audio,
   // },
 ]
+
+const SettingContext = createContext<DB_History | null>(null)
+
+export const SettingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const { hash } = useAtomValue(videoAtom)
+
+  const { data } = useQuery({
+    queryKey: ['SettingProvider', hash],
+    queryFn: () => db.history.get(hash),
+    gcTime: 0,
+  })
+  if (!data) {
+    return
+  }
+  return <SettingContext value={data}>{children}</SettingContext>
+}
+
+export const useSettingConfig = () => {
+  const context = useContext(SettingContext)
+  if (!context) {
+    throw new Error('useSettingConfig must be used within a SettingProvider')
+  }
+  return context
+}
+
+SettingProvider.displayName = 'SettingProvider'
