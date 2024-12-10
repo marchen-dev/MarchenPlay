@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [0.0.1-beta.1](https://github.com/marchen-dev/marchen-player/compare/v0.0.1-beta.0...v0.0.1-beta.1) (2024-12-10)
+
+
+### Bug Fixes
+
+* ci ([cd9473b](https://github.com/marchen-dev/marchen-player/commit/cd9473be23061930891ca3cc5e3c745c6346dbf6))
+* select cannot expand ([3bdace1](https://github.com/marchen-dev/marchen-player/commit/3bdace11bfb2e8f6795ca1121b5633c8706219db))
+
+
+### Features
+
+* support subtitle time offset ([e6062da](https://github.com/marchen-dev/marchen-player/commit/e6062dab9e85e4a9a2c149f7482537abc0a3b478))
+
+
+
 ## [0.0.1-beta.0](https://github.com/marchen-dev/marchen-player/compare/v0.0.1-alpha.11...v0.0.1-beta.0) (2024-12-08)
 
 
