@@ -94,6 +94,7 @@
     "libass-wasm": "^4.1.0",
     "lint-staged": "^15.2.8",
     "lodash-es": "^4.17.21",
+    "lowdb": "^7.0.1",
     "lucide-react": "^0.468.0",
     "nanoid": "^5.0.7",
     "nbump": "^2.0.4",

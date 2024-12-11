@@ -62,6 +62,7 @@ export const useVideo = () => {
       const path = window.api.showFilePath(file)
       playList = (await tipcClient?.getAnimeInSamePath({ path })) ?? []
       url = `${MARCHEN_PROTOCOL_PREFIX}${path}`
+      tipcClient?.addRecentDocument({ path })
     }
     const { size, name } = file
     const fileName = name.slice(0, Math.max(0, name.lastIndexOf('.'))) || name
@@ -101,6 +102,7 @@ export const useVideo = () => {
       name: fileName,
       playList,
     }))
+    tipcClient?.addRecentDocument({ path: filePath })
     setProgress(LoadingStatus.CALC_HASH)
   }, [])
   return {
@@ -304,6 +306,7 @@ export const useLoadingHistoricalAnime = () => {
       url: anime.path,
       playList,
     })
+    tipcClient?.addRecentDocument({ path: anime.path })
     setProgress(LoadingStatus.CALC_HASH)
   }, [episodeId, hash])
 
