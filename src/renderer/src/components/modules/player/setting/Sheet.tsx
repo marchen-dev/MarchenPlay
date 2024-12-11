@@ -7,12 +7,12 @@ import {
 } from '@renderer/components/ui/accordion'
 import { ScrollArea } from '@renderer/components/ui/scrollArea'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@renderer/components/ui/sheet'
+import { useToast } from '@renderer/components/ui/toast'
 import { db } from '@renderer/database/db'
 import type { DB_History } from '@renderer/database/schemas/history'
 import { useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
-import * as React from 'react'
-import { createContext, useContext } from 'react'
+import { createContext, lazy, useContext, useEffect } from 'react'
 
 import { MatchDanmakuDialog } from '../../shared/MatchDanmakuDialog'
 import { Danmaku } from './items/damaku/Danmaku'
@@ -66,7 +66,7 @@ const settingSheetList = [
   {
     title: '播放列表',
     value: 'playList',
-    component: React.lazy(() => import('./items/playList/PlayList')),
+    component: lazy(() => import('./items/playList/PlayList')),
   },
   {
     title: '弹幕设置',
@@ -89,12 +89,18 @@ const SettingContext = createContext<DB_History | null>(null)
 
 export const SettingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { hash } = useAtomValue(videoAtom)
+  const toast = useToast()
 
   const { data } = useQuery({
     queryKey: ['SettingProvider', hash],
     queryFn: () => db.history.get(hash),
     gcTime: 0,
   })
+
+  useEffect(() => {
+    // 确保 toast 不会遮住设置 setting
+    toast.dismiss()
+  }, [])
   if (!data) {
     return
   }

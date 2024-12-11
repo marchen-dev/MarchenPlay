@@ -6,6 +6,7 @@ import updater from 'electron-updater'
 import { parseReleaseNotes, sleep } from './utils'
 
 const { autoUpdater } = updater
+
 export async function autoUpdateInit() {
   // 避免启动代码过多,更新检测延迟1s
   await sleep(1000)
@@ -15,6 +16,7 @@ export async function autoUpdateInit() {
   autoUpdater.disableWebInstaller = false
   autoUpdater.autoDownload = false //这个必须写成false，写成true时，我这会报没权限更新，也没清楚什么原因
   autoUpdater.forceDevUpdateConfig = true
+  autoUpdater.allowPrerelease = false
   autoUpdater.on('error', (error) => {
     logger.error(['检查更新失败', error])
   })
