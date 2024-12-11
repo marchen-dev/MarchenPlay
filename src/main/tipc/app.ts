@@ -1,7 +1,8 @@
+import { getFilePathFromProtocolURL } from '@main/lib/protocols'
 import { parseReleaseNotes } from '@main/lib/utils'
 import { getMainWindow } from '@main/windows/main'
 import { version } from '@pkg'
-import { BrowserWindow, dialog } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import updater from 'electron-updater'
 
 import { t } from './_instance'
@@ -103,5 +104,9 @@ export const appRoute = {
   restart: t.procedure.action(async () => {
     getMainWindow()?.reload()
     return
+  }),
+  addRecentDocument: t.procedure.input<{ path: string }>().action(async ({ input }) => {
+    const filePath = getFilePathFromProtocolURL(input.path)
+    app.addRecentDocument(filePath)
   }),
 }

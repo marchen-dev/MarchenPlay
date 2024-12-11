@@ -21,7 +21,7 @@ export const initializeApp = () => {
   registerIpcMain(router)
   registerAppMenu()
   registerLog()
-
+  app.setAsDefaultProtocolClient(MARCHEN_PROTOCOL)
   protocol.registerSchemesAsPrivileged([
     {
       scheme: MARCHEN_PROTOCOL,

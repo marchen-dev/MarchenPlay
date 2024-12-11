@@ -1,4 +1,5 @@
 import { getMainWindow } from '@main/windows/main'
+import { app } from 'electron'
 
 export const clearAllData = async () => {
   const win = getMainWindow()
@@ -20,6 +21,7 @@ export const clearAllData = async () => {
         'cookies',
       ],
     })
+    app.clearRecentDocuments()
     win.reload()
   } catch (error: any) {
     console.error('Failed to clear data:', error)
