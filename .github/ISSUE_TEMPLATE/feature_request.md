@@ -2,7 +2,7 @@
 name: New feature
 about: Propose a new feature
 title: '[Feature] '
-labels: enchancement
+labels: enhancement
 assignees: suemor233
 ---
 
