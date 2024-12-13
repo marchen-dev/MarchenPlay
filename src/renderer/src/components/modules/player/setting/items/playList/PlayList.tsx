@@ -9,7 +9,7 @@ const PlayList = () => {
   const { animeTitle, episodeTitle } = useAtomValue(currentMatchedVideoAtom)
   const { importAnimeViaIPC, video } = useVideo()
   return (
-    <ul className="space-y-3">
+    <ul className="w-full space-y-3">
       {isWeb ? (
         <li
           className={cn(

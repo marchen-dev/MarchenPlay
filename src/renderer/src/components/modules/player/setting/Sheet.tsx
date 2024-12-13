@@ -29,12 +29,12 @@ export const SettingSheet = () => {
         }}
       >
         <SheetContent
-          container={document.querySelector(`.xgplayer`)}
+          container={document.querySelector('.xgplayer')}
           classNames={{ sheetOverlay: 'bg-black/20' }}
           className="p-0"
           aria-describedby="播放器设置"
         >
-          <ScrollArea className="h-full p-6">
+          <ScrollArea className="h-full p-5">
             <SheetHeader>
               <SheetTitle>设置</SheetTitle>
               <SettingProvider>

@@ -9,7 +9,7 @@ import {
 } from '@renderer/atoms/player'
 import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { db } from '@renderer/database/db'
-import type { DB_History } from '@renderer/database/schemas/history'
+import type { DB_Danmaku, DB_History } from '@renderer/database/schemas/history'
 import { usePlayAnimeFailedToast } from '@renderer/hooks/use-toast'
 import { calculateFileHash } from '@renderer/lib/calc-file-hash'
 import { tipcClient } from '@renderer/lib/client'
@@ -17,7 +17,7 @@ import { isWeb } from '@renderer/lib/utils'
 import { apiClient } from '@renderer/request'
 import type { MatchResponseV2 } from '@renderer/request/models/match'
 import { RouteName } from '@renderer/router'
-import { useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
@@ -171,67 +171,97 @@ export const useMatchAnimeData = () => {
   return { matchData, url, clearPlayingVideo }
 }
 
-export const useDanmuData = () => {
+export const useDanmakuData = () => {
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
   const video = useAtomValue(videoAtom)
   const { enableTraditionalToSimplified } = usePlayerSettingsValue()
   const [currentMatchedVideo] = useAtom(currentMatchedVideoAtom)
-  const setLoadingProgress = useSetAtom(loadingDanmuProgressAtom)
-  const { showFailedToast } = usePlayAnimeFailedToast()
 
+  const { data: thirdPartyDanmakuUrlData } = useQuery({
+    queryKey: [
+      apiClient.related.relatedkeys.getRelatedDanmakuByEpisodeId,
+      currentMatchedVideo.episodeId,
+    ],
+    queryFn: () => apiClient.related.getRelatedDanmakuByEpisodeId(currentMatchedVideo.episodeId),
+    enabled: isLoadDanmaku && !!currentMatchedVideo.episodeId,
+  })
+
+  const onlyLoadDandanplayDanmaku = !thirdPartyDanmakuUrlData?.relateds.length
   // setCurrentMatchedVideo() 之后会触发该 useQuery, 获取弹幕数据
   // 目前共两种可能性会触发该 useQuery
   // 1. 上方 useMatchAnimeData() 为精准匹配
   // 2. 用户通过对话框, 手动匹配了弹幕库
   // 获取弹幕数据后，会触发下发 useEffect
-  const { data: danmuData, isError } = useQuery({
-    queryKey: [apiClient.comment.Commentkeys.getDanmu, video.url, currentMatchedVideo.episodeId],
-    queryFn: () => {
-      return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
-        chConvert: enableTraditionalToSimplified ? 1 : 0,
-      })
+
+  const danmakuData = useQueries({
+    queries: [
+      ...(thirdPartyDanmakuUrlData?.relateds.map((related) => ({
+        queryKey: [apiClient.comment.Commentkeys.getExtcomment, video.hash, related.url],
+        queryFn: () => apiClient.comment.getExtcomment({ url: related.url }),
+        enabled: !!currentMatchedVideo.episodeId && !onlyLoadDandanplayDanmaku,
+      })) ?? []),
+      {
+        queryKey: [apiClient.comment.Commentkeys.getDanmu, video.hash],
+        queryFn: () => {
+          return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
+            chConvert: enableTraditionalToSimplified ? 1 : 0,
+          })
+        },
+        enabled: !!currentMatchedVideo.episodeId,
+      },
+    ],
+    combine: (results) => {
+      const dandanplayDanmakuData = {
+        type: 'dandanplay',
+        source: 'dandanplay',
+        content: results.at(-1)?.data,
+      } as DB_Danmaku
+
+      const thirdPartyDanmakuData = results.slice(0, -1).map((result, index) => ({
+        type: 'third-party-auto',
+        content: result.data,
+        source: thirdPartyDanmakuUrlData?.relateds[index].url,
+      })) as DB_Danmaku[]
+
+      // 只加载官方弹幕库，返回弹幕数据
+      if (onlyLoadDandanplayDanmaku && dandanplayDanmakuData.content) {
+        return [dandanplayDanmakuData]
+      }
+
+      // 官方弹幕库和第三方弹幕库都加载成功后，返回所有弹幕数据
+      if (!onlyLoadDandanplayDanmaku && results.every((result) => result.data !== undefined)) {
+        return [dandanplayDanmakuData, ...thirdPartyDanmakuData]
+      }
+
+      return
     },
-    enabled: isLoadDanmaku && !!currentMatchedVideo.episodeId,
   })
 
-  // 当上方 useQuery 获取弹幕成功后，会触发下方 useEffect, 保存到历史记录并开始播放
-  useEffect(() => {
-    if (danmuData && currentMatchedVideo && video.hash) {
-      saveToHistory({
-        ...currentMatchedVideo,
-        hash: video.hash,
-        danmaku: danmuData,
-        path: video.url,
-        progress: 0,
-        duration: 0,
-      })
-      setLoadingProgress(LoadingStatus.READY_PLAY)
-      const timeoutId = setTimeout(() => {
-        setLoadingProgress(LoadingStatus.START_PLAY)
-      }, 100)
-      return () => clearTimeout(timeoutId)
+  const mergedDanmakuData = useMemo(() => {
+    if (!danmakuData) {
+      return
     }
-    return () => {}
-  }, [danmuData, currentMatchedVideo])
-
-  useEffect(() => {
-    if (isError) {
-      showFailedToast({ title: '弹幕加载失败', description: '请检查网络连接或稍后再试' })
-    }
-  }, [isError])
+    return danmakuData
+      .map((danmaku) => danmaku?.content)
+      .filter((danmaku) => !!danmaku)
+      .flatMap((danmaku) => danmaku.comments)
+  }, [danmakuData])
 
   return {
-    danmuData,
+    danmakuData,
+    mergedDanmakuData,
   }
 }
 
-export const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedAt'>) => {
+export const saveToHistory = async (
+  params: Omit<DB_History, 'cover' | 'updatedAt' | 'progress' | 'duration'>,
+) => {
   const { animeId, hash } = params
   const existingAnime = await db.history.where({ hash }).first()
   const historyData = {
     ...params,
     updatedAt: new Date().toISOString(),
-  } satisfies DB_History
+  }
   if (animeId) {
     const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
 
@@ -255,7 +285,11 @@ export const saveToHistory = async (params: Omit<DB_History, 'cover' | 'updatedA
     }
   }
 
-  await db.history.add(historyData)
+  await db.history.add({
+    ...historyData,
+    progress: 0,
+    duration: 0,
+  })
 }
 
 export const useLoadingHistoricalAnime = () => {

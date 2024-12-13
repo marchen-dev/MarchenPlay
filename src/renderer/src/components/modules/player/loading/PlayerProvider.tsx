@@ -10,16 +10,36 @@ import queryClient from '@renderer/lib/query-client'
 import { apiClient } from '@renderer/request'
 import { useAtom, useAtomValue } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'
+import { useEffect } from 'react'
 
-import { saveToHistory, useDanmuData, useLoadingHistoricalAnime, useMatchAnimeData } from './hooks'
+import { saveToHistory, useDanmakuData, useLoadingHistoricalAnime, useMatchAnimeData } from './hooks'
 
 export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
   useLoadingHistoricalAnime()
   const { clearPlayingVideo, matchData } = useMatchAnimeData()
   const { url, hash, name } = useAtomValue(videoAtom)
-  useDanmuData()
+  const { danmakuData } = useDanmakuData()
   const [currentMatchedVideo, setCurrentMatchedVideo] = useAtom(currentMatchedVideoAtom)
   const [loadingProgress, setLoadingProgress] = useAtom(loadingDanmuProgressAtom)
+
+  // 当上方 useQuery 获取弹幕成功后，会触发下方 useEffect, 保存到历史记录并开始播放
+  useEffect(() => {
+    if (danmakuData && currentMatchedVideo && hash) {
+      saveToHistory({
+        ...currentMatchedVideo,
+        hash,
+        danmaku: danmakuData,
+        path: url,
+      })
+      setLoadingProgress(LoadingStatus.READY_PLAY)
+      const timeoutId = setTimeout(() => {
+        setLoadingProgress(LoadingStatus.START_PLAY)
+      }, 100)
+      return () => clearTimeout(timeoutId)
+    }
+    return () => {}
+  }, [danmakuData, currentMatchedVideo])
+
   if (loadingProgress !== null && loadingProgress < LoadingStatus.START_PLAY) {
     return (
       <>
@@ -35,8 +55,6 @@ export const VideoProvider: FC<PropsWithChildren> = ({ children }) => {
               saveToHistory({
                 hash,
                 path: url,
-                progress: 0,
-                duration: 0,
                 animeTitle: name,
               })
               // 如果用户选择不加载弹幕, 就直接开始播放
