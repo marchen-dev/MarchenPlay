@@ -43,15 +43,13 @@ export const MatchDanmakuDialog = () => {
       return
     }
 
-    const { duration, path, progress, subtitles } = old
+    const { path, subtitles } = old
     if (!params) {
       return
     }
     const { episodeId, episodeTitle, animeId, animeTitle } = params
     saveToHistory({
-      duration,
       path,
-      progress,
       subtitles,
       hash,
       ...params,

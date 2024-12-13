@@ -4,16 +4,15 @@ import { useToast } from '@renderer/components/ui/toast'
 import NextEpisode from '@renderer/components/ui/xgplayer/plugins/nextEpisode'
 import PreviousEpisode from '@renderer/components/ui/xgplayer/plugins/previousEpisode'
 import { db } from '@renderer/database/db'
-import { DanmuPosition, intToHexColor } from '@renderer/lib/danmu'
-import queryClient from '@renderer/lib/query-client'
+import { DanmuPosition, intToHexColor } from '@renderer/lib/danmaku'
 import { isWeb } from '@renderer/lib/utils'
-import { apiClient } from '@renderer/request'
-import type { CommentsModel } from '@renderer/request/models/comment'
+import type { CommentModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
 import XgPlayer, { Danmu } from '@suemor/xgplayer'
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { useDanmakuData } from '../loading/hooks'
 import { danmakuConfig, playerBaseConfigForClient, playerBaseConfigForWeb } from './config'
 
 export interface PlayerType extends XgPlayer {
@@ -32,11 +31,7 @@ export const useXgPlayer = (url: string) => {
   const playerSettings = usePlayerSettingsValue()
   const { danmakuDuration, danmakuFontSize, danmakuEndArea } = playerSettings
   const { setResponsiveDanmakuConfig, parseDanmakuData } = useXgPlayerUtils()
-  const danmuData = queryClient.getQueryData([
-    apiClient.comment.Commentkeys.getDanmu,
-    url,
-    currentMatchedVideo.episodeId,
-  ]) as CommentsModel | undefined
+  const { mergedDanmakuData } = useDanmakuData()
 
   useEffect(() => {
     setResponsiveDanmakuConfig(playerInstance)
@@ -59,7 +54,6 @@ export const useXgPlayer = (url: string) => {
             startTime = anime?.progress || 0
           }
         }
-
         const xgplayerConfig = {
           ...(isWeb ? playerBaseConfigForWeb : playerBaseConfigForClient),
           el: playerRef.current,
@@ -67,11 +61,14 @@ export const useXgPlayer = (url: string) => {
           startTime,
         } as IPlayerOptions
 
-        if (isLoadDanmaku) {
+        if (isLoadDanmaku && mergedDanmakuData) {
           xgplayerConfig.plugins = [...(xgplayerConfig.plugins || []), Danmu]
           xgplayerConfig.danmu = {
             ...danmakuConfig,
-            comments: parseDanmakuData({ danmuData, duration: +danmakuDuration }),
+            comments: parseDanmakuData({
+              danmuData: mergedDanmakuData,
+              duration: +danmakuDuration,
+            }),
             fontSize: +danmakuFontSize,
             area: {
               start: 0,
@@ -97,7 +94,7 @@ export const useXgPlayer = (url: string) => {
             title: `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo.episodeTitle}`,
             description: (
               <div>
-                <p>共加载 {danmuData?.count} 条弹幕</p>
+                <p>共加载 {mergedDanmakuData?.length} 条弹幕</p>
               </div>
             ),
             duration: 5000,
@@ -119,9 +116,10 @@ export const useXgPlayer = (url: string) => {
 export const useXgPlayerUtils = () => {
   const playerSettings = usePlayerSettingsValue()
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
+
   const parseDanmakuData = useMemo(
-    () => (params: { danmuData?: CommentsModel; duration: number }) =>
-      params.danmuData?.comments?.map((comment) => {
+    () => (params: { danmuData?: CommentModel[]; duration: number }) =>
+      params.danmuData?.map((comment) => {
         const [start, postition, color] = comment.p.split(',').map(Number)
         const startInMs = start * 1000
 
@@ -147,6 +145,7 @@ export const useXgPlayerUtils = () => {
       }),
     [],
   )
+
   const setResponsiveDanmakuConfig = (playerInstance: PlayerType | null) => {
     if (playerInstance?.isPlaying && isLoadDanmaku) {
       const { danmakuDuration, danmakuEndArea, danmakuFontSize } = playerSettings
@@ -160,7 +159,7 @@ export const useXgPlayerUtils = () => {
   }
 
   return {
-    parseDanmakuData,
     setResponsiveDanmakuConfig,
+    parseDanmakuData,
   }
 }

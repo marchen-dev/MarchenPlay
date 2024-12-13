@@ -11,12 +11,12 @@ export interface DB_History {
   duration: number
   cover?: string
   thumbnail?: string
-  danmaku?: CommentsModel
-  subtitles?: Subtitles
+  danmaku?: DB_Danmaku[]
+  subtitles?: DB_Subtitles
   updatedAt: string
 }
 
-interface Subtitles {
+interface DB_Subtitles {
   defaultId: number
   timeOffset?: number
 
@@ -27,4 +27,11 @@ interface Subtitles {
     title: string
     language?: string
   }>
+}
+
+export interface DB_Danmaku {
+  type: 'dandanplay' | 'third-party-auto' | 'third-party-manual' | 'local'
+  source: string
+  selected?: boolean
+  content: CommentsModel
 }
