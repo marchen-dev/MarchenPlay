@@ -215,12 +215,14 @@ export const useDanmakuData = () => {
         type: 'dandanplay',
         source: 'dandanplay',
         content: results.at(-1)?.data,
+        selected: true,
       } as DB_Danmaku
 
       const thirdPartyDanmakuData = results.slice(0, -1).map((result, index) => ({
         type: 'third-party-auto',
         content: result.data,
         source: thirdPartyDanmakuUrlData?.relateds[index].url,
+        selected: true,
       })) as DB_Danmaku[]
 
       // 只加载官方弹幕库，返回弹幕数据
@@ -242,8 +244,8 @@ export const useDanmakuData = () => {
       return
     }
     return danmakuData
+      .filter((danmaku) => danmaku.selected)
       .map((danmaku) => danmaku?.content)
-      .filter((danmaku) => !!danmaku)
       .flatMap((danmaku) => danmaku.comments)
   }, [danmakuData])
 
@@ -262,6 +264,13 @@ export const saveToHistory = async (
     ...params,
     updatedAt: new Date().toISOString(),
   }
+  if (!existingAnime) {
+    return await db.history.add({
+      ...historyData,
+      progress: 0,
+      duration: 0,
+    })
+  }
   if (animeId) {
     const { bangumi } = await apiClient.bangumi.getBangumiDetailById(animeId)
 
@@ -269,27 +278,17 @@ export const saveToHistory = async (
       cover: bangumi.imageUrl,
     })
 
-    if (existingAnime) {
-      // 确保能够对不同集进行更新
-      const oldEspisode = params.episodeId === existingAnime.episodeId
-      await db.history.update(existingAnime.hash, {
-        ...historyData,
-        ...(oldEspisode && { duration: existingAnime.duration, progress: existingAnime.progress }),
-      })
-      return
-    }
+    // 确保能够对不同集进行更新
+    const oldEspisode = params.episodeId === existingAnime.episodeId
+    await db.history.update(existingAnime.hash, {
+      ...historyData,
+      ...(oldEspisode && { duration: existingAnime.duration, progress: existingAnime.progress }),
+    })
+    return
   } else {
-    if (existingAnime) {
-      await db.history.update(existingAnime.hash, historyData)
-      return
-    }
+    await db.history.update(existingAnime.hash, historyData)
+    return
   }
-
-  await db.history.add({
-    ...historyData,
-    progress: 0,
-    duration: 0,
-  })
 }
 
 export const useLoadingHistoricalAnime = () => {

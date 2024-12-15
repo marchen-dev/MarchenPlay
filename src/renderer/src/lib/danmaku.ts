@@ -1,4 +1,5 @@
 import type { DB_Danmaku } from '@renderer/database/schemas/history'
+import type { CommentModel } from '@renderer/request/models/comment'
 
 /**
  * 将32位整数表示的颜色转换成十六进制颜色格式
@@ -38,7 +39,10 @@ const thirdpartyDanmakuMap = {
   youku: '优酷',
 }
 
-export const danmakuPlatformMap = (danmaku: DB_Danmaku) => {
+export const danmakuPlatformMap = (danmaku?: DB_Danmaku) => {
+  if (!danmaku) {
+    return '未知弹幕'
+  }
   let mapName = ''
 
   switch (danmaku.type) {
@@ -68,4 +72,52 @@ export const danmakuPlatformMap = (danmaku: DB_Danmaku) => {
   }
 
   return `${mapName} (${danmaku.content.comments.length}条)`
+}
+
+export const mostDanmakuPlatform = (danmaku?: DB_Danmaku[]) => {
+  if (!danmaku || danmaku.length === 0) {
+    return '暂无弹幕'
+  }
+  const danmakuCount = danmaku.filter((item) => item.selected).map((item) => item.content.count)
+  if (danmakuCount.length === 0) {
+    return '暂无弹幕'
+  }
+  const maxDanmakuItem = danmaku.find((item) => item.content.count === Math.max(...danmakuCount))
+  return danmakuPlatformMap(maxDanmakuItem)
+}
+
+export const parseDanmakuData = (params: { danmuData?: CommentModel[]; duration: number }) =>
+  params.danmuData?.map((comment) => {
+    const [start, postition, color] = comment.p.split(',').map(Number)
+    const startInMs = start * 1000
+
+    const mode = DanmuPosition[postition]
+    const danmakuColor = intToHexColor(color)
+    return {
+      duration: params.duration, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
+      id: comment.cid, // 弹幕id，需唯一
+      start: startInMs, // 弹幕出现时间，毫秒BB
+      txt: comment.m, // 弹幕文字内容
+      mode,
+      style: {
+        color: danmakuColor,
+        fontWeight: 600,
+        textShadow: `
+      rgb(0, 0, 0) 1px 0px 1px, 
+      rgb(0, 0, 0) 0px 1px 1px, 
+      rgb(0, 0, 0) 0px -1px 1px, 
+      rgb(0, 0, 0) -1px 0px 1px
+    `,
+      },
+    }
+  })
+
+export const mergeDanmaku = (danmakuData: DB_Danmaku[] | undefined) => {
+  if (!danmakuData) {
+    return
+  }
+  return danmakuData
+    .filter((danmaku) => danmaku.selected)
+    .map((danmaku) => danmaku?.content)
+    .flatMap((danmaku) => danmaku.comments)
 }
