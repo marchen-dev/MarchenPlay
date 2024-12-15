@@ -1,79 +1,105 @@
+import type { CheckedState } from '@radix-ui/react-checkbox'
+import { videoAtom } from '@renderer/atoms/player'
+import { usePlayerSettingsValue } from '@renderer/atoms/settings/player'
 import { FieldLayout } from '@renderer/components/modules/settings/views/Layout'
 import { Button } from '@renderer/components/ui/button'
-import { Input } from '@renderer/components/ui/input'
+import { Checkbox } from '@renderer/components/ui/checkbox'
+import { Label } from '@renderer/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@renderer/components/ui/popover'
-import * as React from 'react'
+import { db } from '@renderer/database/db'
+import type { DB_History } from '@renderer/database/schemas/history'
+import {
+  danmakuPlatformMap,
+  mergeDanmaku,
+  mostDanmakuPlatform,
+  parseDanmakuData,
+} from '@renderer/lib/danmaku'
+import queryClient from '@renderer/lib/query-client'
+import { useAtomValue } from 'jotai'
+import { debounce } from 'lodash-es'
 import { memo } from 'react'
 
+import { usePlayerInstance } from '../../../Context'
+import { useXgPlayerUtils } from '../../../initialize/hooks'
+import { useSettingConfig } from '../../Sheet'
 
 export const Rematch = memo(() => {
-  // const currentMatchedVideo = useAtomValue(currentMatchedVideoAtom)
-  // const video = useAtomValue(videoAtom)
-  // const player = usePlayerInstance()
-  // const { danmaku } = useSettingConfig()
-  // const matchedDanmaku = useMemo(() => {
-  //   if (currentMatchedVideo.animeTitle && currentMatchedVideo.episodeTitle) {
-  //     return `${currentMatchedVideo.animeTitle} - ${currentMatchedVideo?.episodeTitle}`
-  //   }
-  //   return '暂无'
-  // }, [currentMatchedVideo])
+  const { danmakuDuration } = usePlayerSettingsValue()
+  const video = useAtomValue(videoAtom)
+  const player = usePlayerInstance()
+  const { danmaku } = useSettingConfig()
+  const { setResponsiveDanmakuConfig } = useXgPlayerUtils()
+  const handleCheckDanmaku = debounce((params: { checked: CheckedState; source: string }) => {
+    const { checked, source } = params
+    if (checked === 'indeterminate') {
+      return
+    }
+    queryClient.setQueryData(['SettingProvider', video.hash], (oldSetting: DB_History) => {
+      const newSetting = oldSetting
+      const { danmaku } = newSetting
+      danmaku?.forEach((item) => {
+        if (item.source === source) {
+          item.selected = checked
+        }
+      })
+      if (!danmaku) {
+        return
+      }
+      const mergedDanmakuData = mergeDanmaku(danmaku)
 
+      const parsedDanmaku = parseDanmakuData({
+        danmuData: mergedDanmakuData,
+        duration: +danmakuDuration,
+      })
+
+      if (!player) {
+        return
+      }
+      player.danmu?.clear()
+
+      player.danmu?.updateComments(parsedDanmaku, true)
+      setResponsiveDanmakuConfig(player)
+
+      db.history.update(video.hash, {
+        danmaku,
+      })
+      return {
+        ...oldSetting,
+        newSetting,
+      }
+    })
+  }, 300)
   return (
-      <FieldLayout title="来源">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline">Open popover</Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <h4 className="font-medium leading-none">Dimensions</h4>
-                <p className="text-sm text-muted-foreground">Set the dimensions for the layer.</p>
-              </div>
-              <div className="grid gap-2">
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Input id="width" defaultValue="100%" className="col-span-2 h-8" />
-                </div>
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Input id="maxWidth" defaultValue="300px" className="col-span-2 h-8" />
-                </div>
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Input id="height" defaultValue="25px" className="col-span-2 h-8" />
-                </div>
-                <div className="grid grid-cols-3 items-center gap-4">
-                  <Input id="maxHeight" defaultValue="none" className="col-span-2 h-8" />
-                </div>
-              </div>
+    <FieldLayout title="来源">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">{mostDanmakuPlatform(danmaku)}...</Button>
+        </PopoverTrigger>
+        <PopoverContent className="mx-2 w-80">
+          <div className="grid gap-4">
+            <div className="space-y-2">
+              <h4 className="font-medium leading-none">弹幕来源</h4>
             </div>
-          </PopoverContent>
-        </Popover>
-        {/* <Select defaultValue={'-1'}>
-        <SelectTrigger className="w-[250px]">
-          <SelectValue placeholder="弹幕库" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {danmaku?.map((item) => {
-              const danmakuPlatform = danmakuPlatformMap(item)
-              return (
-                <SelectItem key={item.source} value={item.source}>
-                  {danmakuPlatform}
-                </SelectItem>
-              )
-            })}
-            <SelectLabel
-              className="cursor-default select-none transition-colors duration-150 hover:text-primary"
-              onClick={() => {
-                player?.pause()
-                jotaiStore.set(playerSettingSheetAtom, false)
-                showMatchAnimeDialog(true, video.hash)
-              }}
-            >
-              重新匹配弹幕库
-            </SelectLabel>
-          </SelectGroup>
-        </SelectContent>
-      </Select> */}
-      </FieldLayout>
+            <div className="grid gap-4">
+              {danmaku?.map((item) => {
+                const danmakuPlatform = danmakuPlatformMap(item)
+                return (
+                  <div key={item.source} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={item.source}
+                      defaultChecked={item.selected}
+                      onCheckedChange={(checked) =>
+                        handleCheckDanmaku({ checked, source: item.source })
+                      }
+                    />
+                    <Label htmlFor={item.source}>{danmakuPlatform}</Label>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </FieldLayout>
   )
 })

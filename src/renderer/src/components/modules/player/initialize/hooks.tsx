@@ -4,13 +4,12 @@ import { useToast } from '@renderer/components/ui/toast'
 import NextEpisode from '@renderer/components/ui/xgplayer/plugins/nextEpisode'
 import PreviousEpisode from '@renderer/components/ui/xgplayer/plugins/previousEpisode'
 import { db } from '@renderer/database/db'
-import { DanmuPosition, intToHexColor } from '@renderer/lib/danmaku'
+import { parseDanmakuData } from '@renderer/lib/danmaku'
 import { isWeb } from '@renderer/lib/utils'
-import type { CommentModel } from '@renderer/request/models/comment'
 import type { IPlayerOptions } from '@suemor/xgplayer'
 import XgPlayer, { Danmu } from '@suemor/xgplayer'
 import { useAtomValue } from 'jotai'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useDanmakuData } from '../loading/hooks'
 import { danmakuConfig, playerBaseConfigForClient, playerBaseConfigForWeb } from './config'
@@ -30,7 +29,7 @@ export const useXgPlayer = (url: string) => {
   const video = useAtomValue(videoAtom)
   const playerSettings = usePlayerSettingsValue()
   const { danmakuDuration, danmakuFontSize, danmakuEndArea } = playerSettings
-  const { setResponsiveDanmakuConfig, parseDanmakuData } = useXgPlayerUtils()
+  const { setResponsiveDanmakuConfig } = useXgPlayerUtils()
   const { mergedDanmakuData } = useDanmakuData()
 
   useEffect(() => {
@@ -117,35 +116,6 @@ export const useXgPlayerUtils = () => {
   const playerSettings = usePlayerSettingsValue()
   const isLoadDanmaku = useAtomValue(isLoadDanmakuAtom)
 
-  const parseDanmakuData = useMemo(
-    () => (params: { danmuData?: CommentModel[]; duration: number }) =>
-      params.danmuData?.map((comment) => {
-        const [start, postition, color] = comment.p.split(',').map(Number)
-        const startInMs = start * 1000
-
-        const mode = DanmuPosition[postition]
-        const danmakuColor = intToHexColor(color)
-        return {
-          duration: params.duration, // 弹幕持续显示时间,毫秒(最低为5000毫秒)
-          id: comment.cid, // 弹幕id，需唯一
-          start: startInMs, // 弹幕出现时间，毫秒BB
-          txt: comment.m, // 弹幕文字内容
-          mode,
-          style: {
-            color: danmakuColor,
-            fontWeight: 600,
-            textShadow: `
-          rgb(0, 0, 0) 1px 0px 1px, 
-          rgb(0, 0, 0) 0px 1px 1px, 
-          rgb(0, 0, 0) 0px -1px 1px, 
-          rgb(0, 0, 0) -1px 0px 1px
-        `,
-          },
-        }
-      }),
-    [],
-  )
-
   const setResponsiveDanmakuConfig = (playerInstance: PlayerType | null) => {
     if (playerInstance?.isPlaying && isLoadDanmaku) {
       const { danmakuDuration, danmakuEndArea, danmakuFontSize } = playerSettings
@@ -160,6 +130,5 @@ export const useXgPlayerUtils = () => {
 
   return {
     setResponsiveDanmakuConfig,
-    parseDanmakuData,
   }
 }

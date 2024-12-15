@@ -22,7 +22,6 @@ export const Player: FC<PlayerProps> = (props) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className='test123'
       />
       <PlayerProvider value={playerInstance}>
         <SettingSheet />
