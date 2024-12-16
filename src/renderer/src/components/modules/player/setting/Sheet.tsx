@@ -86,13 +86,13 @@ const settingSheetList = [
 ]
 
 const SettingContext = createContext<DB_History | null>(null)
-
+export const SettingProviderQueryKey = 'SettingProvider'
 export const SettingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { hash } = useAtomValue(videoAtom)
   const toast = useToast()
 
   const { data } = useQuery({
-    queryKey: ['SettingProvider', hash],
+    queryKey: [SettingProviderQueryKey, hash],
     queryFn: () => db.history.get(hash),
     gcTime: 0,
   })
@@ -114,5 +114,3 @@ export const useSettingConfig = () => {
   }
   return context
 }
-
-SettingProvider.displayName = 'SettingProvider'

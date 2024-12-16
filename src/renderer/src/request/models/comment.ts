@@ -1,5 +1,6 @@
 export interface CommentsModel {
   count: number
+  selected?: boolean
   comments: CommentModel[]
 }
 
