@@ -21,7 +21,7 @@ import { memo } from 'react'
 
 import { usePlayerInstance } from '../../../Context'
 import { useXgPlayerUtils } from '../../../initialize/hooks'
-import { useSettingConfig } from '../../Sheet'
+import { SettingProviderQueryKey, useSettingConfig } from '../../Sheet'
 
 export const Rematch = memo(() => {
   const { danmakuDuration } = usePlayerSettingsValue()
@@ -34,7 +34,7 @@ export const Rematch = memo(() => {
     if (checked === 'indeterminate') {
       return
     }
-    queryClient.setQueryData(['SettingProvider', video.hash], (oldSetting: DB_History) => {
+    queryClient.setQueryData([SettingProviderQueryKey, video.hash], (oldSetting: DB_History) => {
       const newSetting = oldSetting
       const { danmaku } = newSetting
       danmaku?.forEach((item) => {
@@ -63,6 +63,7 @@ export const Rematch = memo(() => {
       db.history.update(video.hash, {
         danmaku,
       })
+
       return {
         ...oldSetting,
         newSetting,

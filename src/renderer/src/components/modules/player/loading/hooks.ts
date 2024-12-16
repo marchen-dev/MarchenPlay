@@ -197,17 +197,34 @@ export const useDanmakuData = () => {
     queries: [
       ...(thirdPartyDanmakuUrlData?.relateds.map((related) => ({
         queryKey: [apiClient.comment.Commentkeys.getExtcomment, video.hash, related.url],
-        queryFn: () => apiClient.comment.getExtcomment({ url: related.url }),
+        queryFn: async () => {
+          const fetchData = await apiClient.comment.getExtcomment({ url: related.url })
+          const history = await db.history.get(video.hash)
+          const historyDanmaku = history?.danmaku?.find((item) => item.source === related.url)
+          return {
+            ...fetchData,
+            selected: historyDanmaku?.selected ?? true,
+          }
+        },
         enabled: !!currentMatchedVideo.episodeId && !onlyLoadDandanplayDanmaku,
+        gcTime: 0,
       })) ?? []),
       {
         queryKey: [apiClient.comment.Commentkeys.getDanmu, video.hash],
-        queryFn: () => {
-          return apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
+        queryFn: async () => {
+          const fetchData = await apiClient.comment.getDanmu(+currentMatchedVideo.episodeId, {
             chConvert: enableTraditionalToSimplified ? 1 : 0,
           })
+          const history = await db.history.get(video.hash)
+          const historyDanmaku = history?.danmaku?.find((item) => item.source === 'dandanplay')
+
+          return {
+            ...fetchData,
+            selected: historyDanmaku?.selected ?? true,
+          }
         },
         enabled: !!currentMatchedVideo.episodeId,
+        gcTime: 0,
       },
     ],
     combine: (results) => {
@@ -215,14 +232,14 @@ export const useDanmakuData = () => {
         type: 'dandanplay',
         source: 'dandanplay',
         content: results.at(-1)?.data,
-        selected: true,
+        selected: results.at(-1)?.data?.selected,
       } as DB_Danmaku
 
       const thirdPartyDanmakuData = results.slice(0, -1).map((result, index) => ({
         type: 'third-party-auto',
         content: result.data,
         source: thirdPartyDanmakuUrlData?.relateds[index].url,
-        selected: true,
+        selected: result.data?.selected,
       })) as DB_Danmaku[]
 
       // 只加载官方弹幕库，返回弹幕数据
